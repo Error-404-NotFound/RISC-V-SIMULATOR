@@ -1,8 +1,3 @@
-# Description: A simple 2-core processor simulator
-
-include("execute_functions.jl")
-using .ExecuteFunctions
-
 mutable struct Core1
     registers::Array{Int,1}
     pc::Int
@@ -20,11 +15,20 @@ function core_Init()
     return Core1()
 end
 
-function execute(core::Core1, memory::Array{Int,1})
-    if core.pc > length(core.program)
-        return
+function execute(core::Core1, memory)
+    parts = split(core.program[core.pc], " ")
+    opcode = parts[1]
+    println(opcode)
+    if opcode == "add"
+        rd = parse(Int, parts[2][2:end])+1
+        rs1 = parse(Int, parts[3][2:end])+1
+        rs2 = parse(Int, parts[4][2:end])+1
+        core.registers[rd] = core.registers[rs1] + core.registers[rs2]
+    elseif opcode == "ld"
+        rd = parse(Int, parts[2][2:end])+1
+        location = parse(Int, parts[3])+1
+        core.registers[rd] = memory[location]
     end
-    ExecuteFunctions.execute(core.program[core.pc], core.registers, memory)
     core.pc += 1
 end
 
@@ -56,25 +60,16 @@ function run(processor::Processor)
     end    
 end
 
-function main()
-    sim = Processor()
-    sim.cores[1].registers[2] = 8
-    sim.cores[1].registers[3] = 10
-    sim.cores[1].registers[5] = 5
-    sim.memory[6] = 18
-    for i in 1:length(sim.cores)
-        println(sim.cores[i].registers)
-    end
-
-    sim.cores[1].program = ["add x1 x2 x3",
-                            "ld x5 5",
-                            "add x1 x1 x5",
-                            "st x1 6"]
-    sim.cores[2].program = ["add x1 x2 x3", "ld x5 5"]
-    run(sim)
-    for i in 1:length(sim.cores)
-        println(sim.cores[i].registers)
-    end
+sim = Processor()
+sim.cores[1].registers[2] = 8
+sim.memory[6] = 18
+for i in 1:length(sim.cores)
+    println(sim.cores[i].registers)
 end
 
-main()
+sim.cores[1].program = ["add x1 x2 x3", "ld x5 5"]
+sim.cores[2].program = ["add x1 x2 x3", "ld x5 5"]
+run(sim)
+for i in 1:length(sim.cores)
+    println(sim.cores[i].registers)
+end
