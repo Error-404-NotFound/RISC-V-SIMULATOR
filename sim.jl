@@ -65,3 +65,4 @@ run(sim)
 for i in 1:length(sim.cores)
     println(sim.cores[i].registers)
 end
+
