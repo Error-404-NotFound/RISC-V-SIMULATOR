@@ -1,0 +1,14 @@
+import numpy as np
+import time
+
+#from julia.api import Julia
+#jl = Julia(compiled_modules=False)
+#import julia
+
+
+na = 30
+A = np.random.random((na,na,na,na))
+
+from julia import Main
+Main.include("sim.jl")
+
