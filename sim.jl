@@ -56,36 +56,3 @@ function show_memory(processor::Processor)
         println(processor.memory[i, :])
     end
 end
-
-function main()
-    sim = Processor()
-    sim.cores[1].registers[2+1] = 8
-    sim.cores[1].registers[3+1] = 10
-    sim.cores[1].registers[5+1] = 5
-    sim.memory[1,2]=5
-    # for i in 1:length(sim.cores)
-    #     println(sim.cores[i].registers)
-    # end
-
-    sim.cores[1].program = ["add x1 x2 x3", 
-                            "mv x5 x1",
-                            "addi x1 x1 5",
-                            "li x2 23",
-                            "beq x1 x2 hello",
-                            "li x3 100",
-                            "hello",
-                            "li x4 200",
-                            # "st x1 5",
-                            # "addi x2 x2 20",
-                            # "beq x1 x2 loop",
-                            ]
-    # sim.cores[2].program = ["add x1 x2 x3", "ld x5 5"]
-    run(sim)
-    # println(sim.memory[5+1])
-    for i in 1:length(sim.cores)
-        println(sim.cores[i].registers)
-    end
-end
-
-main()
-
