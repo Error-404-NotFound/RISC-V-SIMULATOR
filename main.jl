@@ -1,4 +1,5 @@
 include("sim.jl")
+include("parser.jl")
 
 file_path = "/home/aniket/Desktop/Project/RISC-V-SIMULATOR/test.asm"
 program = []
@@ -23,7 +24,8 @@ function main()
     for i in 1:length(sim.cores)
         println(sim.cores[i].registers)
     end
-    # show_memory(sim)
+    # println(sim.memory[1,2])
+    show_memory(sim)
 end
 
 main()

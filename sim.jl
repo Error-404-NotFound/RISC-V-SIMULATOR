@@ -2,6 +2,7 @@
 
 include("execute_functions.jl")
 include("core.jl")
+include("utility.jl")
 
 
 function core_Init()
@@ -52,7 +53,12 @@ function run(processor::Processor)
 end
 
 function show_memory(processor::Processor)
-    for i in 1:size(processor.memory, 1)
-        println(processor.memory[i, :])
-    end
+    println("Hex Table Processor Memory:")
+    for rows in reverse(1:size(processor.memory, 1))
+        print("$rows: \t")
+        for cols in 1:size(processor.memory, 2)
+            print("0x$(int_to_hex(processor.memory[rows, cols]))\t")
+        end
+        println()
+    end 
 end
