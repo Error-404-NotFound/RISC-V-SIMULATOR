@@ -7,7 +7,7 @@ try
     for line in eachline(file)
         if !contains(line, "any")
             modified_line = replace(line, r"\b\d+\b" => x -> string(parse(Int, x)))
-            push!(program, modified_line)
+            push!(program, modified_line)            
         end
     end
     close(file)

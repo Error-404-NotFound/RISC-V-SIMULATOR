@@ -186,12 +186,8 @@ function execute(core::Core_Module.Core1, memory::Array{Int,2})
         rs1 = parse(Int, parts[2][2:end]) + 1
         rs2 = parse(Int, parts[3][2:end]) + 1
         label = parts[4]
-        println(label)
-        println(core.registers[rs1])
-        println(core.registers[rs2])
         if core.registers[rs1] == core.registers[rs2]
-            core.pc = findfirst(x -> x == label, core.program) -2
-            println(core.pc)
+            core.pc = findfirst(x -> x == label, core.program)
         else
             core.pc = core.pc
         end
