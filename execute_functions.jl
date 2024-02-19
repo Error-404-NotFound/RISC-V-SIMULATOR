@@ -249,6 +249,10 @@ function execute(core::Core_Module.Core1, memory::Array{Int,2})
         core.registers[rd] = core.pc + 1
         core.pc = findfirst(x -> x == label, core.program)
 
+    elseif opcode == "jr"
+        rs1 = parse(Int, parts[2][2:end])
+        core.pc = core.registers[rs1]
+
     elseif opcode == "jalr"
         rd = parse(Int, parts[2][2:end]) + 1
         rs1 = parse(Int, parts[3][2:end]) + 1

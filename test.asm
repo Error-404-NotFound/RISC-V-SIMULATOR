@@ -1,9 +1,12 @@
 li x1 5
 li x2 10
-add x3 x1 x2
-addi x1 x1 10
-beq x1 x3 hello
-li x7 100
+jal x3 addition
+jal x4 subtraction
 
-hello
-li x8 200
+addition
+add x5 x1 x2
+jr x3
+
+subtraction
+sub x6 x1 x2
+jr x4
