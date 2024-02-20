@@ -14,6 +14,14 @@ function add_spaces(input_string::AbstractString)::AbstractString
     return replace(input_string, r"(\w)([x\d])" => s"\1 \2")
 end
 
+function remove_quotes_from_string(input_string::AbstractString)::AbstractString
+    return replace(input_string, r"\"" => "")
+end
+
+function convert_to_proper_newline(input_string::AbstractString)::AbstractString
+    return replace(input_string, r"\\n" => "\n")
+end
+
 function int_to_hex(x::Int)
     return lpad(string(x, base=16), 2, "0")
 end
