@@ -22,20 +22,22 @@ function check_assembly_structure(assembly::String)::Bool
     if text_section_present && data_section_present
         return true
     elseif text_section_present
+        println("Error: .text section present but .data section is missing.")
         return false
     elseif data_section_present
+        println("Error: .data section present but .text section is missing.")
         return false
     else
         return false
     end
-    return true
+    return false
 end
+
 
 function check_assembly_content(assembly::String)::Bool
     lines = split(assembly, '\n')
     
     text_section_contents = Set{String}()
-    data_section_contents = Set{String}()
     
     current_section = ""
     
@@ -51,26 +53,109 @@ function check_assembly_content(assembly::String)::Bool
             current_section = ".text"
         elseif directive == ".data"
             current_section = ".data"
-        elseif current_section == ".text"
-            push!(text_section_contents, directive)
-        elseif current_section == ".data" && parts[1] == ".word"
-            push!(data_section_contents, parts[2])
+        elseif current_section == ".text" && !startswith(directive, ".") && directive != ".word"
+            # Check for specific instructions like 'add', 'sub', etc.
+            instruction = parts[1]
+            if instruction in ["add", "sub", "and", "or", "xor", "lw", "sw", "beq", "bne", "jal", "jr", "j", "li", "addi", "subi", "andi", "ori", "xori", "lui", "slti", "sltiu", "sll", "srl", "sra", "sllv", "srlv", "srav", "slt", "sltu",]
+                push!(text_section_contents, join(parts[1:end], " "))
+            end
         end
     end
     
-    # if isempty(text_section_contents)
-    #     println("Error: No relevant instructions found in .text section.")
-    # else
-    #     println("Relevant instructions found in .text section.")
-    # end
-    
-    # if isempty(data_section_contents)
-    #     println("Error: No relevant data entries found in .data section.")
-    # else
-    #     println("Relevant data entries found in .data section.")
-    # end
-    return true
+    if isempty(text_section_contents)
+        println("Error: No relevant instructions (add, sub, etc.) found in .text section.")
+        return false
+    else
+        # println("Relevant instructions (add, sub, etc.) found in .text section: ", join(text_section_contents, ", "))
+        return true
+    end
 end
+
+
+
+
+# function check_assembly_content(assembly::String)::Bool
+#     lines = split(assembly, '\n')
+    
+#     text_section_contents = Set{String}()
+    
+#     current_section = ""
+    
+#     for line in lines
+#         parts = split(line)
+#         if isempty(parts)
+#             continue  # Skip empty lines
+#         end
+        
+#         directive = parts[1]
+        
+#         if directive == ".text"
+#             current_section = ".text"
+#         elseif directive == ".data"
+#             current_section = ".data"
+#         elseif current_section == ".text" && !startswith(directive, ".") && directive != ".word"
+#             # Check for specific instructions like 'add', 'sub', etc.
+#             instruction = parts[1]
+#             if instruction in ["add", "sub", "mul", "div", "and", "or", "xor"]
+#                 push!(text_section_contents, join(parts[1:end], " "))
+#             end
+#         end
+#     end
+    
+#     if isempty(text_section_contents)
+#         println("Error: No relevant instructions (add, sub, etc.) found in .text section.")
+#     else
+#         println("Relevant instructions (add, sub, etc.) found in .text section: ", join(text_section_contents, ", "))
+#     end
+    
+#     return !(isempty(text_section_contents))
+# end
+
+
+
+# function check_assembly_content(assembly::String)
+#     lines = split(assembly, '\n')
+    
+#     text_section_contents = []
+    
+#     current_section = ""
+    
+#     for line in lines
+#         parts = split(line)
+#         if isempty(parts)
+#             continue  # Skip empty lines
+#         end
+        
+#         directive = parts[1]
+#         println(directive)
+#         if directive == ".text"
+#             current_section = ".text"
+#         elseif directive == ".data"
+#             current_section = ".data"
+#         elseif current_section == ".text" && !startswith(directive, ".") && directive != ".word"
+#             # Check for specific instructions like 'add', 'sub', etc.
+#             instruction = parts[1]
+#             if instruction in ["add", "sub", "mul", "div", "and", "or", "xor"]
+#                 push!(text_section_contents, join(parts[1:end], " "))
+#             end
+#         end
+    
+#         if isempty(text_section_contents)
+#             println("Error: No relevant instructions (add, sub, etc.) found in .text section.")
+#         else
+#             println("Relevant instructions (add, sub, etc.) found in .text section: ", join(text_section_contents, ", "))
+#         end
+    
+    
+#     end
+#     return !(isempty(text_section_contents))
+# end
+
+
+
+
+
+
 
 # Example assembly code
 # assembly_code = """

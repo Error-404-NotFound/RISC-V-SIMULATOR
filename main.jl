@@ -3,7 +3,9 @@ include("parser.jl")
 include("utility.jl")
 
 file_path = "./test.asm"
-program = []
+text_program_first = []
+data_program_first = []
+
 
 function convert_iostream_to_string(io::IO)
     seekstart(io)  
@@ -21,15 +23,15 @@ function sanitize(raw_line::AbstractString)::AbstractString
 end
 
 try
-    flag =false
+    flag = true
     file = open(file_path, "r")
     str  = convert_iostream_to_string(file)
-    if !check_assembly_structure(str) && !check_assembly_content(str)
-        flag = true
+    if !check_assembly_structure(str) || !check_assembly_content(str)
+        flag = false
     end
     close(file)
 
-    if (flag==true)
+    if (flag==false)
         println("Invalid Assembly File")
     
     else
@@ -43,11 +45,11 @@ try
                 flag1=true
             end
             if(flag1==true && line!=".text" && line!=".data" && line!=".end")
-                push!(program, modified_line)  
+                push!(text_program_first, modified_line)  
             end
         end
         close(file)
-        println(program)
+        println(text_program_first)
     end
 catch err
     println("An error occurred: $err")
@@ -55,12 +57,12 @@ end
 
 function main()
     sim = processor_Init()
-    sim.cores[1].program = program
+    sim.cores[1].program = text_program_first
     run(sim)
     for i in 1:length(sim.cores)
         println(sim.cores[i].registers)
     end
-    print(sim.memory[2,2])
+    # print(sim.memory[2,2])
     # println(sim.memory[1,2])
     # show_memory(sim)
 end

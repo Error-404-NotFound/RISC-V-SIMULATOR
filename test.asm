@@ -1,6 +1,4 @@
 .data
-.word 0x12
-
 .text
     li x1 5
     li x2 134567
