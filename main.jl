@@ -21,15 +21,34 @@ function sanitize(raw_line::AbstractString)::AbstractString
 end
 
 try
+    flag =false
     file = open(file_path, "r")
-    for line in eachline(file)
-        if !contains(line, "any")
-            modified_line = sanitize(line)
-            push!(program, modified_line)            
-        end
+    str  = convert_iostream_to_string(file)
+    if !check_assembly_structure(str) && !check_assembly_content(str)
+        flag = true
     end
     close(file)
-    println(program)
+
+    if (flag==true)
+        println("Invalid Assembly File")
+    
+    else
+        flag1=false
+        file = open(file_path, "r")
+        for line in eachline(file)
+            if !contains(line, "any") 
+                modified_line = sanitize(line)  
+            end
+            if(line==".text")
+                flag1=true
+            end
+            if(flag1==true && line!=".text" && line!=".data" && line!=".end")
+                push!(program, modified_line)  
+            end
+        end
+        close(file)
+        println(program)
+    end
 catch err
     println("An error occurred: $err")
 end
