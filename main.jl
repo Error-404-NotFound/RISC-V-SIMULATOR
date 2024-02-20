@@ -58,8 +58,8 @@ try
             end
         end
         close(file)
-        println(text_program_first)
         println(data_program_first)
+        println(text_program_first)
     end
 catch err
     println("An error occurred: $err")
@@ -74,7 +74,7 @@ function main()
     end
     # print(sim.memory[2,2])
     # println(sim.memory[1,2])
-    # show_memory(sim)
+    show_memory(sim)
 end
 
 main()
