@@ -11,24 +11,23 @@ function convert_iostream_to_string(io::IO)
     return str
 end
 
+function sanitize(raw_line::AbstractString)::AbstractString
+    modified_line = replace(raw_line, r"\b\d+\b" => x -> string(parse(Int, x)))
+    modified_line = remove_parentheses(modified_line)
+    modified_line = remove_comments(modified_line)
+    modified_line = remove_commas(modified_line)
+    modified_line = strip(modified_line)
+    return modified_line
+end
+
 try
     file = open(file_path, "r")
-    
     for line in eachline(file)
         if !contains(line, "any")
-            modified_line = replace(line, r"\b\d+\b" => x -> string(parse(Int, x)))
-            modified_line = remove_parentheses(modified_line)
-            modified_line = remove_comments(modified_line)
-            modified_line = remove_commas(modified_line)
+            modified_line = sanitize(line)
             push!(program, modified_line)            
         end
     end
-
-    str  = convert_iostream_to_string(file)
-    if !check_assembly_structure(str) && !check_assembly_content(str)
-        println("Error: Assembly code has incorrect structure or content.")
-    end
-  
     close(file)
     println(program)
 catch err
