@@ -53,8 +53,9 @@ function run(processor::Processor)
 end
 
 function show_memory(processor::Processor)
+    row_show = 10
     println("Hex Table Processor Memory:")
-    for rows in reverse(1:size(processor.memory, 1))
+    for rows in reverse(1:row_show)
         print("$rows: \t")
         for cols in 1:size(processor.memory, 2)
             print("0x$(int_to_hex(processor.memory[rows, cols]))\t")

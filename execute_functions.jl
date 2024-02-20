@@ -132,49 +132,107 @@ function execute(core::Core_Module.Core1, memory::Array{Int,2})
         shift_bits = parse(Int, parts[4])
         core.registers[rd] = core.registers[rs1] >> shift_bits
 
+    
+    # lb rd offset(rs1)
+    # lb rd offset rs1
     elseif opcode == "lb"
         rd = parse(Int, parts[2][2:end]) + 1
-        rs1 = parse(Int, parts[3][2:end]) + 1
-        imm = parse(Int, parts[4])
-        core.registers[rd] = memory[core.registers[rs1] + imm, 1]
+        offset = parse(Int, parts[3])
+        rs1 = parse(Int, parts[4][2:end]) + 1
+        temp_row = ((core.registers[rs1] + offset +1) ÷ 4) + 1
+        temp_col = (core.registers[rs1] + offset) % 4
+        if temp_col == 0
+            temp_col = 4
+            temp_row -= 1
+        end
+        binary_string = int_to_binary_32bits(core.registers[rs1])
+        core.registers[rd] = load_one_byte(binary_string, memory, temp_row, temp_col)
 
+    # lh rd offset(rs1)
+    # lh rd offset rs1
     elseif opcode == "lh"
         rd = parse(Int, parts[2][2:end]) + 1
-        rs1 = parse(Int, parts[3][2:end]) + 1
-        imm = parse(Int, parts[4])
-        core.registers[rd] = memory[core.registers[rs1] + imm, 1]
+        offset = parse(Int, parts[3])
+        rs1 = parse(Int, parts[4][2:end]) + 1
+        temp_row = ((core.registers[rs1] + offset +1) ÷ 4) + 1
+        temp_col = (core.registers[rs1] + offset) % 4
+        if temp_col == 0
+            temp_col = 4
+            temp_row -= 1
+        end
+        binary_string = int_to_binary_32bits(core.registers[rs1])
+        core.registers[rd] = load_half_word(binary_string, memory, temp_row, temp_col)
 
+    # lw rd offset(rs1)
+    # lw rd offset rs1
     elseif opcode == "lw"
         rd = parse(Int, parts[2][2:end]) + 1
-        rs1 = parse(Int, parts[3][2:end]) + 1
-        imm = parse(Int, parts[4])
-        core.registers[rd] = memory[core.registers[rs1] + imm, 1]
-
+        offset = parse(Int, parts[3])
+        rs1 = parse(Int, parts[4][2:end]) + 1
+        temp_row = ((core.registers[rs1] + offset +1) ÷ 4) + 1
+        temp_col = (core.registers[rs1] + offset) % 4
+        if temp_col == 0
+            temp_col = 4
+            temp_row -= 1
+        end
+        binary_string = int_to_binary_32bits(core.registers[rs1])
+        println(binary_string)
+        core.registers[rd] = load_word(binary_string, memory, temp_row, temp_col)
+        
+    # lbu rd offset(rs1)
+    # lbu rd offset rs1
     elseif opcode == "lbu"
         rd = parse(Int, parts[2][2:end]) + 1
-        rs1 = parse(Int, parts[3][2:end]) + 1
-        imm = parse(Int, parts[4])
-        core.registers[rd] = memory[core.registers[rs1] + imm, 1]
+        offset = parse(Int, parts[3])
+        rs1 = parse(Int, parts[4][2:end]) + 1
+        temp_row = ((core.registers[rs1] + offset +1) ÷ 4) + 1
+        temp_col = (core.registers[rs1] + offset) % 4
+        if temp_col == 0
+            temp_col = 4
+            temp_row -= 1
+        end
+        binary_string = int_to_binary_32bits(core.registers[rs1])
+        core.registers[rd] = load_one_byte(binary_string, memory, temp_row, temp_col)
 
+    # lhu rd offset(rs1)
+    # lhu rd offset rs1
     elseif opcode == "lhu"
         rd = parse(Int, parts[2][2:end]) + 1
-        rs1 = parse(Int, parts[3][2:end]) + 1
-        imm = parse(Int, parts[4])
-        core.registers[rd] = memory[core.registers[rs1] + imm, 1]
+        offset = parse(Int, parts[3])
+        rs1 = parse(Int, parts[4][2:end]) + 1
+        temp_row = ((core.registers[rs1] + offset +1) ÷ 4) + 1
+        temp_col = (core.registers[rs1] + offset) % 4
+        if temp_col == 0
+            temp_col = 4
+            temp_row -= 1
+        end
+        binary_string = int_to_binary_32bits(core.registers[rs1])
+        core.registers[rd] = load_half_word(binary_string, memory, temp_row, temp_col)
 
 
+    # sb rs2 offset(rs1)
+    # sb rs2 offset rs1
     elseif opcode == "sb"
-        rs1 = parse(Int, parts[2][2:end]) + 1
-        rs2 = parse(Int, parts[3][2:end]) + 1
-        imm = parse(Int, parts[4])
-        memory[core.registers[rs1] + imm, 1] = core.registers[rs2]
+        rs2 = parse(Int, parts[2][2:end]) + 1
+        offset = parse(Int, parts[3])
+        rs1 = parse(Int, parts[4][2:end]) + 1
+        temp_row = ((core.registers[rs1] + offset +1) ÷ 4) + 1
+        temp_col = (core.registers[rs1] + offset) % 4
+        if temp_col == 0
+            temp_col = 4
+            temp_row -= 1
+        end
+        binary_string = int_to_binary_32bits(core.registers[rs2])
+        store_one_byte(binary_string, memory, temp_row, temp_col)
 
+    # sh rs2 offset(rs1)
+    # sh rs2 offset rs1
     elseif opcode == "sh"
         rs2 = parse(Int, parts[2][2:end]) + 1
         offset = parse(Int, parts[3])
         rs1 = parse(Int, parts[4][2:end]) + 1
-        temp_row = core.registers[rs1] + offset
-        temp_col = temp_row % 4
+        temp_row = ((core.registers[rs1] + offset +1) ÷ 4) + 1
+        temp_col = (core.registers[rs1] + offset) % 4
         if temp_col == 0
             temp_col = 4
             temp_row -= 1
@@ -188,8 +246,8 @@ function execute(core::Core_Module.Core1, memory::Array{Int,2})
         rs2 = parse(Int, parts[2][2:end]) + 1
         offset = parse(Int, parts[3])
         rs1 = parse(Int, parts[4][2:end]) + 1
-        temp_row = core.registers[rs1] + offset
-        temp_col = temp_row % 4
+        temp_row = ((core.registers[rs1] + offset +1) ÷ 4) + 1
+        temp_col = (core.registers[rs1] + offset) % 4
         if temp_col == 0
             temp_col = 4
             temp_row -= 1

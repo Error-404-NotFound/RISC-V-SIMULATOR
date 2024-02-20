@@ -103,3 +103,51 @@ function store_half_word(binary_string::AbstractString, memory::Array{Int,2}, ro
         memory[row, col] = parse(UInt8, binary_string[25:32], base=2)
     end
 end
+
+function store_one_byte(binary_string::AbstractString, memory::Array{Int,2}, row::Int, col::Int)
+    if length(binary_string) != 32
+        println("Error: Binary string length is not 32 bits.")
+        return
+    end
+    memory[row, col] = parse(UInt8, binary_string[25:32], base=2)
+end
+
+function load_word(binary_string::AbstractString, memory::Array{Int,2}, row::Int, col::Int) 
+    if length(binary_string) != 32
+        println("Error: Binary string length is not 32 bits.")
+        return
+    end
+    if col == 1
+        return memory[row, col] + memory[row, col+1]*256 + memory[row, col+2]*65536 + memory[row, col+3]*16777216
+    elseif col == 2
+        return memory[row, col] + memory[row, col+1]*256 + memory[row, col+2]*65536 + memory[row+1, col-1]*16777216
+    elseif col == 3
+        return memory[row, col] + memory[row, col+1]*256 + memory[row+1, col-2]*65536 + memory[row+1, col-1]*16777216
+    elseif col == 4
+        return memory[row, col] + memory[row+1, col-3]*256 + memory[row+1, col-2]*65536 + memory[row+1, col-1]*16777216
+    end
+end
+
+function load_half_word(binary_string::AbstractString, memory::Array{Int,2}, row::Int, col::Int)
+    if length(binary_string) != 32
+        println("Error: Binary string length is not 32 bits.")
+        return
+    end
+    if col == 1
+        return memory[row, col] + memory[row, col+1]*256
+    elseif col == 2
+        return memory[row, col] + memory[row, col+1]*256
+    elseif col == 3
+        return memory[row, col] + memory[row, col+1]*256
+    elseif col == 4
+        return memory[row, col] + memory[row+1, col-3]*256
+    end
+end
+
+function load_one_byte(binary_string::AbstractString, memory::Array{Int,2}, row::Int, col::Int)
+    if length(binary_string) != 32
+        println("Error: Binary string length is not 32 bits.")
+        return
+    end
+    return memory[row, col]
+end
