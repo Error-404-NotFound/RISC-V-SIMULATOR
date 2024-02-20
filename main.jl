@@ -35,21 +35,31 @@ try
         println("Invalid Assembly File")
     
     else
-        flag1=false
+        text_first_flag=false
+        data_first_flag=false
         file = open(file_path, "r")
         for line in eachline(file)
             if !contains(line, "any") 
                 modified_line = sanitize(line)  
             end
             if(line==".text")
-                flag1=true
+                text_first_flag=true
+                data_first_flag=false
             end
-            if(flag1==true && line!=".text" && line!=".data" && line!=".end")
+            if(line==".data")
+                data_first_flag=true
+                text_first_flag=false
+            end
+            if(text_first_flag==true && line!=".text" && line!=".data" && line!=".end" )
                 push!(text_program_first, modified_line)  
+            end
+            if(data_first_flag==true && line!=".data" && line!=".text" && line!=".end" && text_first_flag==false)
+                push!(data_program_first, modified_line)  
             end
         end
         close(file)
         println(text_program_first)
+        println(data_program_first)
     end
 catch err
     println("An error occurred: $err")
