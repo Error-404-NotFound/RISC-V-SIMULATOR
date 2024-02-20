@@ -10,7 +10,6 @@ include("core.jl")
 include("utility.jl")
 using .Core_Module
 
-
 function execute(core::Core_Module.Core1, memory::Array{Int,2})
     parts = split(core.program[core.pc], " ")
     opcode = parts[1]
@@ -171,10 +170,17 @@ function execute(core::Core_Module.Core1, memory::Array{Int,2})
         memory[core.registers[rs1] + imm, 1] = core.registers[rs2]
 
     elseif opcode == "sh"
-        rs1 = parse(Int, parts[2][2:end]) + 1
-        rs2 = parse(Int, parts[3][2:end]) + 1
-        imm = parse(Int, parts[4])
-        memory[core.registers[rs1] + imm, 1] = core.registers[rs2]
+        rs2 = parse(Int, parts[2][2:end]) + 1
+        offset = parse(Int, parts[3])
+        rs1 = parse(Int, parts[4][2:end]) + 1
+        temp_row = core.registers[rs1] + offset
+        temp_col = temp_row % 4
+        if temp_col == 0
+            temp_col = 4
+            temp_row -= 1
+        end
+        binary_string = int_to_binary_32bits(core.registers[rs2])
+        store_half_word(binary_string, memory, temp_row, temp_col)
 
     # sw rs2 offset(rs1)
     # sw rs2 offset rs1
@@ -182,15 +188,15 @@ function execute(core::Core_Module.Core1, memory::Array{Int,2})
         rs2 = parse(Int, parts[2][2:end]) + 1
         offset = parse(Int, parts[3])
         rs1 = parse(Int, parts[4][2:end]) + 1
-        temp_row = ((core.registers[rs1] + offset + 1) ÷ 4) + 1
-        temp_col = (core.registers[rs1] + offset + 1) % 4
+        temp_row = core.registers[rs1] + offset
+        temp_col = temp_row % 4
         if temp_col == 0
             temp_col = 4
             temp_row -= 1
         end
         binary_string = int_to_binary_32bits(core.registers[rs2])
-        
-    
+        store_word(binary_string, memory, temp_row, temp_col)
+
 
     elseif opcode == "beq"
         rs1 = parse(Int, parts[2][2:end]) + 1

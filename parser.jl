@@ -1,4 +1,4 @@
-function check_assembly_structure(assembly::String)
+function check_assembly_structure(assembly::String)::Bool
     lines = split(assembly, '\n')
     
     text_section_present = false
@@ -20,17 +20,18 @@ function check_assembly_structure(assembly::String)
     end
     
     if text_section_present && data_section_present
-        println("Assembly structure is well-structured.")
+        return true
     elseif text_section_present
-        println("Error: .data section is missing.")
+        return false
     elseif data_section_present
-        println("Error: .text section is missing.")
+        return false
     else
-        println("Error: Both .text and .data sections are missing.")
+        return false
     end
+    return true
 end
 
-function check_assembly_content(assembly::String)
+function check_assembly_content(assembly::String)::Bool
     lines = split(assembly, '\n')
     
     text_section_contents = Set{String}()
@@ -57,30 +58,39 @@ function check_assembly_content(assembly::String)
         end
     end
     
-    if isempty(text_section_contents)
-        println("Error: No relevant instructions found in .text section.")
-    else
-        println("Relevant instructions found in .text section.")
-    end
+    # if isempty(text_section_contents)
+    #     println("Error: No relevant instructions found in .text section.")
+    # else
+    #     println("Relevant instructions found in .text section.")
+    # end
     
-    if isempty(data_section_contents)
-        println("Error: No relevant data entries found in .data section.")
-    else
-        println("Relevant data entries found in .data section.")
-    end
+    # if isempty(data_section_contents)
+    #     println("Error: No relevant data entries found in .data section.")
+    # else
+    #     println("Relevant data entries found in .data section.")
+    # end
+    return true
 end
 
 # Example assembly code
-assembly_code = """
-.text
-    add x1, x2, x3
-    jal x1, 0x100
-.data
-    .word 0x12345678
-"""
+# assembly_code = """
+# .data
+#     .word 0x12345678
+# .text
+#     add x1, x2, x3
+#     jal x1, 0x100
+# """
 
-check_assembly_structure(assembly_code)
-check_assembly_content(assembly_code)
+# if check_assembly_structure(assembly_code)
+#     println("Assembly code has correct structure.")
+# else
+#     println("Assembly code has incorrect structure.")
+# end
+# if check_assembly_content(assembly_code)
+#     println("Assembly code has correct content.")
+# else
+#     println("Assembly code has incorrect content.")
+# end
 
 
 # function remove_commas(input_string::AbstractString)::AbstractString

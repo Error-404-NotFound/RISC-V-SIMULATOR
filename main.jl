@@ -25,12 +25,11 @@ function main()
     sim = processor_Init()
     sim.cores[1].program = program
     run(sim)
+    # println(sim.memory[1,2])
+    show_memory(sim)
     for i in 1:length(sim.cores)
         println(sim.cores[i].registers)
     end
-    print(sim.memory[2,2])
-    # println(sim.memory[1,2])
-    # show_memory(sim)
 end
 
 main()

@@ -1,3 +1,3 @@
-li x1 5
-li x2 10
-sw x1 0(x1)
+li x1 1
+li x2 134567
+sh x2 0(x1)
