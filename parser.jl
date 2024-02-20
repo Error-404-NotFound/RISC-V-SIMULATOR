@@ -1,14 +1,4 @@
-function remove_commas(input_string::AbstractString)::AbstractString
-    return replace(input_string, "," => " ")
-end
-
-function remove_comments(input_string::AbstractString)::AbstractString
-    return replace(input_string, r"#.*" => "")
-end
-
-function add_spaces(input_string::AbstractString)::AbstractString
-    return replace(input_string, r"(\w)([x\d])" => s"\1 \2")
-end
+include("utility.jl")
 
 function parse_instruction(input_string::AbstractString)::Vector{String}
     function parse_assembly_sections(assembly_code::AbstractString)::Dict{String, AbstractString}

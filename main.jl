@@ -1,5 +1,6 @@
 include("sim.jl")
 include("parser.jl")
+include("utility.jl")
 
 file_path = "/home/aniket/Desktop/Project/RISC-V-SIMULATOR/test.asm"
 program = []
@@ -8,6 +9,9 @@ try
     for line in eachline(file)
         if !contains(line, "any")
             modified_line = replace(line, r"\b\d+\b" => x -> string(parse(Int, x)))
+            modified_line = remove_parentheses(modified_line)
+            modified_line = remove_comments(modified_line)
+            modified_line = remove_commas(modified_line)
             push!(program, modified_line)            
         end
     end
@@ -24,8 +28,9 @@ function main()
     for i in 1:length(sim.cores)
         println(sim.cores[i].registers)
     end
+    print(sim.memory[2,2])
     # println(sim.memory[1,2])
-    show_memory(sim)
+    # show_memory(sim)
 end
 
 main()

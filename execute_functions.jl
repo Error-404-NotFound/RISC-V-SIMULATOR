@@ -7,6 +7,7 @@
 # The main function creates a processor and runs the simulation
 
 include("core.jl")
+include("utility.jl")
 using .Core_Module
 
 
@@ -175,11 +176,20 @@ function execute(core::Core_Module.Core1, memory::Array{Int,2})
         imm = parse(Int, parts[4])
         memory[core.registers[rs1] + imm, 1] = core.registers[rs2]
 
+    # sw rs2 offset(rs1)
+    # sw rs2 offset rs1
     elseif opcode == "sw"
-        rs1 = parse(Int, parts[2][2:end]) + 1
-        rs2 = parse(Int, parts[3][2:end]) + 1
-        imm = parse(Int, parts[4])
-        memory[core.registers[rs1] + imm, 1] = core.registers[rs2]
+        rs2 = parse(Int, parts[2][2:end]) + 1
+        offset = parse(Int, parts[3])
+        rs1 = parse(Int, parts[4][2:end]) + 1
+        temp_row = ((core.registers[rs1] + offset + 1) ÷ 4) + 1
+        temp_col = (core.registers[rs1] + offset + 1) % 4
+        if temp_col == 0
+            temp_col = 4
+            temp_row -= 1
+        end
+        binary_string = int_to_binary_32bits(core.registers[rs2])
+        
     
 
     elseif opcode == "beq"
