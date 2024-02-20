@@ -1,127 +1,74 @@
-# Any["array: .word 10 20 30", "str: .string \"Hello\"", ""]
+function parse_data_section(data_section)
+    labels = []
+    chunks = []
 
-include("utility.jl")
-
-
-function extract_literals(assembler::Vector{String})
-    literals = Dict{String, Vector{Int}}()
-
-    for line in assembler
-        parts = split(line, ':')
-        if length(parts) == 2
-            variable_name = strip(parts[1])
-            data_values = strip(parts[2])
-
-            if occursin(".word", variable_name)
-                values = parse.(Int, split(data_values))
-                literals[variable_name] = values
-            elseif occursin(".string", variable_name)
-                # Extract string content between double quotes
-                string_content = match(r"\"(.*)\"", data_values).captures[1]
-                # Convert each character to its ASCII value and store in memory
-                values = [Int(c) for c in string_content]
-                literals[variable_name] = values
-            end
+    # Split the data section by semicolon to separate labels
+    sections = split(data_section, '\n')  # Change ';' to '\n' to split by lines
+    for section in sections
+        section = strip(section)
+        if isempty(section) || startswith(section, '#')
+            continue
+        end
+        # Split each section by whitespaces
+        parts = split(section)
+        
+        # If there's a label, store it separately
+        label = parts[1]
+        if endswith(label, ':')
+            push!(labels, chop(label, tail=1))
+            parts = parts[2:end]
+        end
+        
+        # Store the remaining parts as chunks
+        for part in parts
+            push!(chunks, part)
         end
     end
-    return literals
+
+    return labels, chunks
 end
 
+function extract_data(chunks)
+    labels = []
+    values = []
 
+    i = 1
+    while i <= length(chunks)
+        if chunks[i] == ".word"
+            if i+1 <= length(chunks)
+                # No need to parse variable name, directly parse the value
+                value = parse(Int, chunks[i+1])  # Convert the value to an integer
+                push!(values, value)
+                i += 2
+            else
+                error("Invalid usage of .word directive: $(chunks[i])")
+            end
+        elseif chunks[i] == ".string"
+            # No need to parse variable name, directly join the string value
+            value = join(chunks[i+1:end])
+            push!(values, value)
+            i = length(chunks) + 1  # exit loop after processing .string directive
+        elseif endswith(chunks[i], ':')  # Check if it's a label
+            # If it's a label, store it
+            push!(labels, chop(chunks[i], tail=1))
+            i += 1
+        else
+            error("Unsupported directive: $(chunks[i])")
+        end
+    end
 
+    return labels, values
+end
 
+# Example usage
+data_section = """
+array: .word 1
+string_array: .string "Hello, world!"
+"""
 
+labels, chunks = parse_data_section(data_section)
+println("Labels:", labels)
+println("Chunks:", chunks)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# function parse_and_store_memory(assembly::Vector{String}, memory::Array{Int,2})
-#     current_row = 1
-
-#     for line in assembly
-#         parts = split(line, ':')
-#         if length(parts) == 2
-#             variable_name = strip(parts[1])
-#             data_values = strip(parts[2])
-
-#             if occursin(".word", variable_name)
-#                 values = parse.(Int, split(data_values))
-#                 if current_row <= size(memory, 1)
-#                     memory[current_row, 1:length(values)] .= values
-#                     current_row += 1
-#                 else
-#                     println("Error: Insufficient memory rows for .word directive.")
-#                 end
-#             elseif occursin(".string", variable_name)
-#                 # Extract string content between double quotes
-#                 string_content = match(r"\"(.*)\"", data_values).captures[1]
-#                 # Convert each character to its ASCII value and store in memory
-#                 values = [Int(c) for c in string_content]
-
-#                 if current_row <= size(memory, 1)
-#                     memory[current_row, 1:length(values)] .= values
-#                     current_row += 1
-#                 else
-#                     println("Error: Insufficient memory rows for .string directive.")
-#                 end
-#             end
-#         end
-#     end
-# end
-
-# # Example usage:
-# assembly_code = ["array: .word 10 20 30", "str: .string \"Hello\"", ""]
-# memory_array = zeros(Int, 1024, 4)
-# parse_and_store_memory(assembly_code, memory_array)
-
-# println(memory_array)
-
-
-
-
-
-# function parse_and_store_memory(assembly::Vector{String})
-#     memory = Dict{String, Vector{Int}}()
-
-#     for line in assembly
-#         parts = split(line, ':')
-#         if length(parts) == 2
-#             variable_name = strip(parts[1])
-#             data_values = strip(parts[2])
-
-#             if occursin(".word", variable_name)
-#                 values = parse.(Int, split(data_values))
-#                 memory[variable_name] = values
-#             elseif occursin(".string", variable_name)
-#                 # Extract string content between double quotes
-#                 string_content = match(r"\"(.*)\"", data_values).captures[1]
-#                 # Convert each character to its ASCII value and store in memory
-#                 values = [Int(c) for c in string_content]
-#                 memory[variable_name] = values
-#             end
-#         end
-#     end
-
-#     return memory
-# end
-
-# # Example usage:
-# assembly_code = ["array: .word 10 20 30", "str: .string \"Hello\"", ""]
-# memory_contents = parse_and_store_memory(assembly_code)
-
-# println(memory_contents)
+labels, values = extract_data(chunks)
+println("Values:", values)
