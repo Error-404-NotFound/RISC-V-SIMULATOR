@@ -30,8 +30,8 @@ function execute(core::Core_Module.Core1, memory::Array{Int,2})
     elseif opcode == "sll"
         rd = parse(Int, parts[2][2:end]) + 1
         rs1 = parse(Int, parts[3][2:end]) + 1
-        shift_bits = parse(Int, parts[4])
-        core.registers[rd] = core.registers[rs1] << shift_bits
+        shamt = parse(Int, parts[4])
+        core.registers[rd] = core.registers[rs1] << shamt
     
     elseif opcode == "slt"
         rd = parse(Int, parts[2][2:end]) + 1
@@ -54,14 +54,14 @@ function execute(core::Core_Module.Core1, memory::Array{Int,2})
     elseif opcode == "srl"
         rd = parse(Int, parts[2][2:end]) + 1
         rs1 = parse(Int, parts[3][2:end]) + 1
-        shift_bits = parse(Int, parts[4])
-        core.registers[rd] = core.registers[rs1] >>> shift_bits
+        shamt = parse(Int, parts[4])
+        core.registers[rd] = core.registers[rs1] >>> shamt
 
     elseif opcode == "sra"
         rd = parse(Int, parts[2][2:end]) + 1
         rs1 = parse(Int, parts[3][2:end]) + 1
-        shift_bits = parse(Int, parts[4])
-        core.registers[rd] = core.registers[rs1] >> shift_bits
+        shamt = parse(Int, parts[4])
+        core.registers[rd] = core.registers[rs1] >> shamt
 
     elseif opcode == "or"
         rd = parse(Int, parts[2][2:end]) + 1
@@ -117,20 +117,20 @@ function execute(core::Core_Module.Core1, memory::Array{Int,2})
     elseif opcode == "slli"
         rd = parse(Int, parts[2][2:end]) + 1
         rs1 = parse(Int, parts[3][2:end]) + 1
-        shift_bits = parse(Int, parts[4])
-        core.registers[rd] = core.registers[rs1] << shift_bits
+        shamt = parse(Int, parts[4])
+        core.registers[rd] = core.registers[rs1] << shamt
 
     elseif opcode == "srli"
         rd = parse(Int, parts[2][2:end]) + 1
         rs1 = parse(Int, parts[3][2:end]) + 1
-        shift_bits = parse(Int, parts[4])
-        core.registers[rd] = core.registers[rs1] >>> shift_bits
+        shamt = parse(Int, parts[4])
+        core.registers[rd] = core.registers[rs1] >>> shamt
 
     elseif opcode == "srai"
         rd = parse(Int, parts[2][2:end]) + 1
         rs1 = parse(Int, parts[3][2:end]) + 1
-        shift_bits = parse(Int, parts[4])
-        core.registers[rd] = core.registers[rs1] >> shift_bits
+        shamt = parse(Int, parts[4])
+        core.registers[rd] = core.registers[rs1] >> shamt
 
     
     # lb rd offset(rs1)
