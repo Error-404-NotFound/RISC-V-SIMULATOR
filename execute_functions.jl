@@ -176,7 +176,6 @@ function execute(core::Core_Module.Core1, memory::Array{Int,2})
             temp_row -= 1
         end
         binary_string = int_to_binary_32bits(core.registers[rs1])
-        println(binary_string)
         core.registers[rd] = load_word(binary_string, memory, temp_row, temp_col)
         
     # lbu rd offset(rs1)
