@@ -52,6 +52,8 @@ function run(processor::Processor)
     end
 end
 
+
+
 function show_memory(processor::Processor)
     row_show = 10
     println("Hex Table Processor Memory:")

@@ -71,7 +71,92 @@ function check_assembly_content(assembly::String)::Bool
     end
 end
 
+function convert_iostream_to_string(io::IO)
+    seekstart(io)  
+    str = read(io, String)
+    return str
+end
 
+function parse_assembly_code(file_path::String)
+    text_program = []
+    data_program = []
+    
+    
+    try
+        flag = true
+        file = open(file_path, "r")
+        str  = convert_iostream_to_string(file)
+        if !check_assembly_structure(str) || !check_assembly_content(str)
+            flag = false
+        end
+        close(file)
+    
+        if (flag==false)
+            println("Invalid Assembly File")
+        
+        else
+            text_flag=false
+            data_flag=false
+            file = open(file_path, "r")
+            for line in eachline(file)
+                if !contains(line, "any") 
+                    modified_line = sanitize(line)  
+                end
+                if(line==".text")
+                    text_flag=true
+                    data_flag=false
+                end
+                if(line==".data")
+                    data_flag=true
+                    text_flag=false
+                end
+                if(text_flag==true && line!=".text" && line!=".data" && line!=".end" )
+                    push!(text_program, modified_line)  
+                end
+                if(data_flag==true && line!=".data" && line!=".text" && line!=".end" && text_flag==false)
+                    push!(data_program, modified_line)  
+                end
+            end
+            close(file)
+            println(data_program)
+            println(text_program)
+        end
+    catch err
+        println("An error occurred: $err")
+    end
+
+    return text_program, data_program
+end
+
+function parse_data_section(data_section::AbstractString)
+    labels = []
+    chunks = []
+
+    # Split the data section by semicolon to separate labels
+    sections = split(data_section, '\n')  # Change ';' to '\n' to split by lines
+    for section in sections
+        section = strip(section)
+        if isempty(section) || startswith(section, '#')
+            continue
+        end
+        # Split each section by whitespaces
+        parts = split(section)
+        
+        # If there's a label, store it separately
+        label = parts[1]
+        if endswith(label, ':')
+            push!(labels, chop(label, tail=1))
+            parts = parts[2:end]
+        end
+        
+        # Store the remaining parts as chunks
+        for part in parts
+            push!(chunks, part)
+        end
+    end
+
+    return labels, chunks
+end
 
 
 # function check_assembly_content(assembly::String)::Bool
