@@ -3,12 +3,12 @@ include("parser.jl")
 include("memory.jl")
 include("utility.jl")
 
-file_path = "./test.asm"
+file_path = "./test1.asm"
 
 text_program_first, data_program_first = parse_assembly_code(file_path)
-labels, chunks = parse_data_section(join(data_program_first, "\n"))
-println(labels)
-println(chunks)
+variable_name, data_seg_chunck = parse_data_section(join(data_program_first, "\n"))
+println(variable_name)
+println(data_seg_chunck)
 
 function main()
     sim = processor_Init()

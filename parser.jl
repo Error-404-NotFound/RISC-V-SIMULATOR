@@ -129,10 +129,10 @@ function parse_assembly_code(file_path::String)
 end
 
 function parse_data_section(data_section::AbstractString)
-    labels = []
-    chunks = []
+    variable_name = []
+    data_seg_chunck = []
 
-    # Split the data section by semicolon to separate labels
+    # Split the data section by semicolon to separate variable_name
     sections = split(data_section, '\n')  # Change ';' to '\n' to split by lines
     for section in sections
         section = strip(section)
@@ -145,17 +145,17 @@ function parse_data_section(data_section::AbstractString)
         # If there's a label, store it separately
         label = parts[1]
         if endswith(label, ':')
-            push!(labels, chop(label, tail=1))
+            push!(variable_name, chop(label, tail=1))
             parts = parts[2:end]
         end
         
-        # Store the remaining parts as chunks
+        # Store the remaining parts as data_seg_chunck
         for part in parts
-            push!(chunks, part)
+            push!(data_seg_chunck, part)
         end
     end
 
-    return labels, chunks
+    return variable_name, data_seg_chunck
 end
 
 
