@@ -10,6 +10,8 @@ include("core.jl")
 include("utility.jl")
 using .Core_Module
 
+
+
 function execute(core::Core_Module.Core1, memory::Array{Int,2})
     parts = split(core.program[core.pc], " ")
     opcode = parts[1]

@@ -13,17 +13,6 @@ function convert_iostream_to_string(io::IO)
     return str
 end
 
-function sanitize(raw_line::AbstractString)::AbstractString
-    modified_line = replace(raw_line, r"\b\d+\b" => x -> string(parse(Int, x)))
-    modified_line = remove_parentheses(modified_line)
-    modified_line = remove_comments(modified_line)
-    modified_line = remove_commas(modified_line)
-    modified_line = remove_quotes_from_string(modified_line)
-    modified_line = convert_to_proper_newline(modified_line)
-    modified_line = strip(modified_line)
-    return modified_line
-end
-
 try
     flag = true
     file = open(file_path, "r")

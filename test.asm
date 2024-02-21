@@ -1,5 +1,5 @@
 .data
-    array: .word 10,20,30
+    array: .word 10
     str: .string "Hello"
 
 .text

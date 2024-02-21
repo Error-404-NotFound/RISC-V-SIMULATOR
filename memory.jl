@@ -1,4 +1,6 @@
-function parse_data_section(data_section)
+include("utility.jl")
+
+function parse_data_section(data_section::AbstractString)
     labels = []
     chunks = []
 
@@ -28,7 +30,7 @@ function parse_data_section(data_section)
     return labels, chunks
 end
 
-function extract_data(chunks)
+function extract_data(chunks::Vector{Any})
     labels = []
     values = []
 
@@ -46,6 +48,7 @@ function extract_data(chunks)
         elseif chunks[i] == ".string"
             # No need to parse variable name, directly join the string value
             value = join(chunks[i+1:end])
+            value = sanitize(value)
             push!(values, value)
             i = length(chunks) + 1  # exit loop after processing .string directive
         elseif endswith(chunks[i], ':')  # Check if it's a label
