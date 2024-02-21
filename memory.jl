@@ -30,6 +30,39 @@ function parse_data_section(data_section::AbstractString)
     return labels, chunks
 end
 
+# function extract_data(chunks::Vector{Any})
+#     labels = []
+#     values = []
+
+#     i = 1
+#     while i <= length(chunks)
+#         if chunks[i] == ".word"
+#             if i+1 <= length(chunks)
+#                 # No need to parse variable name, directly parse the value
+#                 value = parse(Int, chunks[i+1])  # Convert the value to an integer
+#                 push!(values, value)
+#                 i += 2
+#             else
+#                 error("Invalid usage of .word directive: $(chunks[i])")
+#             end
+#         elseif chunks[i] == ".string"
+#             # No need to parse variable name, directly join the string value
+#             value = join(chunks[i+1:end])
+#             value = sanitize(value)
+#             push!(values, value)
+#             i = length(chunks) + 1  # exit loop after processing .string directive
+#         elseif endswith(chunks[i], ':')  # Check if it's a label
+#             # If it's a label, store it
+#             push!(labels, chop(chunks[i], tail=1))
+#             i += 1
+#         else
+#             error("Unsupported directive: $(chunks[i])")
+#         end
+#     end
+
+#     return labels, values
+# end
+
 function extract_data(chunks::Vector{Any})
     labels = []
     values = []
@@ -38,10 +71,18 @@ function extract_data(chunks::Vector{Any})
     while i <= length(chunks)
         if chunks[i] == ".word"
             if i+1 <= length(chunks)
-                # No need to parse variable name, directly parse the value
-                value = parse(Int, chunks[i+1])  # Convert the value to an integer
-                push!(values, value)
-                i += 2
+                # No need to parse variable name, directly parse the values
+                array_values = []
+                for j in i+1:length(chunks)
+                    if chunks[j] == ".word" || chunks[j] == ".string"
+                        break
+                    else
+                        value = parse(Int, chunks[j])  # Convert the value to an integer
+                        push!(array_values, value)
+                    end
+                end
+                push!(values, array_values)
+                i += length(array_values) + 1
             else
                 error("Invalid usage of .word directive: $(chunks[i])")
             end
@@ -63,9 +104,12 @@ function extract_data(chunks::Vector{Any})
     return labels, values
 end
 
+
+
+
 # Example usage
 data_section = """
-array: .word 1
+array: .word 1 2
 string_array: .string "Hello, world!"
 """
 
