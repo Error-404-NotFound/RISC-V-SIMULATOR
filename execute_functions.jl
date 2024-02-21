@@ -6,13 +6,11 @@
 # The main function is the entry point of the program
 # The main function creates a processor and runs the simulation
 
-include("core.jl")
 include("utility.jl")
-using .Core_Module
+include("core.jl")
+# using .Core_Module
 
-
-
-function execute(core::Core_Module.Core1, memory::Array{Int,2})
+function execute(core::Core1, memory::Array{Int,2})
     parts = split(core.program[core.pc], " ")
     opcode = parts[1]
 

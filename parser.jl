@@ -1,3 +1,5 @@
+include("utility.jl")
+
 function check_assembly_structure(assembly::String)::Bool
     lines = split(assembly, '\n')
     
@@ -118,13 +120,15 @@ function parse_assembly_code(file_path::String)
                 end
             end
             close(file)
-            println(data_program)
-            println(text_program)
+            
         end
     catch err
         println("An error occurred: $err")
     end
-
+    text_program = remove_empty_strings(text_program)
+    data_program = remove_empty_strings(data_program)
+    println(data_program)
+    println(text_program)
     return text_program, data_program
 end
 

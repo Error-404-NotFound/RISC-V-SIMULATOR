@@ -22,12 +22,21 @@ function convert_to_proper_newline(input_string::AbstractString)::AbstractString
     return replace(input_string, r"\\n" => "\n")
 end
 
+function remove_colon(input_string::AbstractString)::AbstractString
+    return replace(input_string, r":" => "")
+end
+
+function remove_empty_strings(strings::Vector{Any})
+    return filter(x -> !isempty(x), strings)
+end
+
 function sanitize(raw_line::AbstractString)::AbstractString
     modified_line = replace(raw_line, r"\b\d+\b" => x -> string(parse(Int, x)))
     modified_line = remove_parentheses(modified_line)
     modified_line = remove_comments(modified_line)
     modified_line = remove_commas(modified_line)
     modified_line = remove_quotes_from_string(modified_line)
+    modified_line = remove_colon(modified_line)
     modified_line = convert_to_proper_newline(modified_line)
     modified_line = strip(modified_line)
     return modified_line
@@ -57,6 +66,18 @@ function uint_to_binary(x::UInt)::AbstractString
     return string(x, base=2)
 end
 
+function int_to_binary_5bits(x::Int)::AbstractString
+    return lpad(string(x, base=2), 5, "0")
+end
+
+function int_to_binary_12bits(x::Int)::AbstractString
+    return lpad(string(x, base=2), 12, "0")
+end
+
+function int_to_binary_20bits(x::Int)::AbstractString
+    return lpad(string(x, base=2), 20, "0")
+end
+
 function int_to_binary_32bits(x::Int)::AbstractString
     return lpad(string(x, base=2), 32, "0")
 end
@@ -73,6 +94,10 @@ end
 #use without 0x to  convert to uint
 function hex_to_uint(x::AbstractString)::UInt
     return parse(UInt, x, base=16)
+end
+
+function hex_to_32binary(x::AbstractString)::AbstractString
+    return lpad(string(hex_to_int(x), base=2), 32, "0")
 end
 
 function store_word(binary_string::AbstractString, memory::Array{Int,2}, row::Int, col::Int)
