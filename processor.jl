@@ -66,5 +66,8 @@ function show_memory(processor::Processor)
             print("0x$(int_to_hex(processor.memory[rows, cols]))\t")
         end
         println()
+        if rows == size(processor.memory, 1) ÷ 2 + 1
+            println()
+        end
     end 
 end
