@@ -323,7 +323,7 @@ function execute(core::Core1, memory::Array{Int,2})
         core.pc = findfirst(x -> x == label, core.program)
 
     elseif opcode == "jr"
-        rs1 = parse(Int, parts[2][2:end])
+        rs1 = parse(Int, parts[2][2:end]) + 1
         core.pc = core.registers[rs1]
 
     elseif opcode == "jalr"
