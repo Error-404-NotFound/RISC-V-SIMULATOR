@@ -79,11 +79,9 @@ function execute(core::Core1, memory::Array{Int,2})
     
 
     elseif opcode == "addi"
-        println("addiPC",core.pc)
         rd = parse(Int, parts[2][2:end]) + 1
         rs1 = parse(Int, parts[3][2:end]) + 1
         imm = parse(Int, parts[4])
-        println(core.registers[rs1] + imm)
         core.registers[rd] = core.registers[rs1] + imm
 
     elseif opcode == "slti"
@@ -258,7 +256,6 @@ function execute(core::Core1, memory::Array{Int,2})
 
 
     elseif opcode == "beq"
-        println("beqPC",core.pc)
         rs1 = parse(Int, parts[2][2:end]) + 1
         rs2 = parse(Int, parts[3][2:end]) + 1
         label = parts[4]
@@ -337,10 +334,8 @@ function execute(core::Core1, memory::Array{Int,2})
         core.pc = core.registers[rs1] + imm
 
     elseif opcode == "j"
-        println("PC",core.pc)
         label = parts[2]
         core.pc = findfirst(x -> x == label, core.program)
-        println(core.registers[2])
 
     
     elseif opcode == "mv"
@@ -349,7 +344,6 @@ function execute(core::Core1, memory::Array{Int,2})
         core.registers[rd] = core.registers[rs1]
 
     elseif opcode == "li"
-        println("PC",core.pc)
         rd = parse(Int, parts[2][2:end]) + 1
         imm = parse(Int, parts[3])
         core.registers[rd] = imm

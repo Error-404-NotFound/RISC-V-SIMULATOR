@@ -4,5 +4,5 @@
 
 .text
     li x1 5
-    li x2 134567
+    li x2 13
     add x3 x1 x2

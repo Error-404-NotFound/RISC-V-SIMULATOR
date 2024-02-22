@@ -19,7 +19,7 @@ function main()
     initial_address=encode_text_and_store_in_memory(sim.cores[1], sim.memory, initial_address)
 
     if initial_address < size(sim.memory, 1)/4
-        initial_address = size(sim.memory, 1) ÷ 4
+        initial_address = size(sim.memory, 1) ÷ 4 + 1
     end
     text_program_second, data_program_second = parse_assembly_code(file_path2)
     variable_name, data_seg_chunk = parse_data_section(join(data_program_second, "\n"))
@@ -29,8 +29,8 @@ function main()
     initial_address=encode_text_and_store_in_memory(sim.cores[2], sim.memory, initial_address)
 
     show_memory(sim)
-    # sim.cores[1].pc=1
-    # run(sim)
+    sim.cores[1].pc=1
+    run(sim)
     for i in 1:length(sim.cores)
         println(sim.cores[i].registers)
     end
