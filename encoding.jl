@@ -222,6 +222,7 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
             imm = parts[4]
             temp = findfirst(x -> x == imm, core.program)
             offset = (temp - core.pc) * 4
+            offset = offset >> 1
             bin_temp = int_to_binary_12bits(offset)
             binary_string = string(bin_temp[1]) * bin_temp[3:8] * int_to_binary_5bits(rs2) * int_to_binary_5bits(rs1) * "000" * bin_temp[9:12] * string(bin_temp[2]) * B_type_instrucion
             store_word(binary_string, memory, memory_address, 1)
@@ -232,6 +233,7 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
             imm = parts[4]
             temp = findfirst(x -> x == imm, core.program)
             offset = (temp - core.pc) * 4
+            offset = offset >> 1
             bin_temp = int_to_binary_12bits(offset)
             binary_string = string(bin_temp[1]) * bin_temp[3:8] * int_to_binary_5bits(rs2) * int_to_binary_5bits(rs1) * "001" * bin_temp[9:12] * string(bin_temp[2]) * B_type_instrucion
             store_word(binary_string, memory, memory_address, 1)
@@ -242,6 +244,7 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
             imm = parts[4]
             temp = findfirst(x -> x == imm, core.program)
             offset = (temp - core.pc) * 4
+            offset = offset >> 1
             bin_temp = int_to_binary_12bits(offset)
             binary_string = string(bin_temp[1]) * bin_temp[3:8] * int_to_binary_5bits(rs2) * int_to_binary_5bits(rs1) * "100" * bin_temp[9:12] * string(bin_temp[2]) * B_type_instrucion
             store_word(binary_string, memory, memory_address, 1)
@@ -252,6 +255,7 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
             imm = parts[4]
             temp = findfirst(x -> x == imm, core.program)
             offset = (temp - core.pc) * 4
+            offset = offset >> 1
             bin_temp = int_to_binary_12bits(offset)
             binary_string = string(bin_temp[1]) * bin_temp[3:8] * int_to_binary_5bits(rs2) * int_to_binary_5bits(rs1) * "101" * bin_temp[9:12] * string(bin_temp[2]) * B_type_instrucion
             store_word(binary_string, memory, memory_address, 1)
@@ -262,6 +266,7 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
             imm = parts[4]
             temp = findfirst(x -> x == imm, core.program)
             offset = (temp - core.pc) * 4
+            offset = offset >> 1
             bin_temp = int_to_binary_12bits(offset)
             binary_string = string(bin_temp[1]) * bin_temp[3:8] * int_to_binary_5bits(rs2) * int_to_binary_5bits(rs1) * "110" * bin_temp[9:12] * string(bin_temp[2]) * B_type_instrucion
             store_word(binary_string, memory, memory_address, 1)
@@ -272,6 +277,7 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
             imm = parts[4]
             temp = findfirst(x -> x == imm, core.program)
             offset = (temp - core.pc) * 4
+            offset = offset >> 1
             bin_temp = int_to_binary_12bits(offset)
             binary_string = string(bin_temp[1]) * bin_temp[3:8] * int_to_binary_5bits(rs2) * int_to_binary_5bits(rs1) * "111" * bin_temp[9:12] * string(bin_temp[2]) * B_type_instrucion
             store_word(binary_string, memory, memory_address, 1)

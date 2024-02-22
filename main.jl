@@ -18,7 +18,7 @@ function main()
     sim.cores[1].program = text_program_first
     initial_address=encode_text_and_store_in_memory(sim.cores[1], sim.memory, initial_address)
 
-    if initial_address < size(sim.memory, 1)/4
+    if initial_address < (size(sim.memory, 1) ÷ 4)
         initial_address = size(sim.memory, 1) ÷ 4 + 1
     end
     text_program_second, data_program_second = parse_assembly_code(file_path2)
