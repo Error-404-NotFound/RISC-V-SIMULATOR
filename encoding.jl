@@ -293,5 +293,7 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
         
         core.pc += 1
     end
+    initial_address = core.pc
+    
     return initial_address
 end

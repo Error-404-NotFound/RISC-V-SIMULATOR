@@ -3,7 +3,7 @@
     str: .string "Hello, World"
 .text
     li x1 1    
-    li x2 5       
+    li x2 3      
     li x3 0
     j loop 
     li x5 200

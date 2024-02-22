@@ -7,20 +7,30 @@ include("encoding.jl")
 file_path1 = "./test1.asm"
 file_path2 = "./test2.asm"
 
-initial_address = 1
 
 function main()
+    initial_address = 1
     sim = processor_Init()
     text_program_first, data_program_first = parse_assembly_code(file_path1)
     variable_name, data_seg_chunk = parse_data_section(join(data_program_first, "\n"))
     println(variable_name)
     println(data_seg_chunk)
     sim.cores[1].program = text_program_first
-    # encode_text_and_store_in_memory(sim.cores[1], sim.memory, initial_address)
+    initial_address=encode_text_and_store_in_memory(sim.cores[1], sim.memory, initial_address)
 
-    # show_memory(sim)
+    if initial_address < size(sim.memory, 1)/4
+        initial_address = size(sim.memory, 1) ÷ 4
+    end
+    text_program_second, data_program_second = parse_assembly_code(file_path2)
+    variable_name, data_seg_chunk = parse_data_section(join(data_program_second, "\n"))
+    println(variable_name)
+    println(data_seg_chunk)
+    sim.cores[2].program = text_program_second
+    initial_address=encode_text_and_store_in_memory(sim.cores[2], sim.memory, initial_address)
+
+    show_memory(sim)
     # sim.cores[1].pc=1
-    run(sim)
+    # run(sim)
     for i in 1:length(sim.cores)
         println(sim.cores[i].registers)
     end
