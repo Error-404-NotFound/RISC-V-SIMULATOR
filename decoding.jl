@@ -10,6 +10,7 @@ opcode_code_type = Dict(
     "0110111" => "U_type_instrucion",
     "1101111" => "J_type_instrucion",
     "0000011" => "Load_instrucion",
+    "1100111" => "JALR_instrucion"
 )
 
 func3_S = Dict(
@@ -98,7 +99,17 @@ function decode_and_execute(core::Core1, memory::Array{Int,2})
         rs1 = binary_to_int(binary_string[13:17]) + 1
         imm = binary_to_int(binary_string[1:12])
         execute_Load_type(core, func3, rd, rs1, imm)
+
+
+    elseif opcode == "1100111"
+        rd = binary_to_int(binary_string[21:25]) + 1
+        func3 = binary_string[18:20]
+        rs1 = binary_to_int(binary_string[13:17]) + 1
+        imm = binary_to_int(binary_string[1:12])
+        execute_JALR_type(core, func3, rd, rs1, imm)
     end
+
+   
 
     core.pc += 1
 end

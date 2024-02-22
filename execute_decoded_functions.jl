@@ -47,6 +47,10 @@ func3_J = Dict(
     "000" => "jal"
 )
 
+func3_JALR = Dict(
+    "000" => "jalr"
+)
+
 
 function execute_R_type(core::Core1, func3::AbstractString, func7::AbstractString, rd::Int, rs1::Int, rs2::Int)
     if func3_R[func3] == "add"
@@ -159,4 +163,9 @@ end
 function execute_J_type(core::Core1, rd::Int, imm::Int)
     core.registers[rd] = core.pc + 4
     core.pc += imm
+end
+
+function execute_JALR_type(core::Core1, rd::Int, rs1::Int, imm::Int)
+    core.registers[rd] = core.pc + 4
+    core.pc = core.registers[rs1] + imm
 end
