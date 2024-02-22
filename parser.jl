@@ -168,7 +168,8 @@ function parse_data_section(data_section::AbstractString)
         end
         
         #Match .word with spaces or with commmas in between numbers for any number of spaces or commas and store the as different chunks even if there are spaces between the numbers
-        match_result = match(r"\.word\s*((\d+\s*,?\s*)+)", section)
+        # match_result = match(r"\.word\s*((\d+\s*,?\s*)+)", section)
+        match_result = match(r"\.word\s*((-?\d+\s*,?\s*)+)", section)
         if match_result !== nothing
             word_content = match_result.captures[1]
             word_content = replace(word_content, r"," => " ")
