@@ -101,8 +101,10 @@ function parse_assembly_code(file_path::String)
             data_flag=false
             file = open(file_path, "r")
             for line in eachline(file)
-                if !contains(line, "any") 
+                if !contains(line, "any") && text_flag==true
                     modified_line = sanitize(line)  
+                else
+                    modified_line = line
                 end
                 if(line==".text")
                     text_flag=true
@@ -132,35 +134,200 @@ function parse_assembly_code(file_path::String)
     return text_program, data_program
 end
 
-function parse_data_section(data_section::AbstractString)
-    variable_name = []
-    data_seg_chunck = []
 
-    # Split the data section by semicolon to separate variable_name
+function parse_data_section(data_section::AbstractString)
+    labels = []
+    chunks = []
+
+    # Split the data section by semicolon to separate labels
     sections = split(data_section, '\n')  # Change ';' to '\n' to split by lines
     for section in sections
         section = strip(section)
         if isempty(section) || startswith(section, '#')
             continue
         end
+
         # Split each section by whitespaces
         parts = split(section)
-        
+       
+
         # If there's a label, store it separately
         label = parts[1]
         if endswith(label, ':')
-            push!(variable_name, chop(label, tail=1))
-            parts = parts[2:end]
+            push!(labels, chop(label, tail=1))
+            push!(chunks, chop(label, tail=1))
+        end
+        # Match .string with or without space and extract string content
+        match_result = match(r"\.string\s*(\"[^\"]*\")", section)
+        if match_result !== nothing
+            string_content = match_result.captures[1]
+            push!(chunks, ".string")
+            string_content = replace(string_content, r"\"" => "")
+            push!(chunks, string_content)
+            continue
         end
         
-        # Store the remaining parts as data_seg_chunck
-        for part in parts
-            push!(data_seg_chunck, part)
+        #Match .word with spaces or with commmas in between numbers for any number of spaces or commas and store the as different chunks even if there are spaces between the numbers
+        match_result = match(r"\.word\s*((\d+\s*,?\s*)+)", section)
+        if match_result !== nothing
+            word_content = match_result.captures[1]
+            word_content = replace(word_content, r"," => " ")
+            word_content = split(word_content)
+            push!(chunks, ".word")
+            for word in word_content
+                push!(chunks, word)
+            end
+            continue
         end
-    end
 
-    return variable_name, data_seg_chunck
+        
+
+    end
+    return labels, chunks
 end
+
+
+
+
+
+
+# function parse_data_section(data_section::AbstractString)
+#     labels = []
+#     chunks = []
+
+#     # Split the data section by semicolon to separate labels
+#     sections = split(data_section, '\n')  # Change ';' to '\n' to split by lines
+#     for section in sections
+#         section = strip(section)
+#         if isempty(section) || startswith(section, '#')
+#             continue
+#         end
+
+        
+        
+
+#         # Split each section by whitespaces
+#         parts = split(section)
+       
+
+#         # If there's a label, store it separately
+#         label = parts[1]
+#         if endswith(label, ':')
+#             push!(labels, chop(label, tail=1))
+#             parts = parts[2:end]
+#         end
+#         # Match .string with or without space and extract string content
+#         match_result = match(r"\.string\s*(\"[^\"]*\")", section)
+#         if match_result !== nothing
+#             string_content = match_result.captures[1]
+#             push!(chunks, ".string")
+#             string_content = replace(string_content, r"\"" => "")
+#             push!(chunks, string_content)
+#             continue
+#         end
+        
+#         #Match .word with spaces or with commmas in between numbers for any number of spaces or commas and store the as different chunks
+#         match_result = match(r"\.word\s*(\d+\s*,?\s*)+", section)
+#         if match_result !== nothing
+#             word_content = match_result.match
+#             word_content = replace(word_content, r"\.word" => "")
+#             word_content = replace(word_content, r"\s" => "")
+#             word_content = replace(word_content, r"," => " ")
+#             word_content = split(word_content)
+#             push!(chunks, ".word")
+#             for word in word_content
+#                 push!(chunks, word)
+#             end
+#             continue
+#         end
+#     end
+#     return labels, chunks
+# end
+
+
+
+
+
+
+# function parse_data_section(data_section::AbstractString)
+#     variable_name = []
+#     data_seg_chunk = []
+
+#     # Split the data section by semicolon to separate variable_name
+#     sections = split(data_section, '\n')  # Change ';' to '\n' to split by lines
+#     for section in sections
+#         section = strip(section)
+#         if isempty(section) || startswith(section, '#')
+#             continue
+#         end
+
+#         # Split each section by whitespaces
+#         parts = split(section)
+
+#         # If there's a label, store it separately
+#         label = parts[1]
+#         if endswith(label, ':')
+#             push!(variable_name, chop(label, tail=1))
+#             parts = parts[2:end]
+#         end
+
+#         # Match .string with or without space and extract string content
+#         match_result = match(r"\.string\s*(\"[^\"]*\")", section)
+#         if match_result !== nothing
+#             string_content = match_result.captures[1]
+#             push!(data_seg_chunk, ".string")
+#             string_content = replace(string_content, r"\"" => "")
+#             push!(data_seg_chunk, string_content)
+#             continue
+#         end
+
+#         # Process each part
+#         for part in parts
+#             if part != ".data"
+#                 # For other cases, add to data_seg_chunk directly
+#                 push!(data_seg_chunk, part)
+#             end
+#         end
+#     end
+#     return variable_name, data_seg_chunk
+# end
+
+
+
+
+
+
+
+
+# function parse_data_section(data_section::AbstractString)
+#     variable_name = []
+#     data_seg_chunck = []
+
+#     # Split the data section by semicolon to separate variable_name
+#     sections = split(data_section, '\n')  # Change ';' to '\n' to split by lines
+#     for section in sections
+#         section = strip(section)
+#         if isempty(section) || startswith(section, '#')
+#             continue
+#         end
+#         # Split each section by whitespaces
+#         parts = split(section)
+        
+#         # If there's a label, store it separately
+#         label = parts[1]
+#         if endswith(label, ':')
+#             push!(variable_name, chop(label, tail=1))
+#             parts = parts[2:end]
+#         end
+        
+#         # Store the remaining parts as data_seg_chunck
+#         for part in parts
+#             push!(data_seg_chunck, part)
+#         end
+#     end
+
+#     return variable_name, data_seg_chunck
+# end
 
 
 # function check_assembly_content(assembly::String)::Bool

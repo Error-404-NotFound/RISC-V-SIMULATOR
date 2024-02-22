@@ -1,0 +1,6 @@
+  # Extract string content between double quotes
+                string_content = match(r"\"(.*)\"", part).captures[1]
+                # Convert each character to its ASCII value and store in memory
+                values = [Int(c) for c in string_content]
+                push!(chunks, values)
+                

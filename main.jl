@@ -12,11 +12,13 @@ initial_address = 1
 function main()
     sim = processor_Init()
     text_program_first, data_program_first = parse_assembly_code(file_path1)
-    variable_name, data_seg_chunck = parse_data_section(join(data_program_first, "\n"))
+    variable_name, data_seg_chunk = parse_data_section(join(data_program_first, "\n"))
+    println(variable_name)
+    println(data_seg_chunk)
     sim.cores[1].program = text_program_first
-    encode_text_and_store_in_memory(sim.cores[1], sim.memory, initial_address)
+    # encode_text_and_store_in_memory(sim.cores[1], sim.memory, initial_address)
 
-    show_memory(sim)
+    # show_memory(sim)
     # sim.cores[1].pc=1
     run(sim)
     for i in 1:length(sim.cores)

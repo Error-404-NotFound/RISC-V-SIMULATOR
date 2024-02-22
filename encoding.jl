@@ -287,7 +287,6 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
             store_word(binary_string, memory, memory_address, 1)
 
         else 
-            println("Error: Instruction not recognized.")
             memory_address -= 1
         end
         memory_address += 1
