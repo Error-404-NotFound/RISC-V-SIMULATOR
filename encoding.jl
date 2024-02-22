@@ -159,29 +159,29 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
 
         elseif opcode == "lb"
             rd = parse(Int, parts[2][2:end])
-            rs1 = parse(Int, parts[3][2:end])
-            imm = parse(Int, parts[4])
+            imm = parse(Int, parts[3])
+            rs1 = parse(Int, parts[4][2:end])
             binary_string = int_to_binary_12bits(imm) * int_to_binary_5bits(rs1) * "000" * int_to_binary_5bits(rd) * Load_instrucion
             store_word(binary_string, memory, memory_address, 1)
             
         elseif opcode == "lh"
             rd = parse(Int, parts[2][2:end])
-            rs1 = parse(Int, parts[3][2:end])
-            imm = parse(Int, parts[4])
+            imm = parse(Int, parts[3])
+            rs1 = parse(Int, parts[4][2:end])
             binary_string = int_to_binary_12bits(imm) * int_to_binary_5bits(rs1) * "001" * int_to_binary_5bits(rd) * Load_instrucion
             store_word(binary_string, memory, memory_address, 1)
 
         elseif opcode == "lw"
             rd = parse(Int, parts[2][2:end])
-            rs1 = parse(Int, parts[3][2:end])
-            imm = parse(Int, parts[4])
+            imm = parse(Int, parts[3])
+            rs1 = parse(Int, parts[4][2:end])
             binary_string = int_to_binary_12bits(imm) * int_to_binary_5bits(rs1) * "010" * int_to_binary_5bits(rd) * Load_instrucion
             store_word(binary_string, memory, memory_address, 1)
 
         elseif opcode == "lbu"
             rd = parse(Int, parts[2][2:end])
-            rs1 = parse(Int, parts[3][2:end])
-            imm = parse(Int, parts[4])
+            imm = parse(Int, parts[3])
+            rs1 = parse(Int, parts[4][2:end])
             binary_string = int_to_binary_12bits(imm) * int_to_binary_5bits(rs1) * "100" * int_to_binary_5bits(rd) * Load_instrucion
             store_word(binary_string, memory, memory_address, 1)
 
@@ -193,25 +193,25 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
             store_word(binary_string, memory, memory_address, 1)
 
         elseif opcode == "sb"
-            rs1 = parse(Int, parts[2][2:end])
-            rs2 = parse(Int, parts[3][2:end])
-            imm = parse(Int, parts[4])
+            rs2 = parse(Int, parts[2][2:end])
+            imm = parse(Int, parts[3])
+            rs1 = parse(Int, parts[4][2:end])
             bin_temp = int_to_binary_12bits(imm)
             binary_string = bin_temp[1:7] * int_to_binary_5bits(rs2) * int_to_binary_5bits(rs1) * "000" * bin_temp[8:12] * S_type_instrucion
             store_word(binary_string, memory, memory_address, 1)
 
         elseif opcode == "sh"
-            rs1 = parse(Int, parts[2][2:end])
-            rs2 = parse(Int, parts[3][2:end])
-            imm = parse(Int, parts[4])
+            rs2 = parse(Int, parts[2][2:end])
+            imm = parse(Int, parts[3])
+            rs1 = parse(Int, parts[4][2:end])
             bin_temp = int_to_binary_12bits(imm)
             binary_string = bin_temp[1:7] * int_to_binary_5bits(rs2) * int_to_binary_5bits(rs1) * "001" * bin_temp[8:12] * S_type_instrucion
             store_word(binary_string, memory, memory_address, 1)
 
         elseif opcode == "sw"
-            rs1 = parse(Int, parts[2][2:end])
-            rs2 = parse(Int, parts[3][2:end])
-            imm = parse(Int, parts[4])
+            rs2 = parse(Int, parts[2][2:end])
+            imm = parse(Int, parts[3])
+            rs1 = parse(Int, parts[4][2:end])
             bin_temp = int_to_binary_12bits(imm)
             binary_string = bin_temp[1:7] * int_to_binary_5bits(rs2) * int_to_binary_5bits(rs1) * "010" * bin_temp[8:12] * S_type_instrucion
             store_word(binary_string, memory, memory_address, 1)
