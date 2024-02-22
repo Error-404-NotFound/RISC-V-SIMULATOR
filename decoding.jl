@@ -13,29 +13,6 @@ opcode_code_type = Dict(
     "1100111" => "JALR_instrucion"
 )
 
-func3_S = Dict(
-    "000" => "sb",
-    "001" => "sh",
-    "010" => "sw"
-)
-
-func3_SB = Dict(
-    "000" => "beq",
-    "001" => "bne",
-    "100" => "blt",
-    "101" => "bge",
-    "110" => "bltu",
-    "111" => "bgeu"
-)
-
-func3_U = Dict(
-    "000" => "lui",
-    "001" => "auipc"
-)
-
-func3_J = Dict(
-    "000" => "jal"
-)
 
 function decode_and_execute(core::Core1, memory::Array{Int,2})
     binary_string = ""
@@ -66,11 +43,10 @@ function decode_and_execute(core::Core1, memory::Array{Int,2})
         func3 = binary_string[18:20]
         rs1 = binary_to_int(binary_string[13:17]) + 1
         rs2 = binary_to_int(binary_string[8:12]) + 1
-        imm = binary_to_int(binary_string[1:7]*binary_string[20:25])
+        imm = binary_to_int(binary_string[21:25]*binary_string[1:7])
         execute_S_type(core, func3, rs1, rs2, imm)
 
     elseif opcode_code_type[opcode] == "SB_type_instrucion" 
-        println("SB_type_instrucion")
         func3 = binary_string[18:20]
         println(func3)
         rs1 = binary_to_int(binary_string[13:17]) + 1
@@ -80,17 +56,16 @@ function decode_and_execute(core::Core1, memory::Array{Int,2})
         imm = binary_to_int(binary_string[25]*binary_string[2:7]*binary_string[21:24]*"0")
         imm = imm ÷ 4
         execute_SB_type(core, func3, rs1, rs2, imm)
-    
+
     elseif opcode_code_type[opcode] == "U_type_instrucion"
         rd = binary_to_int(binary_string[21:25]) + 1
-        func3 = binary_string[18:20]
-        imm = binary_to_int(binary_string[1:20]*"0"*"0")
-        execute_U_type(core, func3, rd, imm)
+        imm = binary_to_int(binary_string[1:20])
+        execute_U_type(core, rd, imm)
     
-
     elseif opcode_code_type[opcode] == "J_type_instrucion"
         rd = binary_to_int(binary_string[21:25]) + 1
-        imm = binary_to_int(binary_string[1]*binary_string[12:19]*binary_string[20]*binary_string[21:30]*"0")
+        imm = binary_to_int(binary_string[1]*binary_string[13:20]*binary_string[12]*binary_string[2:11]*"0")
+        imm = imm ÷ 4
         execute_J_type(core, rd, imm)
 
     elseif opcode_code_type[opcode] == "Load_instrucion"
@@ -101,7 +76,7 @@ function decode_and_execute(core::Core1, memory::Array{Int,2})
         execute_Load_type(core, func3, rd, rs1, imm)
 
 
-    elseif opcode == "1100111"
+    elseif opcode_code_type[opcode] == "JALR_instrucion"
         rd = binary_to_int(binary_string[21:25]) + 1
         func3 = binary_string[18:20]
         rs1 = binary_to_int(binary_string[13:17]) + 1

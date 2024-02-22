@@ -47,6 +47,14 @@ func3_J = Dict(
     "000" => "jal"
 )
 
+func3_load = Dict(
+    "000" => "lb",
+    "001" => "lh",
+    "010" => "lw",
+    "100" => "lbu",
+    "101" => "lhu"
+)
+
 func3_JALR = Dict(
     "000" => "jalr"
 )
@@ -111,16 +119,12 @@ end
 
 
 function execute_S_type(core::Core1, func3::AbstractString, rs1::Int, rs2::Int, imm::Int)
-    if func3 == "sb"
-        core.registers[rs2] = core.registers[rs1] + imm
-    elseif func3 == "001"
-        core.registers[rs2] = core.registers[rs1] | imm
-    elseif func3 == "sh"
-        core.registers[rs2] = core.registers[rs1] & imm
-    elseif func3 == "sw"
-        imm = int_to_binary_12bits(imm)
-        imm = binary_to_int(imm[8:12])
-        core.registers[rs2] = core.registers[rs1] + imm
+    if func3_S[func3] == "sb"
+        core.registers[rs1] = core.registers[rs2] + imm
+    elseif func3_S[func3] == "sh"
+        core.registers[rs1] = core.registers[rs2] + imm
+    elseif func3_S[func3] == "sw"
+        core.registers[rs1] = core.registers[rs2] + imm
     end
 end
 
@@ -165,7 +169,22 @@ function execute_J_type(core::Core1, rd::Int, imm::Int)
     core.pc += imm
 end
 
+function execute_load_type(core::Core1, func3::AbstractString, rd::Int, rs1::Int, imm::Int)
+    if func3_load[func3] == "lb"
+        core.registers[rd] = core.registers[rs1] + imm
+    elseif func3_load[func3] == "lh"
+        core.registers[rd] = core.registers[rs1] + imm
+    elseif func3_load[func3] == "lw"
+        core.registers[rd] = core.registers[rs1] + imm
+    elseif func3_load[func3] == "lbu"
+        core.registers[rd] = core.registers[rs1] + imm
+    elseif func3_load[func3] == "lhu"
+        core.registers[rd] = core.registers[rs1] + imm
+    end
+end
+
 function execute_JALR_type(core::Core1, rd::Int, rs1::Int, imm::Int)
     core.registers[rd] = core.pc + 4
     core.pc = core.registers[rs1] + imm
 end
+
