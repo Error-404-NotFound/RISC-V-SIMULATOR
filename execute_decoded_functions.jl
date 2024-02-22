@@ -22,6 +22,7 @@ func3_I = Dict(
     "111" => "andi"
 )
 
+
 func3_S = Dict(
     "000" => "sb",
     "001" => "sh",
@@ -106,13 +107,13 @@ end
 
 
 function execute_S_type(core::Core1, func3::AbstractString, rs1::Int, rs2::Int, imm::Int)
-    if func3 == "000"
+    if func3 == "sb"
         core.registers[rs2] = core.registers[rs1] + imm
     elseif func3 == "001"
         core.registers[rs2] = core.registers[rs1] | imm
-    elseif func3 == "010"
+    elseif func3 == "sh"
         core.registers[rs2] = core.registers[rs1] & imm
-    elseif func3 == "100"
+    elseif func3 == "sw"
         imm = int_to_binary_12bits(imm)
         imm = binary_to_int(imm[8:12])
         core.registers[rs2] = core.registers[rs1] + imm
@@ -122,27 +123,35 @@ end
 function execute_SB_type(core::Core1, func3::AbstractString, rs1::Int, rs2::Int, imm::Int)
     if func3_SB[func3] == "beq"
         if core.registers[rs1] == core.registers[rs2]
+            core.pc += imm+1
+        end
+    elseif func3 == "bne"
+        if core.registers[rs1] != core.registers[rs2]
+            core.pc += imm+1
+        end
+    elseif func3 == "blt"
+        if core.registers[rs1] < core.registers[rs2]
+            core.pc += imm+1
+        end
+    elseif func3 == "bge"
+        if core.registers[rs1] >= core.registers[rs2]
+            core.pc += imm+1
+        end
+    elseif func3 == "bltu"
+        if core.registers[rs1] < core.registers[rs2]
+            core.pc += imm+1
+        end
+    elseif func3 == "bgeu"
+        if core.registers[rs1] >= core.registers[rs2]
             core.pc += imm
         end
-    # elseif func3 == "001"
-    #     if core.registers[rs1] != core.registers[rs2]
-    #         core.pc += imm
-    #     end
-    # elseif func3 == "100"
-    #     if core.registers[rs1] < core.registers[rs2]
-    #         core.pc += imm
-    #     end
-    # elseif func3 == "101"
-    #     if core.registers[rs1] >= core.registers[rs2]
-    #         core.pc += imm
-    #     end
     end
 end
 
 function execute_U_type(core::Core1, func3::AbstractString, rd::Int, imm::Int)
-    if func3 == "000"
+    if func3 == "lui"
         core.registers[rd] = imm << 12
-    elseif func3 == "001"
+    elseif func3 == "auipc"
         core.registers[rd] = core.registers[rd] + imm << 12
     end
 end

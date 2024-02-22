@@ -37,6 +37,7 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
         U_type_instrucion = "0110111"
         J_type_instrucion = "1101111"
         Load_instrucion = "0000011"
+        JALR_instrucion = "1100111"
 
         opcode = parts[1]
 
@@ -345,7 +346,14 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
             rd = parse(Int, parts[2][2:end])
             rs1 = parse(Int, parts[3][2:end])
             imm = parse(Int, parts[4])
-            binary_string = int_to_binary_12bits(imm) * int_to_binary_5bits(rs1) * "000" * int_to_binary_5bits(rd) * I_type_instrucion
+            binary_string = int_to_binary_12bits(imm) * int_to_binary_5bits(rs1) * "000" * int_to_binary_5bits(rd) * JALR_type_instrucion
+            store_word(binary_string, memory, memory_address, 1)
+
+        elseif opcode== "jr"
+            rd = parse(Int, parts[2][2:end])
+            rs1 = parse(Int, parts[3][2:end])
+            imm = parse(Int, parts[4])
+            binary_string = int_to_binary_12bits(imm) * int_to_binary_5bits(rs1) * "000" * "00000" * JALR_type_instrucion
             store_word(binary_string, memory, memory_address, 1)
         else 
             # println("$opcode")
