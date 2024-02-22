@@ -288,10 +288,26 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
             imm = parts[3]
             temp = findfirst(x -> x == imm, core.program)
             offset = (temp - core.pc) * 4
-            bin_temp = int_to_binary_20bits(offset)
+            offset = offset >> 1
+            bin_temp =int_to_binary_20bits(offset)
             binary_string = string(bin_temp[1]) * bin_temp[11:20] * string(bin_temp[10]) * bin_temp[2:9] * int_to_binary_5bits(rd) * J_type_instrucion
             store_word(binary_string, memory, memory_address, 1)
 
+        elseif opcode == "j"
+            imm = parts[2]
+            temp = findfirst(x -> x == imm, core.program)
+            offset = (temp - core.pc) * 4
+            offset = offset >> 1
+            bin_temp = int_to_binary_20bits(offset)
+            binary_string = string(bin_temp[1]) * bin_temp[11:20] * string(bin_temp[10]) * bin_temp[2:9] * "00000" * J_type_instrucion
+            store_word(binary_string, memory, memory_address, 1)
+
+        elseif opcode == "jalr"
+            rd = parse(Int, parts[2][2:end])
+            rs1 = parse(Int, parts[3][2:end])
+            imm = parse(Int, parts[4])
+            binary_string = int_to_binary_12bits(imm) * int_to_binary_5bits(rs1) * "000" * int_to_binary_5bits(rd) * I_type_instrucion
+            store_word(binary_string, memory, memory_address, 1)
         else 
             memory_address -= 1
         end
