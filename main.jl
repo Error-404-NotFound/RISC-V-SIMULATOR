@@ -15,7 +15,7 @@ function main()
     data_initial_address = size(sim.memory, 1) ÷ 2 + 1
     text_program_first, data_program_first = parse_assembly_code(file_path1)
     variable_name, data_seg_chunk = parse_data_section(join(data_program_first, "\n"))
-    sim.cores[1].program = text_program_first
+    sim.cores[1].program = text_program_first 
     initial_address=encode_text_and_store_in_memory(sim.cores[1], sim.memory, initial_address)
     variable_address, data_initial_address=store_data_in_memory(sim.cores[1], sim.memory, data_seg_chunk, variable_name, data_initial_address)
 

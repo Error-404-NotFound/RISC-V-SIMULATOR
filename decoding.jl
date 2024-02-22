@@ -60,6 +60,44 @@ function decode_and_execute(core::Core1, memory::Array{Int,2})
         rs1 = binary_to_int(binary_string[13:17]) + 1
         imm = binary_to_int(binary_string[1:12])
         execute_I_type(core, func3, rd, rs1, imm)
+
+    elseif opcode_code_type[opcode] == "S_type_instrucion"
+        func3 = binary_string[18:20]
+        rs1 = binary_to_int(binary_string[13:17]) + 1
+        rs2 = binary_to_int(binary_string[8:12]) + 1
+        imm = binary_to_int(binary_string[1:7]*binary_string[20:25])
+        execute_S_type(core, func3, rs1, rs2, imm)
+
+    elseif opcode_code_type[opcode] == "SB_type_instrucion" 
+        println("SB_type_instrucion")
+        func3 = binary_string[18:20]
+        println(func3)
+        rs1 = binary_to_int(binary_string[13:17]) + 1
+        println(rs1)
+        rs2 = binary_to_int(binary_string[8:12]) + 1
+        println(rs2)
+        imm = binary_to_int(binary_string[1]*binary_string[24]*binary_string[20:24]*binary_string[13:19]*"0")
+        println(imm)
+        execute_SB_type(core, func3, rs1, rs2, imm)
+    
+    elseif opcode_code_type[opcode] == "U_type_instrucion"
+        rd = binary_to_int(binary_string[21:25]) + 1
+        func3 = binary_string[18:20]
+        imm = binary_to_int(binary_string[1:20]*"0"*"0")
+        execute_U_type(core, func3, rd, imm)
+    
+
+    elseif opcode_code_type[opcode] == "J_type_instrucion"
+        rd = binary_to_int(binary_string[21:25]) + 1
+        imm = binary_to_int(binary_string[1]*binary_string[12:19]*binary_string[20]*binary_string[21:30]*"0")
+        execute_J_type(core, rd, imm)
+
+    elseif opcode_code_type[opcode] == "Load_instrucion"
+        rd = binary_to_int(binary_string[21:25]) + 1
+        func3 = binary_string[18:20]
+        rs1 = binary_to_int(binary_string[13:17]) + 1
+        imm = binary_to_int(binary_string[1:12])
+        execute_Load_type(core, func3, rd, rs1, imm)
     end
 
     core.pc += 1
