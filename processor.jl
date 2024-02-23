@@ -1,8 +1,9 @@
 # Description: A simple 2-core processor simulator
 
-include("execute_functions.jl")
+include("execute_instructions.jl")
 include("core.jl")
 include("utility.jl")
+include("decoding.jl")
 
 
 function core_Init()
@@ -40,20 +41,28 @@ end
 #     return labels
 # end
 
-function run(processor::Processor)
-    # labels = extract_labels(processor.cores[1].program)
-    while processor.clock < 1000
-        for i in 1:2
-            if processor.clock < 1000 && processor.cores[i].pc <= length(processor.cores[i].program)
-                execute(processor.cores[i], processor.memory)
-                if processor.cores[i].pc > length(processor.cores[i].program)
-                    println("Core $i has finished executing.")
-                    break
-                end
-            end
+# function run(processor::Processor)
+#     # labels = extract_labels(processor.cores[1].program)
+#     while processor.clock < 1000
+#         for i in 1:2
+#             if processor.clock < 1000 && processor.cores[i].pc <= length(processor.cores[i].program)
+#                 execute(processor.cores[i], processor.memory)
+#                 if processor.cores[i].pc > length(processor.cores[i].program)
+#                     println("Core $i has finished executing.")
+#                     break
+#                 end
+#             end
+#         end
+#         processor.clock += 1
+#     end
+# end
+
+function run(processor::Processor) 
+    for i in 1:2
+        while processor.cores[i].pc <= length(processor.cores[i].program)
+            decode_and_execute(processor.cores[i], processor.memory)
         end
-        processor.clock += 1
-    end
+    end    
 end
 
 

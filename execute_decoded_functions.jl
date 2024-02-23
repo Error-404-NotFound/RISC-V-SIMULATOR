@@ -1,0 +1,80 @@
+include("utility.jl")
+
+func3_R = Dict(
+    "000" => "add",
+    "001" => "sll",
+    "010" => "slt",
+    "011" => "sltu",
+    "100" => "xor",
+    "101" => "srl",
+    "110" => "or",
+    "111" => "and"
+)
+
+func3_I = Dict(
+    "000" => "addi",
+    "001" => "slli",
+    "010" => "slti",
+    "011" => "sltiu",
+    "100" => "xori",
+    "101" => "srli",
+    "110" => "ori",
+    "111" => "andi"
+)
+
+function execute_R_type(core::Core1, func3::AbstractString, func7::AbstractString, rd::Int, rs1::Int, rs2::Int)
+    if func3_R[func3] == "add"
+        if func7 == "0000000"
+            core.registers[rd] = core.registers[rs1] + core.registers[rs2]
+        elseif func7 == "0100000"
+            core.registers[rd] = core.registers[rs1] - core.registers[rs2]
+        end
+    elseif func3_R[func3] == "sll"
+        core.registers[rd] = core.registers[rs1] << core.registers[rs2]
+    elseif func3_R[func3] == "slt"
+        core.registers[rd] = core.registers[rs1] < core.registers[rs2]
+    elseif func3_R[func3] == "sltu"
+        core.registers[rd] = core.registers[rs1] < core.registers[rs2]
+    elseif func3_R[func3] == "xor"
+        core.registers[rd] = core.registers[rs1] ⊻ core.registers[rs2]
+    elseif func3_R[func3] == "srl"
+        if func7 == "0000000"
+            core.registers[rd] = core.registers[rs1] >>> core.registers[rs2]
+        elseif func7 == "0100000"
+            core.registers[rd] = core.registers[rs1] >> core.registers[rs2]
+        end
+    elseif func3_R[func3] == "or"
+        core.registers[rd] = core.registers[rs1] | core.registers[rs2]
+    elseif func3_R[func3] == "and"
+        core.registers[rd] = core.registers[rs1] & core.registers[rs2]
+    end
+end
+
+function execute_I_type(core::Core1, func3::AbstractString, rd::Int, rs1::Int, imm::Int)
+    if func3_I[func3] == "addi"
+        core.registers[rd] = core.registers[rs1] + imm
+    elseif func3_I[func3] == "slti"
+        core.registers[rd] = core.registers[rs1] < imm
+    elseif func3_I[func3] == "sltiu"
+        core.registers[rd] = core.registers[rs1] < imm
+    elseif func3_I[func3] == "xori"
+        core.registers[rd] = core.registers[rs1] ⊻ imm
+    elseif func3_I[func3] == "ori"
+        core.registers[rd] = core.registers[rs1] | imm
+    elseif func3_I[func3] == "andi"
+        core.registers[rd] = core.registers[rs1] & imm
+    elseif func3_I[func3] == "slli"
+        imm = int_to_binary_12bits(imm)
+        imm = binary_to_int(imm[8:12])
+        core.registers[rd] = core.registers[rs1] << imm
+    elseif func3_I[func3] == "srli"
+        imm = int_to_binary_12bits(imm)
+        if imm[2] == '0'    #logical shift
+            shamt = binary_to_int(imm[8:12])
+            core.registers[rd] = core.registers[rs1] >>> shamt
+        elseif imm[2] == "1"    #arithmetic shift
+            shamt = binary_to_int(imm[8:12])
+            core.registers[rd] = core.registers[rs1] >> shamt
+        end
+    end
+end

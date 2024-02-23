@@ -70,6 +70,10 @@ function int_to_binary_5bits(x::Int)::AbstractString
     return lpad(string(x, base=2), 5, "0")
 end
 
+function int_to_binary_8bits(x::Int)::AbstractString
+    return lpad(string(x, base=2), 8, "0")
+end
+
 function int_to_binary_12bits(x::Int)::AbstractString
     return lpad(string(x, base=2), 12, "0")
 end

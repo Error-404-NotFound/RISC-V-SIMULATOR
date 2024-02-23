@@ -11,7 +11,7 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
         R_type_instrucion = "0110011"
         I_type_instrucion = "0010011"
         S_type_instrucion = "0100011"
-        B_type_instrucion = "1100011"
+        SB_type_instrucion = "1100011"
         U_type_instrucion = "0110111"
         J_type_instrucion = "1101111"
         Load_instrucion = "0000011"
@@ -224,7 +224,7 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
             offset = (temp - core.pc) * 4
             offset = offset >> 1
             bin_temp = int_to_binary_12bits(offset)
-            binary_string = string(bin_temp[1]) * bin_temp[3:8] * int_to_binary_5bits(rs2) * int_to_binary_5bits(rs1) * "000" * bin_temp[9:12] * string(bin_temp[2]) * B_type_instrucion
+            binary_string = string(bin_temp[1]) * bin_temp[3:8] * int_to_binary_5bits(rs2) * int_to_binary_5bits(rs1) * "000" * bin_temp[9:12] * string(bin_temp[2]) * SB_type_instrucion
             store_word(binary_string, memory, memory_address, 1)
             
         elseif opcode == "bne"
@@ -235,7 +235,7 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
             offset = (temp - core.pc) * 4
             offset = offset >> 1
             bin_temp = int_to_binary_12bits(offset)
-            binary_string = string(bin_temp[1]) * bin_temp[3:8] * int_to_binary_5bits(rs2) * int_to_binary_5bits(rs1) * "001" * bin_temp[9:12] * string(bin_temp[2]) * B_type_instrucion
+            binary_string = string(bin_temp[1]) * bin_temp[3:8] * int_to_binary_5bits(rs2) * int_to_binary_5bits(rs1) * "001" * bin_temp[9:12] * string(bin_temp[2]) * SB_type_instrucion
             store_word(binary_string, memory, memory_address, 1)
 
         elseif opcode == "blt"
@@ -246,7 +246,7 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
             offset = (temp - core.pc) * 4
             offset = offset >> 1
             bin_temp = int_to_binary_12bits(offset)
-            binary_string = string(bin_temp[1]) * bin_temp[3:8] * int_to_binary_5bits(rs2) * int_to_binary_5bits(rs1) * "100" * bin_temp[9:12] * string(bin_temp[2]) * B_type_instrucion
+            binary_string = string(bin_temp[1]) * bin_temp[3:8] * int_to_binary_5bits(rs2) * int_to_binary_5bits(rs1) * "100" * bin_temp[9:12] * string(bin_temp[2]) * SB_type_instrucion
             store_word(binary_string, memory, memory_address, 1)
 
         elseif opcode == "bge"
@@ -257,7 +257,7 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
             offset = (temp - core.pc) * 4
             offset = offset >> 1
             bin_temp = int_to_binary_12bits(offset)
-            binary_string = string(bin_temp[1]) * bin_temp[3:8] * int_to_binary_5bits(rs2) * int_to_binary_5bits(rs1) * "101" * bin_temp[9:12] * string(bin_temp[2]) * B_type_instrucion
+            binary_string = string(bin_temp[1]) * bin_temp[3:8] * int_to_binary_5bits(rs2) * int_to_binary_5bits(rs1) * "101" * bin_temp[9:12] * string(bin_temp[2]) * SB_type_instrucion
             store_word(binary_string, memory, memory_address, 1)
 
         elseif opcode == "bltu"
@@ -268,7 +268,7 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
             offset = (temp - core.pc) * 4
             offset = offset >> 1
             bin_temp = int_to_binary_12bits(offset)
-            binary_string = string(bin_temp[1]) * bin_temp[3:8] * int_to_binary_5bits(rs2) * int_to_binary_5bits(rs1) * "110" * bin_temp[9:12] * string(bin_temp[2]) * B_type_instrucion
+            binary_string = string(bin_temp[1]) * bin_temp[3:8] * int_to_binary_5bits(rs2) * int_to_binary_5bits(rs1) * "110" * bin_temp[9:12] * string(bin_temp[2]) * SB_type_instrucion
             store_word(binary_string, memory, memory_address, 1)
 
         elseif opcode == "bgeu"
@@ -279,7 +279,7 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
             offset = (temp - core.pc) * 4
             offset = offset >> 1
             bin_temp = int_to_binary_12bits(offset)
-            binary_string = string(bin_temp[1]) * bin_temp[3:8] * int_to_binary_5bits(rs2) * int_to_binary_5bits(rs1) * "111" * bin_temp[9:12] * string(bin_temp[2]) * B_type_instrucion
+            binary_string = string(bin_temp[1]) * bin_temp[3:8] * int_to_binary_5bits(rs2) * int_to_binary_5bits(rs1) * "111" * bin_temp[9:12] * string(bin_temp[2]) * SB_type_instrucion
             store_word(binary_string, memory, memory_address, 1)
 
 

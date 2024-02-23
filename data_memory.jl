@@ -1,11 +1,11 @@
 include("core.jl")
 include("utility.jl")
 
-function store_data_in_memory(core::Core1, memory::Array{Int64,2}, data_seg_chunk::Vector{Any}, variable_name::Vector{Any}, initial_address::Int64)
+function store_data_in_memory(core::Core1, memory::Array{Int64,2}, data_seg_chunk::Vector{Any}, variable_name::Vector{Any}, data_initial_address::Int64)
     #dictionary to store the address of the variables
     variable_address = Dict{String, Int64}()
     temp_col = 1
-    temp_row = initial_address
+    temp_row = data_initial_address
     for i in 1:length(data_seg_chunk)
         if data_seg_chunk[i] == ".string"
             variable_value = data_seg_chunk[i-1]
@@ -55,6 +55,6 @@ function store_data_in_memory(core::Core1, memory::Array{Int64,2}, data_seg_chun
             end
         end
     end
-    initial_address = temp_row
-    return variable_address, initial_address
+    data_initial_address = temp_row
+    return variable_address, data_initial_address
 end
