@@ -19,7 +19,6 @@ function main()
     # initial_address=encode_text_and_store_in_memory(sim.cores[1], sim.memory, initial_address)
     variable_address, data_initial_address=store_data_in_memory(sim.cores[1], sim.memory, data_seg_chunk, variable_name, data_initial_address)
     println(variable_address)
-    println(data_initial_address)
 
     # if initial_address < (size(sim.memory, 1) ÷ 4)
     #     initial_address = size(sim.memory, 1) ÷ 4 + 1
@@ -31,7 +30,7 @@ function main()
     # sim.cores[2].program = text_program_second
     # initial_address=encode_text_and_store_in_memory(sim.cores[2], sim.memory, initial_address)
 
-    show_memory(sim)
+    # show_memory(sim)
     sim.cores[1].pc=1
     run(sim,variable_address)
     for i in 1:length(sim.cores)

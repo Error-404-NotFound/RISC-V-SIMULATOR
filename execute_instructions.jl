@@ -139,12 +139,11 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
         rd = parse(Int, parts[2][2:end]) + 1
         offset = parse(Int, parts[3])
         rs1 = parse(Int, parts[4][2:end]) + 1
-        temp_row = ((core.registers[rs1] + offset +1) ÷ 4) + 1
         temp_col = (core.registers[rs1] + offset) % 4
         if temp_col == 0
             temp_col = 4
-            temp_row -= 1
         end
+        temp_row = (core.registers[rs1] - temp_col + offset) ÷ 4 + 1
         binary_string = int_to_binary_32bits(core.registers[rs1])
         core.registers[rd] = load_one_byte(binary_string, memory, temp_row, temp_col)
 
@@ -154,12 +153,11 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
         rd = parse(Int, parts[2][2:end]) + 1
         offset = parse(Int, parts[3])
         rs1 = parse(Int, parts[4][2:end]) + 1
-        temp_row = ((core.registers[rs1] + offset +1) ÷ 4) + 1
         temp_col = (core.registers[rs1] + offset) % 4
         if temp_col == 0
             temp_col = 4
-            temp_row -= 1
         end
+        temp_row = (core.registers[rs1] - temp_col + offset) ÷ 4 + 1
         binary_string = int_to_binary_32bits(core.registers[rs1])
         core.registers[rd] = load_half_word(binary_string, memory, temp_row, temp_col)
 
@@ -169,12 +167,11 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
         rd = parse(Int, parts[2][2:end]) + 1
         offset = parse(Int, parts[3])
         rs1 = parse(Int, parts[4][2:end]) + 1
-        temp_row = ((core.registers[rs1] + offset +1) ÷ 4) + 1
         temp_col = (core.registers[rs1] + offset) % 4
         if temp_col == 0
             temp_col = 4
-            temp_row -= 1
         end
+        temp_row = (core.registers[rs1] - temp_col + offset) ÷ 4 + 1
         binary_string = int_to_binary_32bits(core.registers[rs1])
         core.registers[rd] = load_word(binary_string, memory, temp_row, temp_col)
         
@@ -184,12 +181,11 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
         rd = parse(Int, parts[2][2:end]) + 1
         offset = parse(Int, parts[3])
         rs1 = parse(Int, parts[4][2:end]) + 1
-        temp_row = ((core.registers[rs1] + offset +1) ÷ 4) + 1
         temp_col = (core.registers[rs1] + offset) % 4
         if temp_col == 0
             temp_col = 4
-            temp_row -= 1
         end
+        temp_row = (core.registers[rs1] - temp_col + offset) ÷ 4 + 1
         binary_string = int_to_binary_32bits(core.registers[rs1])
         core.registers[rd] = load_one_byte(binary_string, memory, temp_row, temp_col)
 
@@ -199,12 +195,11 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
         rd = parse(Int, parts[2][2:end]) + 1
         offset = parse(Int, parts[3])
         rs1 = parse(Int, parts[4][2:end]) + 1
-        temp_row = ((core.registers[rs1] + offset +1) ÷ 4) + 1
         temp_col = (core.registers[rs1] + offset) % 4
         if temp_col == 0
             temp_col = 4
-            temp_row -= 1
         end
+        temp_row = (core.registers[rs1] - temp_col + offset) ÷ 4 + 1
         binary_string = int_to_binary_32bits(core.registers[rs1])
         core.registers[rd] = load_half_word(binary_string, memory, temp_row, temp_col)
 
@@ -231,12 +226,11 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
         rs2 = parse(Int, parts[2][2:end]) + 1
         offset = parse(Int, parts[3])
         rs1 = parse(Int, parts[4][2:end]) + 1
-        temp_row = ((core.registers[rs1] + offset +1) ÷ 4) + 1
         temp_col = (core.registers[rs1] + offset) % 4
         if temp_col == 0
             temp_col = 4
-            temp_row -= 1
         end
+        temp_row = (core.registers[rs1] - temp_col + offset) ÷ 4 + 1
         binary_string = int_to_binary_32bits(core.registers[rs2])
         store_one_byte(binary_string, memory, temp_row, temp_col)
 
@@ -246,12 +240,11 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
         rs2 = parse(Int, parts[2][2:end]) + 1
         offset = parse(Int, parts[3])
         rs1 = parse(Int, parts[4][2:end]) + 1
-        temp_row = ((core.registers[rs1] + offset +1) ÷ 4) + 1
         temp_col = (core.registers[rs1] + offset) % 4
         if temp_col == 0
             temp_col = 4
-            temp_row -= 1
         end
+        temp_row = (core.registers[rs1] - temp_col + offset) ÷ 4 + 1
         binary_string = int_to_binary_32bits(core.registers[rs2])
         store_half_word(binary_string, memory, temp_row, temp_col)
 
@@ -261,12 +254,11 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
         rs2 = parse(Int, parts[2][2:end]) + 1
         offset = parse(Int, parts[3])
         rs1 = parse(Int, parts[4][2:end]) + 1
-        temp_row = ((core.registers[rs1] + offset +1) ÷ 4) + 1
         temp_col = (core.registers[rs1] + offset) % 4
         if temp_col == 0
             temp_col = 4
-            temp_row -= 1
         end
+        temp_row = (core.registers[rs1] - temp_col + offset) ÷ 4 + 1
         binary_string = int_to_binary_32bits(core.registers[rs2])
         store_word(binary_string, memory, temp_row, temp_col)
 
@@ -296,6 +288,16 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
         rs2 = parse(Int, parts[3][2:end]) + 1
         label = parts[4]
         if core.registers[rs1] < core.registers[rs2]
+            core.pc = findfirst(x -> x == label, core.program)
+        else
+            core.pc = core.pc
+        end
+
+    elseif opcode == "ble"
+        rs1 = parse(Int, parts[2][2:end]) + 1
+        rs2 = parse(Int, parts[3][2:end]) + 1
+        label = parts[4]
+        if core.registers[rs1] <= core.registers[rs2]
             core.pc = findfirst(x -> x == label, core.program)
         else
             core.pc = core.pc
@@ -363,6 +365,14 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
         rd = parse(Int, parts[2][2:end]) + 1
         imm = parse(Int, parts[3])
         core.registers[rd] = imm
+
+    elseif opcode == "ecall"
+        if core.registers[18] == 10
+            println("Program exited with code 0")
+            core.pc = length(core.program) + 1
+        else
+            println("Invalid ecall instruction.")
+        end
 
     end
     core.pc += 1

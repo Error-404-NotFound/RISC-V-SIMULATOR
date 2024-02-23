@@ -106,18 +106,18 @@ function parse_assembly_code(file_path::String)
                 else
                     modified_line = line
                 end
-                if(line==".text")
+                if occursin(r"\.text", line)
                     text_flag=true
                     data_flag=false
                 end
-                if(line==".data")
+                if occursin(r"\.data", line)
                     data_flag=true
                     text_flag=false
                 end
-                if(text_flag==true && line!=".text" && line!=".data" && line!=".end" )
+                if(text_flag==true && !occursin(r"\.text",line) && !occursin(r"\.data",line) && line!=".end" )
                     push!(text_program, modified_line)  
                 end
-                if(data_flag==true && line!=".data" && line!=".text" && line!=".end" && text_flag==false)
+                if(data_flag==true && !occursin(r"\.data",line) && !occursin(r"\.text",line) && line!=".end" && text_flag==false)
                     push!(data_program, modified_line)  
                 end
             end
