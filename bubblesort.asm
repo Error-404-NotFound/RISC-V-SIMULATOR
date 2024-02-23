@@ -1,12 +1,13 @@
 .data
-    array: .word 3 4 1 2 5
+    array: .word 3,4,1,2,5
+    size: .word 5
 
 .text
     la x10 array
-    li x11 5
+    lw x11 size
     jal x1 bubbleSort 
     la x10 array
-    li x11 5
+    lw x11 size
     li x17 10
     ecall
 

@@ -342,14 +342,14 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
 
     elseif opcode == "jr"
         rs1 = parse(Int, parts[2][2:end]) + 1
-        core.pc = core.registers[rs1]
+        core.pc = core.registers[rs1] - 1
 
     elseif opcode == "jalr"
         rd = parse(Int, parts[2][2:end]) + 1
         rs1 = parse(Int, parts[3][2:end]) + 1
         imm = parse(Int, parts[4])
         core.registers[rd] = core.pc + 1
-        core.pc = core.registers[rs1] + imm
+        core.pc = core.registers[rs1] + imm - 1
 
     elseif opcode == "j"
         label = parts[2]
