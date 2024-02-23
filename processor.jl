@@ -60,7 +60,7 @@ end
 function run(processor::Processor) 
     for i in 1:2
         while processor.cores[i].pc <= length(processor.cores[i].program)
-            decode_and_execute(processor.cores[i], processor.memory)
+            execute(processor.cores[i], processor.memory)
         end
     end    
 end
