@@ -120,22 +120,22 @@ function execute_S_type(core::Core1, func3::AbstractString, rs1::Int, rs2::Int, 
 end
 
 function execute_SB_type(core::Core1, func3::AbstractString, rs1::Int, rs2::Int, imm::Int)
-    if func3 == "000"
+    if func3_SB[func3] == "beq"
         if core.registers[rs1] == core.registers[rs2]
             core.pc += imm
         end
-    elseif func3 == "001"
-        if core.registers[rs1] != core.registers[rs2]
-            core.pc += imm
-        end
-    elseif func3 == "100"
-        if core.registers[rs1] < core.registers[rs2]
-            core.pc += imm
-        end
-    elseif func3 == "101"
-        if core.registers[rs1] >= core.registers[rs2]
-            core.pc += imm
-        end
+    # elseif func3 == "001"
+    #     if core.registers[rs1] != core.registers[rs2]
+    #         core.pc += imm
+    #     end
+    # elseif func3 == "100"
+    #     if core.registers[rs1] < core.registers[rs2]
+    #         core.pc += imm
+    #     end
+    # elseif func3 == "101"
+    #     if core.registers[rs1] >= core.registers[rs2]
+    #         core.pc += imm
+    #     end
     end
 end
 

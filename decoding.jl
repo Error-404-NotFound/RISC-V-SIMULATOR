@@ -76,8 +76,8 @@ function decode_and_execute(core::Core1, memory::Array{Int,2})
         println(rs1)
         rs2 = binary_to_int(binary_string[8:12]) + 1
         println(rs2)
-        imm = binary_to_int(binary_string[1]*binary_string[24]*binary_string[20:24]*binary_string[13:19]*"0")
-        println(imm)
+        imm = binary_to_int(binary_string[25]*binary_string[2:7]*binary_string[21:24]*"0")
+        imm = imm ÷ 4
         execute_SB_type(core, func3, rs1, rs2, imm)
     
     elseif opcode_code_type[opcode] == "U_type_instrucion"
