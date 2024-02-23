@@ -43,7 +43,7 @@ function main()
     for i in 1:length(sim.cores)
         println(sim.cores[i].registers)
     end
-    show_memory_range(sim, 513, 1024)
+    show_memory_range(sim, 769, 1024)
 end
 
 main()
