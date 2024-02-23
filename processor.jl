@@ -57,10 +57,10 @@ end
 #     end
 # end
 
-function run(processor::Processor) 
+function run(processor::Processor, variable_address::Dict{String, Int}) 
     for i in 1:2
         while processor.cores[i].pc <= length(processor.cores[i].program)
-            execute(processor.cores[i], processor.memory)
+            execute(processor.cores[i], processor.memory, variable_address)
         end
     end    
 end

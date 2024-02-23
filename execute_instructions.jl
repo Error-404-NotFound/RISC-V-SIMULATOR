@@ -10,7 +10,7 @@ include("utility.jl")
 include("core.jl")
 # using .Core_Module
 
-function execute(core::Core1, memory::Array{Int,2})
+function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{String, Int})
     parts = split(core.program[core.pc], " ")
     opcode = parts[1]
 
@@ -208,6 +208,22 @@ function execute(core::Core1, memory::Array{Int,2})
         binary_string = int_to_binary_32bits(core.registers[rs1])
         core.registers[rd] = load_half_word(binary_string, memory, temp_row, temp_col)
 
+    # la rd label
+    elseif opcode == "la"
+        rd = parse(Int, parts[2][2:end]) + 1
+        label = parts[3]
+        #find the label in the variable_address dictionary
+        if haskey(variable_address, label)
+            value = variable_address[label]
+            temp_col = value % 4
+            if temp_col == 0
+                temp_col = 4
+            end
+            temp_row=(value-temp_col)÷4 + 1 
+            core.registers[rd] = value
+        else
+            println("Label $label not found in the dictionary.")
+        end
 
     # sb rs2 offset(rs1)
     # sb rs2 offset rs1

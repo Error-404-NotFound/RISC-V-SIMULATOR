@@ -31,13 +31,13 @@ function main()
 
     show_memory(sim)
     sim.cores[1].pc=1
-    run(sim)
+    run(sim,variable_address)
     for i in 1:length(sim.cores)
         println(sim.cores[i].registers)
     end
     # print(sim.memory[2,2])
     # println(sim.memory[1,2])
-    # show_memory(sim)
+    show_memory(sim)
 end
 
 main()
