@@ -1,6 +1,6 @@
 .data
     array: .word 10,20,30
-    str: .string "Hello, World"
+    str: .string "Hello,\nWorld"
 
 .text
     li x1 5

@@ -130,7 +130,7 @@ function parse_assembly_code(file_path::String)
     text_program = remove_empty_strings(text_program)
     data_program = remove_empty_strings(data_program)
     # println(data_program)
-    println(text_program)
+    # println(text_program)
     return text_program, data_program
 end
 
