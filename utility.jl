@@ -186,6 +186,7 @@ function load_word(binary_string::AbstractString, memory::Array{Int,2}, row::Int
     if temp_value > 2147483647
         temp_value -= 4294967296
     end
+    return temp_value
 end
 
 function load_half_word(binary_string::AbstractString, memory::Array{Int,2}, row::Int, col::Int)

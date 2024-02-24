@@ -1,11 +1,28 @@
-.data 
-
-
+.data
+    input: .word 1234
+    
 .text
-    addi x10 x0 10      #g
-    addi x11 x0 5       #h
-    add x10 x10 x11
-    addi x12 x0 2       #i
-    li x13 3            #j
-    add x12 x12 x13     
-    sub x10 x10 x12     #f=(g+h)-(i+j)
+ li x10 1234
+    
+    li x5 0            #count number of 1s
+    li x4 0            #count number of 0s
+    li x6 32           #number of bits to check
+    jal x2 loop
+
+loop:
+    beq x6 x0 exit     #exit loop when 32--==0
+    andi x7 x10 1     #do and operation to check if current bit is 1
+    beq x7 x0 skip     #skip if bit is 0
+    addi x5 x5 1     #else increment counter
+
+skip:
+    srli x10 x10 1       #shift right by 1
+    addi x6 x6 -1      #decrement iterator
+    j loop             #jump to loop back
+
+exit:
+    li x10 32
+    sub x4 x10 x5
+    
+    li x17, 10
+    ecall

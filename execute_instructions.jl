@@ -398,13 +398,11 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
                     temp_row += 1
                 end
             end
-        elseif core.registers[18] == 32
-            print(" ")
+        elseif core.registers[18] == 11
+            print(Char(core.registers[11]))
         else
             println("Invalid ecall instruction.for $(core.registers[18]) code")
         end
-    else
-        println("Invalid instruction: $opcode")
     end
     core.pc += 1
 end
