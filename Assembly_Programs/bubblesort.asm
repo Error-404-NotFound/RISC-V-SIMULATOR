@@ -1,41 +1,79 @@
 .data
-    array: .word 3,4,1,2,5,23,34,1,213,123,234,435,456,234234,12
+    arr: .word 3,4,1,2,-5,23,34,-1,213,-123,234,-435,456,-234234,12
     size: .word 15
+    delimiter: .string ", "
+    promp1: .string "Unsorted array is: "
+    promp2: .string "Sorted array is: "
 
 .text
-    la x10 array
-    la x11 size
-    lw x11 0(x11)
-    jal x1 bubbleSort 
-    la x10 array
-    la x11 size
-    lw x11 0(x11)
-    li x17 10
+    li a7 4
+    la a0 promp1
+    ecall
+    la a0 arr
+    la a1 size
+    lw a1 0(a1)
+
+    jal x31 print
+    li a0 10
+    li a7 11
     ecall
 
+    la a0 arr
+    la a1 size
+    lw a1 0(a1)
+
+    jal ra bubbleSort 
+
+    la a0 promp2
+    li a7 4
+    ecall
+    
+    la a0 arr
+    la a1 size
+    lw a1 0(a1)
+
+    jal x31 print
+    li a7 10
+    ecall
+
+print:
+    mv t0 a0
+    mv t1 a1
+    loop:
+        li a7 1
+        lw a0 0(t0)   
+        ecall
+        li a7 4
+        la a0 delimiter
+        ecall
+        addi t0 t0 4
+        addi t1 t1 -1
+        bne t1 zero loop
+        jr x31
+
 bubbleSort:
-    mv x5 x10
-    mv x6 x11
-    addi x6 x6 -1
-    li x7 1
+    mv t0 a0
+    mv t1 a1
+    addi t1 t1 -1
+    li t2 1
 
     oloop:
-        li x7 0
-        li x28 0
-        mv x5 x10
+        li t2 0
+        li t3 0
+        mv t0 a0
         iloop:
-            beq x28 x6 eloop
-            lw x29 0(x5)
-            lw x30 4(x5)
-            ble x29 x30 noswap
-            sw x30 0(x5)
-            sw x29 4(x5)
-            li x7 1
+            beq t3 t1 eloop
+            lw t4 0(t0)
+            lw t5 4(t0)
+            ble t4 t5 noswap
+            sw t5 0(t0)
+            sw t4 4(t0)
+            li t2 1
             noswap:
-                addi x5 x5 4
-                addi x28 x28 1
+                addi t0 t0 4
+                addi t3 t3 1
                 j iloop
         eloop:
-        addi x6 x6 -1
-        bne x0 x7 oloop
-        jr x1
+        addi t1 t1 -1
+        bne zero t2 oloop
+        jr ra
