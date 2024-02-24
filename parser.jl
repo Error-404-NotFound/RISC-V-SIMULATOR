@@ -149,6 +149,11 @@ function parse_data_section(data_section::AbstractString)
 
         # Split each section by whitespaces
         parts = split(section)
+        # println(parts)
+
+        parts2= split(section, '\"')
+
+        # println("splite :",parts2[2])
 
         # If there's a label, store it separately
         label = parts[1]
@@ -166,7 +171,7 @@ function parse_data_section(data_section::AbstractString)
                 push!(chunks, directive)
                 string_content = join(parts[2:end], " ")
                 string_content = replace(string_content, r"\"" => "")
-                push!(chunks, string_content)
+                push!(chunks, parts2[2])
                 continue
             elseif directive == ".word" && length(parts) >= 2
                 push!(chunks, directive)

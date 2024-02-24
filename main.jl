@@ -38,7 +38,7 @@ function main()
     end
 
     # show_memory(sim)
-    # sim.cores[1].pc=1
+    sim.cores[1].pc=1
     sim.cores[2].pc=1
     run(sim,variable_address_first, 1)
     run(sim,variable_address_second, 2)

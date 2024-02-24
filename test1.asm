@@ -1,14 +1,9 @@
 .data
-    array: .word 3 3 4 3
-    str: .string "Final array: "
-
+    str1: .string "   **   **\n ***** *****\n***********\n *********\n  *******\n   *****\n    ***\n     *\n"
 
 .text
-    li x1 1
-    add x2 x1 x1
-    srli x2 x2 -1
-    li x3 1
-    beq x1 x3 exit
-    li x7 200
-exit:
-    li x7 100
+    li x17 4
+    la x10 str1
+    ecall
+    
+   
