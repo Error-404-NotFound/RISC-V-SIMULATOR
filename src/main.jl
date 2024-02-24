@@ -66,17 +66,18 @@ function main()
     println("To see complete memory, go to main.jl and change the range of show_memory_range function. \nFor example, to see the whole memory, change the range to show_memory_range(sim, 1, 1024).")
     println()
 
+    println("Output of the program-1: ")
+    run(sim,variable_address_first, 1)
+    println()
+    println("Output of the program-2: ")
+    run(sim,variable_address_second, 2)
+    println()
+
     println("Registers:")
     for i in 1:length(sim.cores)
         println("Core $i Registers: $(sim.cores[i].registers)")
     end
     println()
-
-    println("Output of the program: 1")
-    run(sim,variable_address_first, 1)
-    println()
-    println("Output of the program: 2")
-    run(sim,variable_address_second, 2)
 end
 
 main()

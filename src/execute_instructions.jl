@@ -11,6 +11,7 @@ include("core.jl")
 # using .Core_Module
 
 function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{String, Int})
+    core.program[core.pc] = replace_registers(core.program[core.pc])
     parts = split(core.program[core.pc], " ")
     opcode = parts[1]
 
