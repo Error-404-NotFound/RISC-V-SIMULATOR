@@ -368,11 +368,11 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
 
     elseif opcode == "ecall"
         if core.registers[18] == 10
-            println("Program exited with code 0")
+            println("\nProgram exited with code 0")
             core.pc = length(core.program) + 1
 
         elseif core.registers[18] == 1
-            println(core.registers[11])
+            print(core.registers[11])
 
         elseif core.registers[18] == 4
             temp_col = (core.registers[11] ) % 4
@@ -383,26 +383,23 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
             counter = 0
             while memory[temp_row, temp_col] != 0
                 #handle new line
-                if Char(memory[temp_row, temp_col]) == '/'
+                if Char(memory[temp_row, temp_col]) == '\\'
                     counter=1
-                end
-                if counter == 1 && Char(memory[temp_row, temp_col]) == 'n'
+                elseif counter ==1 && Char(memory[temp_row, temp_col]) == 'n'
                     println()
-                    counter = 0
+                    counter=2
                 else
                     print(Char(memory[temp_row, temp_col]))
-                    temp_col += 1
-                    if temp_col > 4
-                        temp_col = 1
-                        temp_row += 1
-                    end
                     counter=2
                 end
-
+                temp_col += 1
+                if temp_col > 4
+                    temp_col = 1
+                    temp_row += 1
+                end
             end
-            println()
         elseif core.registers[18] == 32
-            println(" ")
+            print(" ")
         else
             println("Invalid ecall instruction.for $(core.registers[18]) code")
         end
