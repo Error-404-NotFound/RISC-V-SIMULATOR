@@ -62,6 +62,11 @@ function remove_empty_strings(strings::Vector{Any})
     return filter(x -> !isempty(x), strings)
 end
 
+#function to remove the empty strings from the parts
+function remove_empty_strings(parts)
+    return filter(x -> !isempty(x), parts)
+end
+
 function sanitize(raw_line::AbstractString)::AbstractString
     modified_line = replace(raw_line, r"\b\d+\b" => x -> string(parse(Int, x)))
     modified_line = remove_parentheses(modified_line)

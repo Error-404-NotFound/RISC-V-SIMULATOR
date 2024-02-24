@@ -13,6 +13,7 @@ include("core.jl")
 function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{String, Int})
     core.program[core.pc] = replace_registers(core.program[core.pc])
     parts = split(core.program[core.pc], " ")
+    parts = remove_empty_strings(parts)
     opcode = parts[1]
 
 
