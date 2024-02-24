@@ -149,39 +149,65 @@ function parse_data_section(data_section::AbstractString)
 
         # Split each section by whitespaces
         parts = split(section)
-       
 
         # If there's a label, store it separately
         label = parts[1]
         if endswith(label, ':')
             push!(labels, chop(label, tail=1))
             push!(chunks, chop(label, tail=1))
+            # Remove the label from the parts list
+            parts = parts[2:end]
         end
-        # Match .string with or without space and extract string content
-        match_result = match(r"\.string\s*(\"[^\"]*\")", section)
-        if match_result !== nothing
-            string_content = match_result.captures[1]
+        
+        # Check if the remaining parts contain a directive
+        if length(parts) >= 1
+            directive = parts[1]
+            if directive == ".string" && length(parts) >= 2
+                push!(chunks, directive)
+                string_content = join(parts[2:end], " ")
+                string_content = replace(string_content, r"\"" => "")
+                push!(chunks, string_content)
+                continue
+            elseif directive == ".word" && length(parts) >= 2
+                push!(chunks, directive)
+                word_content = join(parts[2:end], " ")
+                word_content = replace(word_content, r"," => " ")
+                word_content = split(word_content)
+                for word in word_content
+                    push!(chunks, word)
+                end
+                continue
+            end
+        end
+        
+        # If no directive is found, check for other possible formats
+        
+        # Match .string or .word with optional whitespace between label and directive
+        match_string = match(r"^([^:]+):\s*\.string\s*(\"[^\"]*\")", section)
+        match_word = match(r"^([^:]+):\s*\.word\s*((-?\d+\s*,?\s*)+)", section)
+        
+        if match_string !== nothing
+            label = match_string.captures[1]
+            string_content = match_string.captures[2]
+            push!(labels, label)
+            push!(chunks, label)
             push!(chunks, ".string")
             string_content = replace(string_content, r"\"" => "")
             push!(chunks, string_content)
             continue
-        end
-        
-        #Match .word with spaces or with commmas in between numbers for any number of spaces or commas and store the as different chunks even if there are spaces between the numbers
-        # match_result = match(r"\.word\s*((\d+\s*,?\s*)+)", section)
-        match_result = match(r"\.word\s*((-?\d+\s*,?\s*)+)", section)
-        if match_result !== nothing
-            word_content = match_result.captures[1]
+        elseif match_word !== nothing
+            label = match_word.captures[1]
+            word_content = match_word.captures[2]
+            push!(labels, label)
+            push!(chunks, label)
+            push!(chunks, ".word")
             word_content = replace(word_content, r"," => " ")
             word_content = split(word_content)
-            push!(chunks, ".word")
             for word in word_content
                 push!(chunks, word)
             end
             continue
         end
-
-        
 
     end
     return labels, chunks

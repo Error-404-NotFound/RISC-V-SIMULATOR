@@ -201,8 +201,8 @@ function load_one_byte(binary_string::AbstractString, memory::Array{Int,2}, row:
 end
 
 
-# # Extract string content between double quotes
-# string_content = match(r"\"(.*)\"", part).captures[1]
-# # Convert each character to its ASCII value and store in memory
-# values = [Int(c) for c in string_content]
-# push!(chunks, values)
+#   # Extract string content between double quotes
+#                 string_content = match(r"\"(.*)\"", part).captures[1]
+#                 # Convert each character to its ASCII value and store in memory
+#                 values = [Int(c) for c in string_content]
+#                 push!(chunks, values)
