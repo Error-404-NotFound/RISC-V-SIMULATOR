@@ -39,13 +39,20 @@ function store_data_in_memory(core::Core1, memory::Array{Int64,2}, data_seg_chun
             push!(variable_address, data_seg_chunk[i-1] => (temp_row-1) * 4 + temp_col)
             i += 1
             # store the word in memory untill the end of the word
-            while i <= length(data_seg_chunk)
-                #terminate if the next element is not a number without using regex
-                if occursin(r"\D", data_seg_chunk[i])
+            while i <= length(data_seg_chunk) 
+                if data_seg_chunk[i][1]>'a' && data_seg_chunk[i][1]<'z' || data_seg_chunk[i][1]>'A' && data_seg_chunk[i][1]<'Z'
                     break
                 end
+                temp_number = parse(Int, data_seg_chunk[i])
                 
-                store_word(int_to_binary_32bits(parse(Int, data_seg_chunk[i])), memory, temp_row, temp_col)
+                #terminate the loop if the word is not a number
+                # if isa(temp_number,Number) == false
+                #     break
+                # end
+                
+                #store the word in memory
+                #convert the string to an integer and then to a 32-bit binary
+                store_word(int_to_binary_bits_modified(temp_number,32), memory, temp_row, temp_col)
                 temp_col += 4
                 if temp_col > 4
                     temp_col %= 4

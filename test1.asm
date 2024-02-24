@@ -1,9 +1,9 @@
 .data
-    str1: .string "   **   **\n ***** *****\n***********\n *********\n  *******\n   *****\n    ***\n     *\n"
+    str1: .word -2 3 -4
+    str2: .string "Hello World"
 
 .text
-    li x17 4
-    la x10 str1
-    ecall
-    
+    li x1 1
+    li x3 129
+    lw x4 0(x3)
    

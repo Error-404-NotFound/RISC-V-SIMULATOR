@@ -231,7 +231,7 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
             temp_col = 4
         end
         temp_row = (core.registers[rs1] - temp_col + offset) ÷ 4 + 1
-        binary_string = int_to_binary_32bits(core.registers[rs2])
+        binary_string = int_to_binary_bits_modified(core.registers[rs2],32)
         store_one_byte(binary_string, memory, temp_row, temp_col)
 
     # sh rs2 offset(rs1)
@@ -245,7 +245,7 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
             temp_col = 4
         end
         temp_row = (core.registers[rs1] - temp_col + offset) ÷ 4 + 1
-        binary_string = int_to_binary_32bits(core.registers[rs2])
+        binary_string = int_to_binary_bits_modified(core.registers[rs2],32)
         store_half_word(binary_string, memory, temp_row, temp_col)
 
     # sw rs2 offset(rs1)
@@ -259,7 +259,7 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
             temp_col = 4
         end
         temp_row = (core.registers[rs1] - temp_col + offset) ÷ 4 + 1
-        binary_string = int_to_binary_32bits(core.registers[rs2])
+        binary_string = int_to_binary_bits_modified(core.registers[rs2],32)
         store_word(binary_string, memory, temp_row, temp_col)
 
 
@@ -403,7 +403,8 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
         else
             println("Invalid ecall instruction.for $(core.registers[18]) code")
         end
-
+    else
+        println("Invalid instruction: $opcode")
     end
     core.pc += 1
 end

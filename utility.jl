@@ -100,7 +100,7 @@ function hex_to_32binary(x::AbstractString)::AbstractString
     return lpad(string(hex_to_int(x), base=2), 32, "0")
 end
 
-function int_to_binary_32bit(num::Int, num_bits::Int)::AbstractString
+function int_to_binary_bits_modified(num::Int, num_bits::Int)::AbstractString
     if num >= 0
         binary = bitstring(UInt32(num))               # Convert to binary
         binary = binary[32-num_bits+1:end]            # Remove '0b' prefix
@@ -175,13 +175,16 @@ function load_word(binary_string::AbstractString, memory::Array{Int,2}, row::Int
         return
     end
     if col == 1
-        return memory[row, col] + memory[row, col+1]*256 + memory[row, col+2]*65536 + memory[row, col+3]*16777216
+        temp_value = memory[row, col] + memory[row, col+1]*256 + memory[row, col+2]*65536 + memory[row, col+3]*16777216
     elseif col == 2
-        return memory[row, col] + memory[row, col+1]*256 + memory[row, col+2]*65536 + memory[row+1, col-1]*16777216
+        temp_value = memory[row, col] + memory[row, col+1]*256 + memory[row, col+2]*65536 + memory[row+1, col-1]*16777216
     elseif col == 3
-        return memory[row, col] + memory[row, col+1]*256 + memory[row+1, col-2]*65536 + memory[row+1, col-1]*16777216
+        temp_value = memory[row, col] + memory[row, col+1]*256 + memory[row+1, col-2]*65536 + memory[row+1, col-1]*16777216
     elseif col == 4
-        return memory[row, col] + memory[row+1, col-3]*256 + memory[row+1, col-2]*65536 + memory[row+1, col-1]*16777216
+        temp_value = memory[row, col] + memory[row+1, col-3]*256 + memory[row+1, col-2]*65536 + memory[row+1, col-1]*16777216
+    end
+    if temp_value > 2147483647
+        temp_value -= 4294967296
     end
 end
 
