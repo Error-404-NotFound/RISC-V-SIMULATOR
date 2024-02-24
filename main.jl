@@ -1,3 +1,5 @@
+# Description: A simple 2-core processor simulator
+
 include("processor.jl")
 include("parser.jl")
 include("memory.jl")

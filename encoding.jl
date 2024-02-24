@@ -21,10 +21,6 @@ end
 
 
 
-
-
-
-
 function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, initial_address::Int)
     core.pc =  memory_address = initial_address
     while(core.pc-initial_address+1 <= length(core.program))

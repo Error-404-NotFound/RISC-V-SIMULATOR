@@ -1,5 +1,3 @@
-# Description: A simple 2-core processor simulator
-
 include("execute_instructions.jl")
 include("core.jl")
 include("utility.jl")
@@ -27,22 +25,7 @@ function processor_Init()
     return Processor()
 end
 
-# function extract_labels(program::Vector{String})
-#     labels = Dict{String, Int}()
-#     address=0
-#     for line in program
-#         if occursin(":", line)
-#             parts = split(line, ":")
-#             label = strip(parts[1])
-#             labels[label] = address
-#         end
-#         address += 1
-#     end
-#     return labels
-# end
-
 # function run(processor::Processor)
-#     # labels = extract_labels(processor.cores[1].program)
 #     while processor.clock < 1000
 #         for i in 1:2
 #             if processor.clock < 1000 && processor.cores[i].pc <= length(processor.cores[i].program)
