@@ -100,6 +100,19 @@ function hex_to_32binary(x::AbstractString)::AbstractString
     return lpad(string(hex_to_int(x), base=2), 32, "0")
 end
 
+function int_to_binary_32bit(num::Int, num_bits::Int)::AbstractString
+    if num >= 0
+        binary = bitstring(UInt32(num))               # Convert to binary
+        binary = binary[32-num_bits+1:end]            # Remove '0b' prefix
+    else
+        # For negative numbers, compute the two's complement
+        positive_num = 2^num_bits + num
+        binary = bitstring(UInt32(positive_num))      # Convert to binary
+        binary = binary[32-num_bits+1:end]            # Remove '0b' prefix
+    end
+    return binary
+end
+
 function store_word(binary_string::AbstractString, memory::Array{Int,2}, row::Int, col::Int)
     if length(binary_string) != 32
         println("Error: Binary string length is not 32 bits.")

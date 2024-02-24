@@ -4,7 +4,7 @@ include("utility.jl")
 # using .Core_Module
 
 
-opcodes = ["add", "sub", "sll", "slt", "sltu", "xor", "srl", "sra", "or", "and", "li", "addi", "slti", "sltiu", "xori", "ori", "andi", "slli", "srli", "srai", "lb", "lh", "lw", "lbu", "lhu", "sb", "sh", "sw", "beq", "bne", "blt", "bge", "bltu", "bgeu", "lui", "auipc", "jal", "j", "jalr"]
+opcodes = ["add", "sub", "sll", "slt", "sltu", "xor", "srl", "sra", "or", "and", "li", "addi", "slti", "sltiu", "xori", "ori", "andi", "slli", "srli", "srai", "lb", "lh", "lw", "lbu", "lhu", "sb", "sh", "sw", "beq", "bne", "blt", "bge", "bltu", "bgeu", "lui", "auipc", "jal", "j", "jalr","ecall","jr"]
 #write a function to give the total no. of non opcodes till the given index in the program
 function handle_non_opcodes(core::Core1, index::Int)
     count=0
@@ -350,6 +350,10 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
             rs1 = parse(Int, parts[3][2:end])
             imm = parse(Int, parts[4])
             binary_string = int_to_binary_12bits(imm) * int_to_binary_5bits(rs1) * "000" * "00000" * JALR_type_instrucion
+            store_word(binary_string, memory, memory_address, 1)
+
+        elseif opcode== "ecall"
+            binary_string = "000000000000" * "00000" * "000" * "00000" * I_type_instrucion
             store_word(binary_string, memory, memory_address, 1)
         else 
             # println("$opcode")

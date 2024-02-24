@@ -14,7 +14,7 @@ mutable struct Processor
     cores::Array{Core1,1}
     function Processor()
         this = new()
-        this.memory = zeros(UInt8, 1024, 4)
+        this.memory = zeros(UInt8, 64, 4)
         this.clock = 0
         this.cores = [core_Init(), core_Init()]
         return this

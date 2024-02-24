@@ -22,9 +22,9 @@ loop:
 exit:
     li a7 4
     la a0 str1
-    ecall
+
     la a0 str2
-    ecall
+
     li a7 1
     add a0 x0 x4
-    ecall
+   
