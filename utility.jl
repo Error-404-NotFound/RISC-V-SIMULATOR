@@ -18,9 +18,6 @@ function remove_quotes_from_string(input_string::AbstractString)::AbstractString
     return replace(input_string, r"\"" => "")
 end
 
-function convert_to_proper_newline(input_string::AbstractString)::AbstractString
-    return replace(input_string, r"\\n" => "\n")
-end
 
 function remove_colon(input_string::AbstractString)::AbstractString
     return replace(input_string, r":" => "")
@@ -37,7 +34,6 @@ function sanitize(raw_line::AbstractString)::AbstractString
     modified_line = remove_commas(modified_line)
     modified_line = remove_quotes_from_string(modified_line)
     modified_line = remove_colon(modified_line)
-    modified_line = convert_to_proper_newline(modified_line)
     modified_line = strip(modified_line)
     return modified_line
 end

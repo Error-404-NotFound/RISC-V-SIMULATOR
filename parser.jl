@@ -58,7 +58,7 @@ function check_assembly_content(assembly::String)::Bool
         elseif current_section == ".text" && !startswith(directive, ".") && directive != ".word"
             # Check for specific instructions like 'add', 'sub', etc.
             instruction = parts[1]
-            if instruction in ["add", "sub", "and", "or", "xor", "lw", "sw", "beq", "bne", "jal", "jr", "j", "li", "addi", "subi", "andi", "ori", "xori", "lui", "slti", "sltiu", "sll", "srl", "sra", "sllv", "srlv", "srav", "slt", "sltu",]
+            if instruction in ["add", "sub", "and", "or", "xor", "lw", "sw", "beq", "bne", "jal", "jr", "j", "li", "addi", "subi", "andi", "ori", "xori", "lui", "slti", "sltiu", "sll", "srl", "sra", "sllv", "srlv", "srav", "slt", "sltu","ecall"]
                 push!(text_section_contents, join(parts[1:end], " "))
             end
         end
