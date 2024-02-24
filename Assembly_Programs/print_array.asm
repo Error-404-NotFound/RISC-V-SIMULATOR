@@ -3,7 +3,6 @@ array: .word -3,0 ,4,5 7
 str: .string "The value is: "
 .text
     la x1 array
-    li x2 0(x1)
     li x3 5
     li x4 0
 
@@ -13,6 +12,7 @@ str: .string "The value is: "
     ecall
 
     loop:
+        lw x2 0(x1)
         beq x3 x4 end
         j print
         

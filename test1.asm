@@ -1,33 +1,41 @@
 .data
-array: .word -3,0 ,4,5 7
-str: .string "The value is: \n"
+    array: .word 3,4,1,2,5,23,34,1,213,123,234,435,456,234234,12
+    size: .word 15
+
 .text
-    la x1 array
-  
-    li x3 5
-    li x4 0
-
-
-    la x10 str
-    li x17 4
+    la x10 array
+    la x11 size
+    lw x11 0(x11)
+    jal x1 bubbleSort 
+    la x10 array
+    la x11 size
+    lw x11 0(x11)
+    li x17 10
     ecall
 
-    loop:
-        lw x2 0(x1)
-        beq x3 x4 end
-        j print
-        
-    print:
-        addi x10 x2 0
-        li x17 1
-        ecall
-        addi x10 x0 32
-        li x17 11
-        ecall
-        addi x1 x1 4
-        addi x4 x4 1
-        j loop
+bubbleSort:
+    mv x5 x10
+    mv x6 x11
+    addi x6 x6 -1
+    li x7 1
 
-    end:
-        li x17 10
-        ecall
+    oloop:
+        li x7 0
+        li x28 0
+        mv x5 x10
+        iloop:
+            beq x28 x6 eloop
+            lw x29 0(x5)
+            lw x30 4(x5)
+            ble x29 x30 noswap
+            sw x30 0(x5)
+            sw x29 4(x5)
+            li x7 1
+            noswap:
+                addi x5 x5 4
+                addi x28 x28 1
+                j iloop
+        eloop:
+        addi x6 x6 -1
+        bne x0 x7 oloop
+        jr x1
