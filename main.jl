@@ -2,7 +2,6 @@
 
 include("processor.jl")
 include("parser.jl")
-include("memory.jl")
 include("utility.jl")
 include("encoding.jl")
 include("data_memory.jl")
