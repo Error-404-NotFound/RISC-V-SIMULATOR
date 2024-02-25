@@ -77,6 +77,11 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
         rs2 = parse(Int, parts[4][2:end]) + 1
         core.registers[rd] = core.registers[rs1] & core.registers[rs2]
 
+    elseif opcode == "mul"
+        rd = parse(Int, parts[2][2:end]) + 1
+        rs1 = parse(Int, parts[3][2:end]) + 1
+        rs2 = parse(Int, parts[4][2:end]) + 1
+        core.registers[rd] = core.registers[rs1] * core.registers[rs2]
 
     
 
