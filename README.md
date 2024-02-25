@@ -136,16 +136,22 @@ Some of the examples are shown below.
 (Note: All these files are available in Assembly_Programs)
 
 1. Output-1:
+    - Program-1 is Bubble Sort.
+    - Program-2 is Selection Sort.
+
+[![Output-1][output_screenshot_1]](https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/Phase_1_op.png)
+
+2. Output-2:
     - Program-1 is find number of 1's and 0's in a number.
     - Program-2 is valentine.asm
 
-[![Output-1][output_screenshot_1]](https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/o1.png)
+[![Output-2][output_screenshot_2]](https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/o1.png)
 
-2. Output-2:
+3. Output-3:
     - Program-1 is Addition and Subtraction of 2 numbers.
     - Program-2 is empty.
 
-[![Output-2][output_screenshot_2]](https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/o2.png)
+[![Output-3][output_screenshot_3]](https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/o2.png)
 
 _For more examples, please refer to the [Assembly_Programs](https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/tree/main/Assembly_Programs)_
 
@@ -173,7 +179,6 @@ For eg: li a0 1 or li x10 1
 - [ ] Encoding And Decoding of Instructions.
 - [ ] GUI interface.
 
-See the [project report (Phase 1)](https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -219,6 +224,6 @@ Distributed under the MIT License. See `LICENSE.md` for more information.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-
-[output_screenshot_1]: https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/o1.png
-[output_screenshot_2]: https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/o2.png
+[output_screenshot_1]: https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/Phase_1_op.png
+[output_screenshot_2]: https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/o1.png
+[output_screenshot_3]: https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/o2.png
