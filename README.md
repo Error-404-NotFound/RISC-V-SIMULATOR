@@ -212,6 +212,7 @@ Distributed under the MIT License. See `LICENSE.md` for more information.
 
 
 * [Julia Documentation](https://docs.julialang.org/en/v1/)
+* [Ripes Simulator](https://ripes.me/)
 * [RISC-V Manual](https://riscv.org/wp-content/uploads/2017/05/riscv-spec-v2.2.pdf)
 * [Univerity of California's RISC-V Instruction Format](https://inst.eecs.berkeley.edu/~cs61c/resources/su18_lec/Lecture7.pdf)
 * [GitHub Pages](https://pages.github.com)
@@ -222,6 +223,7 @@ Distributed under the MIT License. See `LICENSE.md` for more information.
 
 
 [output_screenshot_1]: https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/o1.png
+[output_screenshot_2]: https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/o2.png
 [Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
 [Next-url]: https://nextjs.org/
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
