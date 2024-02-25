@@ -144,8 +144,10 @@ Program-2 is valentine.asm
 [![Output-1][output_screenshot_1]](https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/o1.png)
 
 * Output-2:
-Program-1 is .
-Program-2 is valentime.asm
+Program-1 is Addition and Subtraction of 2 numbers.
+Program-2 is empty.
+
+[![Output-2][output_screenshot_2]](https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/o2.png)
 
 _For more examples, please refer to the [Assembly_Programs](https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/tree/main/Assembly_Programs)_
 
