@@ -1,14 +1,27 @@
 .data
-arr: .word 1 2 16 6 25
-size: .word 5
-str: .string"Sorted String: \n"
+arr: .word 3,4,1,2,-5,23,34,-1,213,-123,234,-435,456,-234234,12
+size: .word 15
+delimiter: .string ", "
+str1: .string "Unsorted Array is: "
+str: .string "Sorted Array is: "
 
 .text 
+main:
+    la a0 arr
+    la a1 size
+    lw a1 0(a1)
 
-    addi x29 x0 5
+    li a0 10
+    li a7 11
+    ecall
+    la t4 size
+    lw t4 0(t4)
     addi x25 x29 -1
     la x8 arr
     addi x15 x0 0
+    
+
+
 loop1:
 
     beq x15 x25 exit
@@ -48,10 +61,13 @@ loop1:
         addi x15 x15 1
         blt x15 x1 loop1
 
+
+
 exit:
 
     la x1 arr
-    li x3 5
+    la x3 size
+    lw x3 0(x3)
     li x4 0
 
     la x10 str
@@ -67,8 +83,8 @@ exit:
         addi x10 x2 0
         li x17 1
         ecall
-        addi x10 x0 32
-        li x17 11
+        li a7 4
+        la a0 delimiter
         ecall
         addi x1 x1 4
         addi x4 x4 1
