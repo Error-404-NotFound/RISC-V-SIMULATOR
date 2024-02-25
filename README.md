@@ -141,7 +141,7 @@ Some of the examples are shown below.
 Program-1 is find number of 1's and 0's in a number.
 Program-2 is valentine.asm
 
-[![Output-1][output_screenshot_1]](https://example.com)
+[![Output-1][output_screenshot_1]](https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/o1.png)
 
 * Output-2:
 Program-1 is .
@@ -219,7 +219,7 @@ Distributed under the MIT License. See `LICENSE.md` for more information.
 
 
 
-[product-screenshot]: images/screenshot.png
+[output_screenshot_1]: https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/o1.png
 [Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
 [Next-url]: https://nextjs.org/
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
