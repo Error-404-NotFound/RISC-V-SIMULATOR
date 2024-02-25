@@ -153,6 +153,16 @@ Some of the examples are shown below.
 
 [![Output-3][output_screenshot_3]](https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/o2.png)
 
+4. Output-4:
+    - Snippet of Registers.
+  
+[![Output-4][output_screenshot_4]](https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/1.png)
+
+5. Output-5:
+    - Snippet of Memory (.data segment of one of the program shown)
+  
+[![Output-5][output_screenshot_5]](https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/2.png)
+
 _For more examples, please refer to the [Assembly_Programs](https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/tree/main/Assembly_Programs)_
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -227,3 +237,5 @@ Distributed under the MIT License. See `LICENSE.md` for more information.
 [output_screenshot_1]: https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/Phase_1_op.png
 [output_screenshot_2]: https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/o1.png
 [output_screenshot_3]: https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/o2.png
+[output_screenshot_4]: https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/1.png
+[output_screenshot_5]: https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/2.png
