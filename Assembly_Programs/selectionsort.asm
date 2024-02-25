@@ -33,7 +33,7 @@ loop1:
         blt x6 x9 loop2
 
     swap: 
-
+    
         slli x29 x15 2
         add x5 x29 x8
         lw x30 0(x5)
@@ -77,6 +77,3 @@ exit:
     end:
         li x17 10
         ecall
-
-
-
