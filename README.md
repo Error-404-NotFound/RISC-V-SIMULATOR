@@ -134,9 +134,20 @@ You will be able to see the output of the simulation.
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+Some of the examples are shown below.
+(Note: All these files are available in Assembly_Programs)
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+* Output-1:
+Program-1 is find number of 1's and 0's in a number.
+Program-2 is valentine.asm
+
+[![Output-1][output_screenshot_1]](https://example.com)
+
+* Output-2:
+Program-1 is .
+Program-2 is valentime.asm
+
+_For more examples, please refer to the [Assembly_Programs](https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/tree/main/Assembly_Programs)_
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -150,6 +161,8 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 - [x] Very similar to RISC V Ripes Simulator.
 - [x] Two Assembly files can be run, one in each core. Bubble Sort and Selection Sort on each core.
 - [x] New Instruction mul added to multiply two number.
+- [x] Register can be declared in both ways ie using alias or x\<register_number\>
+For eg: li a0 1 or li x10 1
 - [x] Output format:
       - Small segments of memory.
       (Note: To see complete memory, go to main.jl and change the range of show_memory_range() function. For example, to see the whole memory, change the range to show_memory_range(sim, 1, 1024).)
@@ -206,18 +219,6 @@ Distributed under the MIT License. See `LICENSE.md` for more information.
 
 
 
-[contributors-shield]: https://img.shields.io/github/contributors/Error-404-NotFound/RISC-V-SIMULATOR.svg?style=for-the-badge
-[contributors-url]: https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
-[forks-url]: https://github.com/othneildrew/Best-README-Template/network/members
-[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
-[stars-url]: https://github.com/othneildrew/Best-README-Template/stargazers
-[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
-[issues-url]: https://github.com/othneildrew/Best-README-Template/issues
-[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
-[license-url]: https://github.com/othneildrew/Best-README-Template/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/othneildrew
 [product-screenshot]: images/screenshot.png
 [Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
 [Next-url]: https://nextjs.org/
