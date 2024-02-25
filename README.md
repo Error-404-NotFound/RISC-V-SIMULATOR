@@ -59,10 +59,10 @@ This project focuses on implementing a simulator for the RISC-V ISA, allowing us
 
 The major tools and languages used are: 
 
-* [<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Julia_Programming_Language_Logo.svg/1200px-Julia_Programming_Language_Logo.svg.png" width="80" height="40">](https://julialang.org/)
-* [<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/RISC-V-logo.svg/2560px-RISC-V-logo.svg.png" style="max-width: 200px; max-height: auto;">](https://riscv.org/)
-* [<img src="https://www.seekhogyan.com/wp-content/uploads/2023/03/1_m0H6-tUbW6grMlezlb52yw.png" style="max-width: 200px; max-height: 70px;">](https://www.python.org/)
-* [<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Jupyter_logo.svg/1767px-Jupyter_logo.svg.png" style="max-width: auto; max-height: 80px;">](https://jupyter.org/)
+* [<img src="https://leportella.com/assets/img/cover/julia_thumb@2x.jpg" width="100px" height="80px">](https://julialang.org/)
+* [<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/RISC-V-logo.svg/2560px-RISC-V-logo.svg.png" width="200px" height="80px">](https://riscv.org/)
+* [<img src="https://www.seekhogyan.com/wp-content/uploads/2023/03/1_m0H6-tUbW6grMlezlb52yw.png" width="150px" height="80px">](https://www.python.org/)
+* [<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Jupyter_logo.svg/1767px-Jupyter_logo.svg.png" width="80px" height="80px">](https://jupyter.org/)
 
 
 
