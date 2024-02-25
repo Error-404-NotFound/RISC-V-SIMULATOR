@@ -137,15 +137,15 @@ You will be able to see the output of the simulation.
 Some of the examples are shown below.
 (Note: All these files are available in Assembly_Programs)
 
-* Output-1:
-Program-1 is find number of 1's and 0's in a number.
-Program-2 is valentine.asm
+1. Output-1:
+    - Program-1 is find number of 1's and 0's in a number.
+    - Program-2 is valentine.asm
 
 [![Output-1][output_screenshot_1]](https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/o1.png)
 
-* Output-2:
-Program-1 is Addition and Subtraction of 2 numbers.
-Program-2 is empty.
+2. Output-2:
+    - Program-1 is Addition and Subtraction of 2 numbers.
+    - Program-2 is empty.
 
 [![Output-2][output_screenshot_2]](https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/o2.png)
 
