@@ -1,5 +1,7 @@
 # RISC-V-SIMULATOR
 
+Team 5: Johri Aniket Manish (CS22B028) and Viramgama Jaimin Piyush (CS22B051)
+
 > A dual-core processor simulator based on the lines of Ripes for RISC V Architecture and is able to simulate a multi-core environment also.
 
 <a name="readme-top"></a>
