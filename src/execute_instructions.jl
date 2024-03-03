@@ -139,6 +139,12 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
         shamt = parse(Int, parts[4])
         core.registers[rd] = core.registers[rs1] >> shamt
 
+    elseif opcode == "muli"
+        rd = parse(Int, parts[2][2:end]) + 1
+        rs1 = parse(Int, parts[3][2:end]) + 1
+        imm = parse(Int, parts[4])
+        core.registers[rd] = core.registers[rs1] * imm
+
     
     # lb rd offset(rs1)
     # lb rd offset rs1

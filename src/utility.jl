@@ -33,6 +33,16 @@ alias = Dict(
     "t6" => "x31",
 )
 
+opcode_dictionary = Dict(
+    "R_type_instructions" => ["add", "sub", "sll", "slt", "sltu", "xor", "srl", "sra", "or", "and", "mul"],
+    "I_type_instructions" => ["addi", "slti", "sltiu", "xori", "ori", "andi", "slli", "srli", "srai", "muli", "jalr", "jr", "li"],
+    "S_type_instructions" => ["sb", "sh", "sw"],
+    "L_type_instructions" => ["lb", "lh", "lw", "lbu", "lhu"],
+    "SB_type_instructions" => ["beq", "bne", "blt", "ble", "bge", "bltu", "bgeu"],
+    "U_type_instructions" => ["lui", "auipc"],
+    "UJ_type_instructions" => ["jal", "la", "j"],
+)
+
 function remove_commas(input_string::AbstractString)::AbstractString
     return replace(input_string, "," => " ")
 end

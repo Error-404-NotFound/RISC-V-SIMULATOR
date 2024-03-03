@@ -4,8 +4,8 @@ include("utility.jl")
 include("decoding.jl")
 
 
-function core_Init()
-    return Core1()
+function core_Init(id::Int)
+    return Core1(id)
 end
 
 mutable struct Processor
@@ -16,7 +16,7 @@ mutable struct Processor
         this = new()
         this.memory = zeros(UInt8, 1024, 4)
         this.clock = 0
-        this.cores = [core_Init(), core_Init()]
+        this.cores = [core_Init(1), core_Init(2)]
         return this
     end
 end
@@ -40,11 +40,11 @@ end
 #     end
 # end
 
-function run(processor::Processor, variable_address::Dict{String, Int},index::Int) 
-    while processor.cores[index].pc <= length(processor.cores[index].program)
-        decode_and_execute(processor.cores[index], processor.memory)
-    end
-end
+# function run(processor::Processor, variable_address::Dict{String, Int},index::Int) 
+#     while processor.cores[index].pc <= length(processor.cores[index].program)
+#         execute(processor.cores[index], processor.memory, variable_address)
+#     end 
+# end
 
 function show_memory_range(processor::Processor, start_row::Int, end_row::Int)
     println("Hex Table Processor Memory:")
