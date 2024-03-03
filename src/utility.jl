@@ -161,6 +161,12 @@ function int_to_binary_bits_modified(num::Int, num_bits::Int)::AbstractString
     return binary
 end
 
+function binary_to_int_modified(binary::AbstractString)::Int
+         # For negative numbers, compute the two's complement
+        positive_num = 2^length(binary) - parse(Int, binary, base=2)
+        return -positive_num 
+end
+
 function store_word(binary_string::AbstractString, memory::Array{Int,2}, row::Int, col::Int)
     if length(binary_string) != 32
         println("Error: Binary string length is not 32 bits.")

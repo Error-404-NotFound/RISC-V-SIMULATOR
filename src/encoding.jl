@@ -36,6 +36,7 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
         J_type_instrucion = "1101111"
         Load_instrucion = "0000011"
         JALR_instrucion = "1100111"
+        ecall_instruction = "1001001"
 
         opcode = parts[1]
 
@@ -242,9 +243,15 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
             rs2 = parse(Int, parts[3][2:end])
             imm = parts[4]
             temp = findfirst(x -> x == imm, core.program)
-            temp2=handle_non_opcodes(core, temp-1)
-            final_temp=temp-temp2
-            offset = (final_temp - core.pc) * 4
+            if core.pc < temp
+                temp2=handle_non_opcodes(core, 1, temp-1)
+                final_temp=temp-temp2
+                offset = (final_temp - core.pc) * 4
+            else
+                temp2= handle_non_opcodes(core,temp, core.pc-1)
+                final_temp=temp+temp2
+                offset = (final_temp - core.pc) * 4
+            end
             offset = offset >> 1
             bin_temp = int_to_binary_bits_modified(offset,12)
             binary_string = string(bin_temp[1]) * bin_temp[3:8] * int_to_binary_5bits(rs2) * int_to_binary_5bits(rs1) * "000" * bin_temp[9:12] * string(bin_temp[2]) * SB_type_instrucion
@@ -256,9 +263,15 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
             rs2 = parse(Int, parts[3][2:end])
             imm = parts[4]
             temp = findfirst(x -> x == imm, core.program)
-            temp2=handle_non_opcodes(core, temp-1)
-            final_temp=temp-temp2
-            offset = (final_temp - core.pc) * 4
+            if core.pc < temp
+                temp2=handle_non_opcodes(core, 1, temp-1)
+                final_temp=temp-temp2
+                offset = (final_temp - core.pc) * 4
+            else
+                temp2= handle_non_opcodes(core,temp, core.pc-1)
+                final_temp=temp+temp2
+                offset = (final_temp - core.pc) * 4
+            end
             offset = offset >> 1
             bin_temp = int_to_binary_bits_modified(offset,12)
             binary_string = string(bin_temp[1]) * bin_temp[3:8] * int_to_binary_5bits(rs2) * int_to_binary_5bits(rs1) * "001" * bin_temp[9:12] * string(bin_temp[2]) * SB_type_instrucion
@@ -269,9 +282,15 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
             rs2 = parse(Int, parts[3][2:end])
             imm = parts[4]
             temp = findfirst(x -> x == imm, core.program)
-            temp2=handle_non_opcodes(core, temp-1)
-            final_temp=temp-temp2
-            offset = (final_temp - core.pc) * 4
+            if core.pc < temp
+                temp2=handle_non_opcodes(core, 1, temp-1)
+                final_temp=temp-temp2
+                offset = (final_temp - core.pc) * 4
+            else
+                temp2= handle_non_opcodes(core,temp, core.pc-1)
+                final_temp=temp+temp2
+                offset = (final_temp - core.pc) * 4
+            end
             offset = offset >> 1
             bin_temp = int_to_binary_bits_modified(offset,12)
             binary_string = string(bin_temp[1]) * bin_temp[3:8] * int_to_binary_5bits(rs2) * int_to_binary_5bits(rs1) * "100" * bin_temp[9:12] * string(bin_temp[2]) * SB_type_instrucion
@@ -282,9 +301,15 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
             rs2 = parse(Int, parts[3][2:end])
             imm = parts[4]
             temp = findfirst(x -> x == imm, core.program)
-            temp2=handle_non_opcodes(core, temp-1)
-            final_temp=temp-temp2
-            offset = (final_temp - core.pc) * 4
+            if core.pc < temp
+                temp2=handle_non_opcodes(core, 1, temp-1)
+                final_temp=temp-temp2
+                offset = (final_temp - core.pc) * 4
+            else
+                temp2= handle_non_opcodes(core,temp, core.pc-1)
+                final_temp=temp+temp2
+                offset = (final_temp - core.pc) * 4
+            end
             offset = offset >> 1
             bin_temp = int_to_binary_bits_modified(offset,12)
             binary_string = string(bin_temp[1]) * bin_temp[3:8] * int_to_binary_5bits(rs2) * int_to_binary_5bits(rs1) * "101" * bin_temp[9:12] * string(bin_temp[2]) * SB_type_instrucion
@@ -295,9 +320,15 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
             rs2 = parse(Int, parts[3][2:end])
             imm = parts[4]
             temp = findfirst(x -> x == imm, core.program)
-            temp2=handle_non_opcodes(core, temp-1)
-            final_temp=temp-temp2
-            offset = (final_temp - core.pc) * 4
+            if core.pc < temp
+                temp2=handle_non_opcodes(core, 1, temp-1)
+                final_temp=temp-temp2
+                offset = (final_temp - core.pc) * 4
+            else
+                temp2= handle_non_opcodes(core,temp, core.pc-1)
+                final_temp=temp+temp2
+                offset = (final_temp - core.pc) * 4
+            end
             offset = offset >> 1
             bin_temp = int_to_binary_bits_modified(offset,12)
             binary_string = string(bin_temp[1]) * bin_temp[3:8] * int_to_binary_5bits(rs2) * int_to_binary_5bits(rs1) * "110" * bin_temp[9:12] * string(bin_temp[2]) * SB_type_instrucion
@@ -308,9 +339,15 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
             rs2 = parse(Int, parts[3][2:end])
             imm = parts[4]
             temp = findfirst(x -> x == imm, core.program)
-            temp2=handle_non_opcodes(core, temp-1)
-            final_temp=temp-temp2
-            offset = (final_temp - core.pc) * 4
+            if core.pc < temp
+                temp2=handle_non_opcodes(core, 1, temp-1)
+                final_temp=temp-temp2
+                offset = (final_temp - core.pc) * 4
+            else
+                temp2= handle_non_opcodes(core,temp, core.pc-1)
+                final_temp=temp+temp2
+                offset = (final_temp - core.pc) * 4
+            end
             offset = offset >> 1
             bin_temp = int_to_binary_bits_modified(offset,12)
             binary_string = string(bin_temp[1]) * bin_temp[3:8] * int_to_binary_5bits(rs2) * int_to_binary_5bits(rs1) * "111" * bin_temp[9:12] * string(bin_temp[2]) * SB_type_instrucion
@@ -321,9 +358,15 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
             rd = parse(Int, parts[2][2:end])
             imm = parts[3]
             temp = findfirst(x -> x == imm, core.program)
-            temp2=handle_non_opcodes(core, temp-1)
-            final_temp=temp-temp2
-            offset = (final_temp - core.pc) * 4
+            if core.pc < temp
+                temp2=handle_non_opcodes(core, 1, temp-1)
+                final_temp=temp-temp2
+                offset = (final_temp - core.pc) * 4
+            else
+                temp2= handle_non_opcodes(core,temp, core.pc-1)
+                final_temp=temp+temp2
+                offset = (final_temp - core.pc) * 4
+            end
             offset = offset >> 1
             bin_temp = int_to_binary_bits_modified(offset,20)
             binary_string = string(bin_temp[1]) * bin_temp[11:20] * string(bin_temp[10]) * bin_temp[2:9] * int_to_binary_5bits(rd) * J_type_instrucion
@@ -332,16 +375,15 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
         elseif opcode == "j"
             imm = parts[2]
             temp = findfirst(x -> x == imm, core.program)
-            println(temp)
             if core.pc < temp
                 temp2=handle_non_opcodes(core, 1, temp-1)
+                final_temp=temp-temp2
+                offset = (final_temp - core.pc) * 4
             else
-                temp2= handle_non_opcodes(core,temp, core.pc)
+                temp2= handle_non_opcodes(core,temp, core.pc-1)
+                final_temp=temp+temp2
+                offset = (final_temp - core.pc) * 4
             end
-            final_temp=temp-temp2
-            offset = (final_temp - core.pc) * 4
-            println(temp2)
-            println(offset)
             offset = offset >> 1
             
             bin_temp = int_to_binary_bits_modified(offset,20)
@@ -361,7 +403,7 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
             store_word(binary_string, memory, memory_address, 1)
 
         elseif opcode== "ecall"
-            binary_string = "000000000000" * "00000" * "000" * "00000" * I_type_instrucion
+            binary_string = "000000000000" * "00000" * "000" * "00000" * ecall_instruction
             store_word(binary_string, memory, memory_address, 1)
         else 
             # println("$opcode")

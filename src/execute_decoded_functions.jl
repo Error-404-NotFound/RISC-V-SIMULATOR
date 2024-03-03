@@ -59,6 +59,9 @@ func3_JALR = Dict(
     "000" => "jalr"
 )
 
+func3_ecall =Dict(
+    "000" => "ecall"
+)
 
 function execute_R_type(core::Core1, func3::AbstractString, func7::AbstractString, rd::Int, rs1::Int, rs2::Int)
     if func3_R[func3] == "add"
@@ -166,7 +169,7 @@ end
 
 function execute_J_type(core::Core1, rd::Int, imm::Int)
     core.registers[rd] = core.pc + 1
-    core.pc += imm -1
+    core.pc += imm 
 end
 
 function execute_load_type(core::Core1, func3::AbstractString, rd::Int, rs1::Int, imm::Int)
@@ -188,3 +191,10 @@ function execute_JALR_type(core::Core1, rd::Int, rs1::Int, imm::Int)
     core.pc = core.registers[rs1] + imm
 end
 
+
+function execute_ecall_type(core::Core1, rd::Int, rs1::Int)
+    if(core.registers[rd]==10)
+        println("\nProgram exited with code 0")
+        core.pc = length(core.program) + 1
+    end
+end

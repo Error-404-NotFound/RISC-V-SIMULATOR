@@ -10,7 +10,8 @@ opcode_code_type = Dict(
     "0110111" => "U_type_instrucion",
     "1101111" => "J_type_instrucion",
     "0000011" => "Load_instrucion",
-    "1100111" => "JALR_instrucion"
+    "1100111" => "JALR_instrucion",
+    "1001001" => "ecall_instruction"
 )
 
 
@@ -22,7 +23,7 @@ function decode_and_execute(core::Core1, memory::Array{Int,2})
     # binary_string = reverse(binary_string)
     # println(binary_string)
     opcode = binary_string[26:32]
-    println(opcode)
+    # println(opcode)
 
     if opcode_code_type[opcode] == "R_type_instrucion"
         rd = binary_to_int(binary_string[21:25]) + 1
@@ -64,8 +65,13 @@ function decode_and_execute(core::Core1, memory::Array{Int,2})
     
     elseif opcode_code_type[opcode] == "J_type_instrucion"
         rd = binary_to_int(binary_string[21:25]) + 1
-        println(rd)
-        imm = binary_to_int(binary_string[1]*binary_string[13:20]*binary_string[12]*binary_string[2:11]*"0")
+        println("starting:",binary_string[1])
+        if binary_string[1] == '1'
+            imm= binary_to_int_modified(binary_string[1]*binary_string[13:20]*binary_string[12]*binary_string[2:11]*"0")
+        else
+            imm = binary_to_int(binary_string[1]*binary_string[13:20]*binary_string[12]*binary_string[2:11]*"0")
+        end
+        # imm = binary_to_int(binary_string[1]*binary_string[13:20]*binary_string[12]*binary_string[2:11]*"0")
         imm = imm ÷ 4
         println(imm)
         execute_J_type(core, rd, imm)
@@ -84,6 +90,12 @@ function decode_and_execute(core::Core1, memory::Array{Int,2})
         rs1 = binary_to_int(binary_string[13:17]) + 1
         imm = binary_to_int(binary_string[1:12])
         execute_JALR_type(core, func3, rd, rs1, imm)
+
+
+    elseif opcode_code_type[opcode] == "ecall_instruction"
+        rd = 18
+        rs1 = 11
+        execute_ecall_type(core, rd, rs1)
     end
 
    
