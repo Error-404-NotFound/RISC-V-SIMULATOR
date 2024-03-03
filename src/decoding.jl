@@ -22,7 +22,7 @@ function decode_and_execute(core::Core1, memory::Array{Int,2})
     # binary_string = reverse(binary_string)
     # println(binary_string)
     opcode = binary_string[26:32]
-    # println(opcode)
+    println(opcode)
 
     if opcode_code_type[opcode] == "R_type_instrucion"
         rd = binary_to_int(binary_string[21:25]) + 1
@@ -64,8 +64,10 @@ function decode_and_execute(core::Core1, memory::Array{Int,2})
     
     elseif opcode_code_type[opcode] == "J_type_instrucion"
         rd = binary_to_int(binary_string[21:25]) + 1
+        println(rd)
         imm = binary_to_int(binary_string[1]*binary_string[13:20]*binary_string[12]*binary_string[2:11]*"0")
         imm = imm ÷ 4
+        println(imm)
         execute_J_type(core, rd, imm)
 
     elseif opcode_code_type[opcode] == "Load_instrucion"

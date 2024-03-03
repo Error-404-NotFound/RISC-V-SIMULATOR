@@ -165,8 +165,8 @@ function execute_U_type(core::Core1, func3::AbstractString, rd::Int, imm::Int)
 end
 
 function execute_J_type(core::Core1, rd::Int, imm::Int)
-    core.registers[rd] = core.pc + 4
-    core.pc += imm
+    core.registers[rd] = core.pc + 1
+    core.pc += imm -1
 end
 
 function execute_load_type(core::Core1, func3::AbstractString, rd::Int, rs1::Int, imm::Int)

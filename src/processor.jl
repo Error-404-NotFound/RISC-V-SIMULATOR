@@ -42,7 +42,7 @@ end
 
 function run(processor::Processor, variable_address::Dict{String, Int},index::Int) 
     while processor.cores[index].pc <= length(processor.cores[index].program)
-        execute(processor.cores[index], processor.memory, variable_address)
+        decode_and_execute(processor.cores[index], processor.memory)
     end
 end
 
