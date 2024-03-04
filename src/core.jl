@@ -15,6 +15,12 @@ mutable struct Core1
         this.IF_temp_register = 0
         this.instruction_after_IF = "uninitialised"
 
+        this.rs1_back1 = -1
+        this.rs1_back2 = -1
+        this.rs2_back1 = -1
+        this.rs2_back2 = -1
+        this.rd_back1 = -1
+        this.rd_back2 = -1
         this.rs1_temp_register = 0
         this.rs2_temp_register = 0
         this.rd_temp_register = 0
@@ -44,6 +50,12 @@ mutable struct Core1
     IF_temp_register::Int
     instruction_after_IF::String
 
+    rs1_back1::Int
+    rs1_back2::Int
+    rs2_back1::Int
+    rs2_back2::Int
+    rd_back1::Int
+    rd_back2::Int
     rs1_temp_register::Int
     rs2_temp_register::Int
     rd_temp_register::Int
