@@ -8,6 +8,10 @@ mutable struct Core1
         this.pc = 1
         this.program = []
         
+        this.number_of_stalls = 0
+        this.is_stalled = false
+        this.is_stalled_next_cycle = false
+
         this.IF_temp_register = 0
         this.instruction_after_IF = "uninitialised"
 
@@ -27,9 +31,15 @@ mutable struct Core1
 
         this.WB_temp_register = 0
         this.instruction_after_WB = "uninitialised"
+        this.write_back_last_instruction = false
 
+        this.temp_register_instruction_type = "uninitialised"
         return this
     end
+
+    number_of_stalls::Int
+    is_stalled::Bool
+    is_stalled_next_cycle::Bool
 
     IF_temp_register::Int
     instruction_after_IF::String
@@ -50,6 +60,9 @@ mutable struct Core1
     
     WB_temp_register::Int
     instruction_after_WB::String
+    write_back_last_instruction::Bool
+
+    temp_register_instruction_type::String
 end
 
 function core_Init(id::Int)

@@ -32,8 +32,8 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
     elseif opcode == "sll"
         rd = parse(Int, parts[2][2:end]) + 1
         rs1 = parse(Int, parts[3][2:end]) + 1
-        shamt = parse(Int, parts[4])
-        core.registers[rd] = core.registers[rs1] << shamt
+        rs2 = parse(Int, parts[4][2:end]) + 1
+        core.registers[rd] = core.registers[rs1] << core.registers[rs2]
     
     elseif opcode == "slt"
         rd = parse(Int, parts[2][2:end]) + 1
@@ -56,14 +56,14 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
     elseif opcode == "srl"
         rd = parse(Int, parts[2][2:end]) + 1
         rs1 = parse(Int, parts[3][2:end]) + 1
-        shamt = parse(Int, parts[4])
-        core.registers[rd] = core.registers[rs1] >>> shamt
+        rs2 = parse(Int, parts[4][2:end]) + 1
+        core.registers[rd] = core.registers[rs1] >>> core.registers[rs2]
 
     elseif opcode == "sra"
         rd = parse(Int, parts[2][2:end]) + 1
         rs1 = parse(Int, parts[3][2:end]) + 1
-        shamt = parse(Int, parts[4])
-        core.registers[rd] = core.registers[rs1] >> shamt
+        rs2 = parse(Int, parts[4][2:end]) + 1
+        core.registers[rd] = core.registers[rs1] >> core.registers[rs2]
 
     elseif opcode == "or"
         rd = parse(Int, parts[2][2:end]) + 1

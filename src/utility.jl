@@ -35,7 +35,7 @@ alias = Dict(
 
 opcode_dictionary = Dict(
     "R_type_instructions" => ["add", "sub", "sll", "slt", "sltu", "xor", "srl", "sra", "or", "and", "mul"],
-    "I_type_instructions" => ["addi", "slti", "sltiu", "xori", "ori", "andi", "slli", "srli", "srai", "muli", "jalr", "jr", "li"],
+    "I_type_instructions" => ["addi", "slti", "sltiu", "xori", "ori", "andi", "slli", "srli", "srai", "muli", "jalr", "jr", "li", "mv"],
     "S_type_instructions" => ["sb", "sh", "sw"],
     "L_type_instructions" => ["lb", "lh", "lw", "lbu", "lhu"],
     "SB_type_instructions" => ["beq", "bne", "blt", "ble", "bge", "bltu", "bgeu"],

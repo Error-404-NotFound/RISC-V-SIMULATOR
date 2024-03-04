@@ -74,6 +74,7 @@ function main()
     # run(sim,variable_address_second, 2)
     # println()
 
+    println(sim.clock)
     println("Registers:")
     for i in 1:length(sim.cores)
         println("Core $i Registers: $(sim.cores[i].registers)")
