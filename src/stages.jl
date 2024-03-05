@@ -51,6 +51,10 @@ function WB_stage(processor::Processor, core::Core1, memory::Array{Int,2}, varia
 end
 
 function MEM_stage(processor::Processor, core::Core1, memory::Array{Int,2}, variable_address::Dict{String, Int})
+    # if core.is_stalled
+    #     core.instruction_after_MEM = "uninitialised"
+    #     return
+    # end
     memory = processor.memory
     core.instruction_after_MEM = instruction = core.instruction_after_EX
     instruction_type = core.temp_register_instruction_type
@@ -165,15 +169,16 @@ function ID_RF_stage(processor::Processor, core::Core1, memory::Array{Int,2}, va
         # core.rs2_back2 = core.rs2_back1
         # core.rs1_back1 = core.rs1_temp_register
         # core.rs2_back1 = core.rs2_temp_register
+        
+        core.rd_back2 = core.rd_back1
+        core.rd_back1 = core.rd_temp_register
         if core.rs1_temp_register == core.rd_back1 || core.rs2_temp_register == core.rd_back1 || core.rs1_temp_register == core.rd_back2 || core.rs2_temp_register == core.rd_back2
             core.is_stalled = true
         end
-        core.rd_back2 = core.rd_back1
-        core.rd_back1 = core.rd_temp_register
-        
 
         core.write_back_last_instruction = false
         core.rd_temp_register = core.rd_temp_register
+        core.instruction_after_ID_RF = instruction
         core.temp_register_instruction_type = instruction_type
     end
 end
