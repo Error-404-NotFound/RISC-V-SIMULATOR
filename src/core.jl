@@ -8,73 +8,132 @@ mutable struct Core1
         this.pc = 1
         this.program = []
         
-        this.number_of_stalls = 0
-        this.is_stalled = false
-        this.is_stalled_next_cycle = false
+        # Stall tracking registers
+        this.stall_count = 0
+        this.stall_in_present_clock_cycle = false
+        this.stall_at_IF = false
+        this.stall_at_ID_RF = false
+        this.stall_at_EX = false
+        this.stall_at_MEM = false
+        this.stall_at_WB = false
+        this.stall_in_next_clock_cycle = false
+        this.stall_at_jump_instruction = false
 
+        # Instruction tracking registers
+        this.instruction_count = 0
+
+        # 1-bit Branch Prediction (Branch tracking registers)
+        this.branch_count = 0
+        this.branch_misprediction_count = 0
+        this.branch_prediction_accuracy = 0.0
+        this.branch_prediction_accuracy_count = 0
+        this.branch_prediction_accuracy_sum = 0
+        this.branch_prediction = 0
+
+        # Pipeline registers
+
+        # IF stage registers
         this.IF_temp_register = 0
         this.instruction_after_IF = "uninitialised"
 
-        this.rs1_back1 = -1
-        this.rs1_back2 = -1
-        this.rs2_back1 = -1
-        this.rs2_back2 = -1
-        this.rd_back1 = -1
-        this.rd_back2 = -1
-        this.rs1_temp_register = 0
-        this.rs2_temp_register = 0
-        this.rd_temp_register = 0
+        # ID_RF stage registers
+        this.opcode_register = "uninitialised"
+        this.rs1_temp_register = -1
+        this.rs2_temp_register = -1
+        this.rd_temp_register = -1
+        this.rd_temp_register_previous_instruction = -1
         this.immediate_temp_register = 0
         this.label_temp_register = "uninitialised"
         this.ID_RF_temp_register = 0
         this.instruction_after_ID_RF = "uninitialised"
+        this.temp_register = "uninitialised"
 
+        # EX stage registers
         this.EX_temp_register = 0
         this.instruction_after_EX = "uninitialised"
 
+        # MEM stage registers
         this.MEM_temp_register = 0
         this.instruction_after_MEM = "uninitialised"
 
+        # WB stage registers
         this.WB_temp_register = 0
         this.instruction_after_WB = "uninitialised"
         this.write_back_last_instruction = false
+        this.write_back_previous_last_instruction = false
 
+        # Instruction type tracking registers
         this.temp_register_instruction_type = "uninitialised"
+
+        # Temp registers
+        this.temp_register_string = "uninitialised"
+        this.temp_register_int = 0
+        this.temp_register_bool = false
+        
         return this
     end
 
-    number_of_stalls::Int
-    is_stalled::Bool
-    is_stalled_next_cycle::Bool
+    # Stall tracking registers
+    stall_count::Int
+    stall_in_present_clock_cycle::Bool
+    stall_at_IF::Bool
+    stall_at_ID_RF::Bool
+    stall_at_EX::Bool
+    stall_at_MEM::Bool
+    stall_at_WB::Bool
+    stall_in_next_clock_cycle::Bool
+    stall_at_jump_instruction::Bool
 
+    # Instruction tracking registers
+    instruction_count::Int
+
+    # 1-bit Branch Prediction (Branch tracking registers)
+    branch_count::Int
+    branch_misprediction_count::Int
+    branch_prediction_accuracy::Float64
+    branch_prediction_accuracy_count::Int
+    branch_prediction_accuracy_sum::Int
+    branch_prediction::Int
+
+    # Pipeline registers
+
+    # IF stage registers
     IF_temp_register::Int
     instruction_after_IF::String
 
-    rs1_back1::Int
-    rs1_back2::Int
-    rs2_back1::Int
-    rs2_back2::Int
-    rd_back1::Int
-    rd_back2::Int
+    # ID_RF stage registers
+    opcode_register::String
     rs1_temp_register::Int
     rs2_temp_register::Int
     rd_temp_register::Int
+    rd_temp_register_previous_instruction::Int
     immediate_temp_register::Int
     label_temp_register::String
     ID_RF_temp_register::Int
     instruction_after_ID_RF::String
+    temp_register::String
 
+    # EX stage registers
     EX_temp_register::Int
     instruction_after_EX::String
 
+    # MEM stage registers
     MEM_temp_register::Int
     instruction_after_MEM::String
     
+    # WB stage registers
     WB_temp_register::Int
     instruction_after_WB::String
     write_back_last_instruction::Bool
+    write_back_previous_last_instruction::Bool
 
+    # Instruction type tracking registers
     temp_register_instruction_type::String
+
+    # Temp registers
+    temp_register_string::String
+    temp_register_int::Int
+    temp_register_bool::Bool
 end
 
 function core_Init(id::Int)

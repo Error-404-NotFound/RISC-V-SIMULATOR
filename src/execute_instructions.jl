@@ -157,8 +157,8 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
             temp_col = 4
         end
         temp_row = (core.registers[rs1] - temp_col + offset) ÷ 4 + 1
-        binary_string = int_to_binary_32bits(core.registers[rs1])
-        core.registers[rd] = load_one_byte(binary_string, memory, temp_row, temp_col)
+        # binary_string = int_to_binary_32bits(core.registers[rs1])
+        core.registers[rd] = load_one_byte(memory, temp_row, temp_col)
 
     # lh rd offset(rs1)
     # lh rd offset rs1
@@ -171,8 +171,8 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
             temp_col = 4
         end
         temp_row = (core.registers[rs1] - temp_col + offset) ÷ 4 + 1
-        binary_string = int_to_binary_32bits(core.registers[rs1])
-        core.registers[rd] = load_half_word(binary_string, memory, temp_row, temp_col)
+        # binary_string = int_to_binary_32bits(core.registers[rs1])
+        core.registers[rd] = load_half_word(memory, temp_row, temp_col)
 
     # lw rd offset(rs1)
     # lw rd offset rs1
@@ -185,8 +185,8 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
             temp_col = 4
         end
         temp_row = (core.registers[rs1] - temp_col + offset) ÷ 4 + 1
-        binary_string = int_to_binary_32bits(core.registers[rs1])
-        core.registers[rd] = load_word(binary_string, memory, temp_row, temp_col)
+        # binary_string = int_to_binary_32bits(core.registers[rs1])
+        core.registers[rd] = load_word(memory, temp_row, temp_col)
         
     # lbu rd offset(rs1)
     # lbu rd offset rs1
@@ -199,8 +199,8 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
             temp_col = 4
         end
         temp_row = (core.registers[rs1] - temp_col + offset) ÷ 4 + 1
-        binary_string = int_to_binary_32bits(core.registers[rs1])
-        core.registers[rd] = load_one_byte(binary_string, memory, temp_row, temp_col)
+        # binary_string = int_to_binary_32bits(core.registers[rs1])
+        core.registers[rd] = load_one_byte(memory, temp_row, temp_col)
 
     # lhu rd offset(rs1)
     # lhu rd offset rs1
@@ -213,8 +213,8 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
             temp_col = 4
         end
         temp_row = (core.registers[rs1] - temp_col + offset) ÷ 4 + 1
-        binary_string = int_to_binary_32bits(core.registers[rs1])
-        core.registers[rd] = load_half_word(binary_string, memory, temp_row, temp_col)
+        # binary_string = int_to_binary_32bits(core.registers[rs1])
+        core.registers[rd] = load_half_word(memory, temp_row, temp_col)
 
     # la rd label
     elseif opcode == "la"

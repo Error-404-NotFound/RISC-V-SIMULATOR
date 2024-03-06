@@ -6,7 +6,7 @@ function execute_stage(instruction::String, instruction_type::String, core::Core
     parts = remove_empty_strings(parts)
     opcode = parts[1]
     foreach(kv -> opcode in kv[2] && (instruction_type = kv[1]; return), opcode_dictionary)
-    println(instruction)
+    # println(instruction)
 
     if instruction_type == "R_type_instructions"
         core.EX_temp_register = execute_R(core, memory, variable_address)

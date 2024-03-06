@@ -177,6 +177,15 @@ function binary_to_int_modified(binary::AbstractString)::Int
         return -positive_num 
 end
 
+function convert_address_to_row_col(address::Int)
+    temp_col = address % 4
+    if temp_col == 0
+        temp_col = 4
+    end
+    temp_row = (address - temp_col) ÷ 4 + 1
+    return temp_row, temp_col
+end
+
 function store_word(binary_string::AbstractString, memory::Array{Int,2}, row::Int, col::Int)
     if length(binary_string) != 32
         println("Error: Binary string length is not 32 bits.")
@@ -233,11 +242,11 @@ function store_one_byte(binary_string::AbstractString, memory::Array{Int,2}, row
     memory[row, col] = parse(UInt8, binary_string[25:32], base=2)
 end
 
-function load_word(binary_string::AbstractString, memory::Array{Int,2}, row::Int, col::Int) 
-    if length(binary_string) != 32
-        println("Error: Binary string length is not 32 bits.")
-        return
-    end
+function load_word(memory::Array{Int,2}, row::Int, col::Int) 
+    # if length(binary_string) != 32
+    #     println("Error: Binary string length is not 32 bits.")
+    #     return
+    # end
     if col == 1
         temp_value = memory[row, col] + memory[row, col+1]*256 + memory[row, col+2]*65536 + memory[row, col+3]*16777216
     elseif col == 2
@@ -253,11 +262,11 @@ function load_word(binary_string::AbstractString, memory::Array{Int,2}, row::Int
     return temp_value
 end
 
-function load_half_word(binary_string::AbstractString, memory::Array{Int,2}, row::Int, col::Int)
-    if length(binary_string) != 32
-        println("Error: Binary string length is not 32 bits.")
-        return
-    end
+function load_half_word(memory::Array{Int,2}, row::Int, col::Int)
+    # if length(binary_string) != 32
+    #     println("Error: Binary string length is not 32 bits.")
+    #     return
+    # end
     if col == 1
         return memory[row, col] + memory[row, col+1]*256
     elseif col == 2
@@ -269,12 +278,18 @@ function load_half_word(binary_string::AbstractString, memory::Array{Int,2}, row
     end
 end
 
-function load_one_byte(binary_string::AbstractString, memory::Array{Int,2}, row::Int, col::Int)
-    if length(binary_string) != 32
-        println("Error: Binary string length is not 32 bits.")
-        return
-    end
+function load_one_byte(memory::Array{Int,2}, row::Int, col::Int)
+    # if length(binary_string) != 32
+    #     println("Error: Binary string length is not 32 bits.")
+    #     return
+    # end
     return memory[row, col]
+end
+
+function get_parts_and_opcode_from_instruction(instruction::String)
+    parts = split(instruction, " ")
+    parts = remove_empty_strings(parts)
+    return parts, parts[1]
 end
 
 
