@@ -1,10 +1,12 @@
 include("core.jl")
+include("utility.jl")
 
 function execute_stage(instruction::String, instruction_type::String, core::Core1, memory::Array{Int,2}, variable_address::Dict{String, Int})
     # println(instruction, " ", instruction_type)
-    parts = split(instruction, " ")
-    parts = remove_empty_strings(parts)
-    opcode = parts[1]
+    # parts = split(instruction, " ")
+    # parts = remove_empty_strings(parts)
+    # opcode = parts[1]
+    parts, opcode = get_parts_and_opcode_from_instruction(instruction)
     foreach(kv -> opcode in kv[2] && (instruction_type = kv[1]; return), opcode_dictionary)
     # println(instruction)
 
@@ -29,8 +31,9 @@ end
 
 function execute_R(core::Core1, memory::Array{Int,2}, variable_address::Dict{String, Int})
     instruction = core.instruction_after_ID_RF
-    parts = split(instruction, " ")
-    opcode = parts[1]
+    # parts = split(instruction, " ")
+    # opcode = parts[1]
+    parts, opcode = get_parts_and_opcode_from_instruction(instruction)
     if opcode == "add"
         return core.registers[core.rs1_temp_register] + core.registers[core.rs2_temp_register]
     elseif opcode == "sub"
@@ -59,8 +62,9 @@ end
 
 function execute_I(core::Core1, memory::Array{Int,2}, variable_address::Dict{String, Int})
     instruction = core.instruction_after_ID_RF
-    parts = split(instruction, " ")
-    opcode = parts[1]
+    # parts = split(instruction, " ")
+    # opcode = parts[1]
+    parts, opcode = get_parts_and_opcode_from_instruction(instruction)
     # println(core.registers[core.rs1_temp_register])
     # println(core.registers[core.rs2_temp_register])
     if opcode == "addi"
@@ -93,18 +97,44 @@ end
 
 function execute_Load(core::Core1, memory::Array{Int,2}, variable_address::Dict{String, Int})
     instruction = core.instruction_after_ID_RF
-    parts = split(instruction, " ")
-    opcode = parts[1]
+    # parts = split(instruction, " ")
+    # opcode = parts[1]
+    parts, opcode = get_parts_and_opcode_from_instruction(instruction)
     if opcode == "lb"
-        return memory[variable_address[parts[3]] + core.registers[core.rs1_temp_register]]
+        return core.registers[core.rs1_temp_register] + core.immediate_temp_register
     elseif opcode == "lh"
-        return memory[variable_address[parts[3]] + core.registers[core.rs1_temp_register]]
+        return core.registers[core.rs1_temp_register] + core.immediate_temp_register
     elseif opcode == "lw"
-        return memory[variable_address[parts[3]] + core.registers[core.rs1_temp_register]]
+        return core.registers[core.rs1_temp_register] + core.immediate_temp_register
     elseif opcode == "lbu"
-        return memory[variable_address[parts[3]] + core.registers[core.rs1_temp_register]]
+        return core.registers[core.rs1_temp_register] + core.immediate_temp_register
     elseif opcode == "lhu"
-        return memory[variable_address[parts[3]] + core.registers[core.rs1_temp_register]]
+        return core.registers[core.rs1_temp_register] + core.immediate_temp_register
     end
-    
+end
+
+function execute_S(core::Core1, memory::Array{Int,2}, variable_address::Dict{String, Int})
+    instruction = core.instruction_after_ID_RF
+    # parts = split(instruction, " ")
+    # opcode = parts[1]
+    parts, opcode = get_parts_and_opcode_from_instruction(instruction)
+    if opcode == "sb"
+        return core.registers[core.rs1_temp_register] + core.immediate_temp_register
+    elseif opcode == "sh"
+        return core.registers[core.rs1_temp_register] + core.immediate_temp_register
+    elseif opcode == "sw"
+        return core.registers[core.rs1_temp_register] + core.immediate_temp_register
+    end
+end
+
+function execute_UJ(core::Core1, memory::Array{Int,2}, variable_address::Dict{String, Int})
+    instruction = core.instruction_after_ID_RF
+    # parts = split(instruction, " ")
+    # opcode = parts[1]
+    parts, opcode = get_parts_and_opcode_from_instruction(instruction)
+    if opcode == "jal"
+        temp_pc = core.pc + 1
+        # core.pc = findfirst(x -> x == core.label_temp_register, core.program)
+        return temp_pc
+    end
 end

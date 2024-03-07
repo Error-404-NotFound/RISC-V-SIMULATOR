@@ -1,6 +1,9 @@
 .data
 
 .text
-    li x10 3
-    li x11 4
-    add x12 x10 x11
+    li x10 10
+    li x11 11
+    jal x31 end
+
+end:
+    li x7 100

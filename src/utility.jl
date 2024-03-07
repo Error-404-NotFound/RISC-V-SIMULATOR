@@ -177,7 +177,10 @@ function binary_to_int_modified(binary::AbstractString)::Int
         return -positive_num 
 end
 
-function convert_address_to_row_col(address::Int)
+function get_row_col_from_address(address::Int)
+    if address == 0
+        return 1, 1
+    end
     temp_col = address % 4
     if temp_col == 0
         temp_col = 4
