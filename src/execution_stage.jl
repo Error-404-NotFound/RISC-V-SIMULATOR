@@ -149,3 +149,29 @@ function execute_UJ(core::Core1, memory::Array{Int,2}, variable_address::Dict{St
         end
     end
 end
+
+function execute_SB(core::Core1, memory::Array{Int,2}, variable_address::Dict{String, Int})
+    instruction = core.instruction_after_ID_RF
+    # parts = split(instruction, " ")
+    # opcode = parts[1]
+    parts, opcode = get_parts_and_opcode_from_instruction(instruction)
+    if opcode == "beq"
+        # core.instruction_after_IF = "uninitialised"
+        if core.registers[core.rs1_temp_register] == core.registers[core.rs2_temp_register]
+            core.pc = findfirst(x -> x == core.label_temp_register, core.program) + 1
+            core.stall_at_EX = true
+        else
+            core.pc = core.pc
+        end
+
+    elseif opcode == "bne"
+        core.instruction_after_IF = "uninitialised"
+        if core.registers[core.rs1_temp_register] != core.registers[core.rs2_temp_register]
+            core.pc = findfirst(x -> x == core.label_temp_register, core.program) + 1
+            core.stall_at_EX = true
+        else
+            println(core.pc)
+            core.pc = core.pc
+        end
+    end
+end
