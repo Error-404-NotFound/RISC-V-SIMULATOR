@@ -202,6 +202,7 @@ function ID_RF_stage(processor::Processor, core::Core1, memory::Array{Int,2}, va
                 core.rs2_temp_register = parse(Int, parts[3][2:end]) + 1
                 core.label_temp_register = parts[4]
                 rd = parse(Int, parts[2][2:end]) + 1
+                branch_prediction_1Bit_NT(core, instruction, instruction_type, rd)
                 
             elseif instruction_type == "U_type_instructions"
                 core.rd_temp_register = parse(Int, parts[2][2:end]) + 1
@@ -220,64 +221,6 @@ function ID_RF_stage(processor::Processor, core::Core1, memory::Array{Int,2}, va
                 core.stall_at_jump_instruction = true
                 return
             end
-        end
-
-        if instruction_type == "SB_type_instructions"
-            # println(core.rs1_temp_register)
-            # println(core.rs2_temp_register)
-            # println(core.rd_temp_register)
-            # println(core.rd_temp_register_previous_instruction)
-            # println(rd)
-            if core.rs1_temp_register == core.rd_temp_register || rd == core.rd_temp_register || core.rs2_temp_register == core.rd_temp_register
-                core.stall_in_next_clock_cycle = true
-                core.write_back_last_instruction = false
-                core.stall_at_IF = false
-                core.rd_temp_register_previous_instruction = core.rd_temp_register
-                core.rd_temp_register = rd
-                core.instruction_after_ID_RF = instruction
-                core.temp_register_instruction_type = instruction_type
-                return
-            end
-
-            if core.rs1_temp_register == core.rd_temp_register_previous_instruction || rd == core.rd_temp_register_previous_instruction || core.rs2_temp_register == core.rd_temp_register_previous_instruction
-                if !core.write_back_previous_last_instruction
-                    core.stall_at_IF = true
-                    core.stall_at_EX = true
-                    core.stall_in_next_clock_cycle = true
-                end
-                core.stall_at_IF = true
-                return
-            end
-
-            if opcode == "beq"
-                if core.registers[core.rs1_temp_register] == core.registers[core.rs2_temp_register]
-                    temp_dest = findfirst(x -> x == core.label_temp_register, core.program)
-                    if temp_dest-1 < core.pc
-                        core.stall_at_IF = true
-                        # core.stall_in_next_clock_cycle = true
-                        if core.stall_at_EX && core.stall_in_next_clock_cycle
-                            core.stall_at_EX = false
-                            core.stall_in_next_clock_cycle = false
-                        end
-                    end
-                end
-            end
-
-            if opcode == "bne"
-                if core.registers[core.rs1_temp_register] != core.registers[core.rs2_temp_register]
-                    temp_dest = findfirst(x -> x == core.label_temp_register, core.program)
-                    if temp_dest-1 < core.pc
-                        core.stall_at_IF = true
-                        # core.stall_in_next_clock_cycle = true
-                        if core.stall_at_EX && core.stall_in_next_clock_cycle
-                            core.stall_at_EX = false
-                            core.stall_in_next_clock_cycle = false
-                        end
-                    end
-                end
-            end
-                
-
         end
 
         core.write_back_last_instruction = false

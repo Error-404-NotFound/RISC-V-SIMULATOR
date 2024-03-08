@@ -156,7 +156,7 @@ function execute_SB(core::Core1, memory::Array{Int,2}, variable_address::Dict{St
     # opcode = parts[1]
     parts, opcode = get_parts_and_opcode_from_instruction(instruction)
     if opcode == "beq"
-        # core.instruction_after_IF = "uninitialised"
+        core.instruction_after_IF = "uninitialised"
         if core.registers[core.rs1_temp_register] == core.registers[core.rs2_temp_register]
             core.pc = findfirst(x -> x == core.label_temp_register, core.program) + 1
             core.stall_at_EX = true
@@ -171,6 +171,51 @@ function execute_SB(core::Core1, memory::Array{Int,2}, variable_address::Dict{St
             core.stall_at_EX = true
         else
             println(core.pc)
+            core.pc = core.pc
+        end
+
+    elseif opcode == "blt"
+        core.instruction_after_IF = "uninitialised"
+        if core.registers[core.rs1_temp_register] < core.registers[core.rs2_temp_register]
+            core.pc = findfirst(x -> x == core.label_temp_register, core.program) + 1
+            core.stall_at_EX = true
+        else
+            core.pc = core.pc
+        end
+
+    elseif opcode == "ble"
+        core.instruction_after_IF = "uninitialised"
+        if core.registers[core.rs1_temp_register] <= core.registers[core.rs2_temp_register]
+            core.pc = findfirst(x -> x == core.label_temp_register, core.program) + 1
+            core.stall_at_EX = true
+        else
+            core.pc = core.pc
+        end
+
+    elseif opcode == "bge"
+        core.instruction_after_IF = "uninitialised"
+        if core.registers[core.rs1_temp_register] >= core.registers[core.rs2_temp_register]
+            core.pc = findfirst(x -> x == core.label_temp_register, core.program) + 1
+            core.stall_at_EX = true
+        else
+            core.pc = core.pc
+        end
+
+    elseif opcode == "bltu"
+        core.instruction_after_IF = "uninitialised"
+        if core.registers[core.rs1_temp_register] < core.registers[core.rs2_temp_register]
+            core.pc = findfirst(x -> x == core.label_temp_register, core.program) + 1
+            core.stall_at_EX = true
+        else
+            core.pc = core.pc
+        end
+
+    elseif opcode == "bgeu"
+        core.instruction_after_IF = "uninitialised"
+        if core.registers[core.rs1_temp_register] >= core.registers[core.rs2_temp_register]
+            core.pc = findfirst(x -> x == core.label_temp_register, core.program) + 1
+            core.stall_at_EX = true
+        else
             core.pc = core.pc
         end
     end

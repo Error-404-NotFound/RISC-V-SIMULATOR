@@ -43,6 +43,12 @@ function WB_stage(processor::Processor, core::Core1, memory::Array{Int,2}, varia
             core.registers[rd] = core.MEM_temp_register
         end
         core.instruction_count += 1
+        if opcode == "jr"
+            core.instruction_count -= 1
+        elseif opcode == "la"
+            core.instruction_count += 1
+            # processor.clock += 2
+        end
         core.write_back_last_instruction = true
         core.write_back_previous_last_instruction = true
     end
@@ -66,7 +72,8 @@ function MEM_stage(processor::Processor, core::Core1, memory::Array{Int,2}, vari
         elseif instruction_type == "S_type_instructions"
             row, col = get_row_col_from_address(address)
             rs2 = parse(Int, parts[2][2:end]) + 1
-            binary_string = int_to_binary_bits_modified(core.registers[rs2], 32)
+            # println(core.registers[rs2])
+            binary_string = int_to_binary_32bits(core.registers[rs2])
             store_word(binary_string, memory, row, col)
         elseif opcode == "jal" || opcode == "la"
             core.MEM_temp_register = address 
@@ -84,7 +91,6 @@ function MEM_stage(processor::Processor, core::Core1, memory::Array{Int,2}, vari
     core.registers[1] = 0
 end
 
-
 # Function for the Execution stage with data forwarding
 function EX_stage(processor::Processor, core::Core1, memory::Array{Int,2}, variable_address::Dict{String, Int})
     if core.stall_in_present_clock_cycle || core.stall_at_EX
@@ -98,9 +104,13 @@ function EX_stage(processor::Processor, core::Core1, memory::Array{Int,2}, varia
         println("Execution at clock cycle: ", processor.clock)
         instruction_type = core.temp_register_instruction_type
         
+        println("rs1: ",core.rs1_temp_register)
+        println("rs2: ",core.rs2_temp_register)
+        println("pc: ",core.pc)
         # Check for data forwarding
         rs1_value = core.registers[core.rs1_temp_register]
         rs2_value = core.registers[core.rs2_temp_register]
+
         
         if core.rs1_temp_register == core.rd_temp_register_previous_instruction
             core.registers[core.rs1_temp_register] = core.MEM_temp_register
@@ -109,25 +119,8 @@ function EX_stage(processor::Processor, core::Core1, memory::Array{Int,2}, varia
             println("rs2: ",rs2_value)
         end
         
-        if core.rs2_temp_register == core.rd_temp_register_previous_instruction
-            core.registers[core.rs2_temp_register] = core.MEM_temp_register
-            rs2_value = core.MEM_temp_register
-            println("rs1: ",rs1_value)
-            println("rs2: ",rs2_value)
-        end
-        
-        if core.rs1_temp_register == core.rd_temp_register
-            core.registers[core.rs1_temp_register] = core.EX_temp_register
-            rs1_value = core.EX_temp_register
-            println("rs1: ",rs1_value)
-            println("rs2: ",rs2_value)
-        end
-        
         if core.rs2_temp_register == core.rd_temp_register
-            core.registers[core.rs2_temp_register] = core.EX_temp_register
             rs2_value = core.EX_temp_register
-            println("rs1: ",rs1_value)
-            println("rs2: ",rs2_value)
         end
         
         # Call execute_stage with corrected arguments
@@ -137,8 +130,8 @@ function EX_stage(processor::Processor, core::Core1, memory::Array{Int,2}, varia
     core.registers[1] = 0
 end
 
+# Function for the Instruction Decode and Register Fetch stage
 
-# Function for the Instruction Decode and Register Fetch stage with data forwarding
 function ID_RF_stage(processor::Processor, core::Core1, memory::Array{Int,2}, variable_address::Dict{String, Int})
     if core.stall_in_present_clock_cycle
         return
@@ -159,12 +152,22 @@ function ID_RF_stage(processor::Processor, core::Core1, memory::Array{Int,2}, va
                 rd = parse(Int, parts[2][2:end]) + 1
                 core.rs1_temp_register = parse(Int, parts[3][2:end]) + 1
                 core.rs2_temp_register = parse(Int, parts[4][2:end]) + 1
-                
+                # println(core.rs1_temp_register, " ", core.rd_temp_register, " ", core.rd_temp_register_previous_instruction, " ", core.write_back_previous_last_instruction)
+                if core.rs2_temp_register == core.rd_temp_register || core.rs1_temp_register == core.rd_temp_register
+                    core.stall_in_next_clock_cycle = true
+                elseif core.rs1_temp_register == core.rd_temp_register_previous_instruction || core.rs2_temp_register == core.rd_temp_register_previous_instruction
+                    if !core.write_back_previous_last_instruction
+                        core.stall_at_EX = true
+                        core.stall_in_next_clock_cycle = true
+                    end
+                end
+
             elseif instruction_type == "I_type_instructions"
                 if opcode == "li"
                     core.rs1_temp_register = 0 + 1
                     rd = parse(Int, parts[2][2:end]) + 1
-                    core.immediate_temp_register = core.rs2_temp_register = parse(Int, parts[3])
+                    core.immediate_temp_register = parse(Int, parts[3])
+                    core.rs2_temp_register = 0 + 1
                 elseif opcode == "mv"
                     rd = parse(Int, parts[2][2:end]) + 1
                     core.rs1_temp_register = parse(Int, parts[3][2:end]) + 1
@@ -178,16 +181,41 @@ function ID_RF_stage(processor::Processor, core::Core1, memory::Array{Int,2}, va
                     core.rs1_temp_register = parse(Int, parts[3][2:end]) + 1
                     core.immediate_temp_register = parse(Int, parts[4])
                 end
+                if core.rs1_temp_register == core.rd_temp_register
+                    core.stall_in_next_clock_cycle = true
+                elseif core.rs1_temp_register == core.rd_temp_register_previous_instruction
+                    if !core.write_back_previous_last_instruction
+                        core.stall_at_EX = true
+                        core.stall_in_next_clock_cycle = true
+                    end 
+                end
 
             elseif instruction_type == "L_type_instructions"
-                core.rd_temp_register = parse(Int, parts[2][2:end]) + 1
+                rd = parse(Int, parts[2][2:end]) + 1
                 core.immediate_temp_register = parse(Int, parts[3])
                 core.rs1_temp_register = parse(Int, parts[4][2:end]) + 1
+                if core.rs2_temp_register == core.rd_temp_register || core.rs1_temp_register == core.rd_temp_register
+                    core.stall_in_next_clock_cycle = true
+                elseif core.rs1_temp_register == core.rd_temp_register_previous_instruction || core.rs2_temp_register == core.rd_temp_register_previous_instruction
+                    if !core.write_back_previous_last_instruction
+                        core.stall_at_EX = true
+                        core.stall_in_next_clock_cycle = true
+                    end
+                end
 
             elseif instruction_type == "S_type_instructions"
                 core.rs2_temp_register = parse(Int, parts[2][2:end]) + 1
                 core.immediate_temp_register = parse(Int, parts[3])
                 core.rs1_temp_register = parse(Int, parts[4][2:end]) + 1
+                rd = -2
+                if core.rs2_temp_register == core.rd_temp_register || core.rs1_temp_register == core.rd_temp_register
+                    core.stall_in_next_clock_cycle = true
+                elseif core.rs1_temp_register == core.rd_temp_register_previous_instruction || core.rs2_temp_register == core.rd_temp_register_previous_instruction
+                    if !core.write_back_previous_last_instruction
+                        core.stall_at_EX = true
+                        core.stall_in_next_clock_cycle = true
+                    end
+                end
 
             elseif instruction_type == "SB_type_instructions"
                 core.rs1_temp_register = parse(Int, parts[2][2:end]) + 1
@@ -200,15 +228,31 @@ function ID_RF_stage(processor::Processor, core::Core1, memory::Array{Int,2}, va
 
             elseif instruction_type == "UJ_type_instructions"
                 if opcode == "j"
-                    core.rd_temp_register = 0
+                    rd = 0
                     core.label_temp_register = parts[2]
                 else
-                    core.rd_temp_register = parse(Int, parts[2][2:end]) + 1
+                    rd = parse(Int, parts[2][2:end]) + 1
                     core.label_temp_register = parts[3]
                 end
+                core.rd_temp_register_previous_instruction = core.rd_temp_register
+                core.rd_temp_register = -1
+                core.stall_at_jump_instruction = true
+                return
             end
         end
+        # po
+    
+        # core.rs1_back2 = core.rs1_back1
+        # core.rs2_back2 = core.rs2_back1
+        # core.rs1_back1 = core.rs1_temp_register
+        # core.rs2_back1 = core.rs2_temp_register
         
+        # core.rd_back2 = core.rd_back1
+        # core.rd_back1 = core.rd_temp_register
+        # if core.rs1_temp_register == core.rd_back1 || core.rs2_temp_register == core.rd_back1 || core.rs1_temp_register == core.rd_back2 || core.rs2_temp_register == core.rd_back2
+        #     core.is_stalled = true
+        # end
+
         core.write_back_last_instruction = false
         core.rd_temp_register_previous_instruction = core.rd_temp_register
         core.rd_temp_register = rd
@@ -217,6 +261,8 @@ function ID_RF_stage(processor::Processor, core::Core1, memory::Array{Int,2}, va
     end
     core.registers[1] = 0
 end
+
+# Function for the Instruction Fetch stage
 
 function IF_stage(processor::Processor, core::Core1, memory::Array{Int,2}, variable_address::Dict{String, Int})
 
@@ -262,9 +308,21 @@ function IF_stage(processor::Processor, core::Core1, memory::Array{Int,2}, varia
     if core.pc <= length(core.program)
         println("Instruction Fetch at clock cycle: ", processor.clock)
         instruction = core.program[core.pc]
+        parts, opcode = get_parts_and_opcode_from_instruction(instruction)
+        if opcode in opcodes
+            core.instruction_after_IF = instruction
+            core.pc += 1
+        else
+            core.pc += 1
+            core.stall_at_IF = true
+            instruction = core.program[core.pc]
+            core.instruction_after_IF = instruction
+            core.pc += 1
+        end
         core.write_back_last_instruction = false
-        core.pc += 1
-        core.instruction_after_IF = instruction
+        # core.pc += 1
+        # core.instruction_after_IF = instruction
+        # println(core.instruction_after_IF)
     else
         core.instruction_after_IF = "uninitialised"
     end
