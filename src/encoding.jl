@@ -4,7 +4,7 @@ include("utility.jl")
 # using .Core_Module
 
 
-opcodes = ["add", "sub", "sll", "slt", "sltu", "xor", "srl", "sra", "or", "and", "li", "addi", "slti", "sltiu", "xori", "ori", "andi", "slli", "srli", "srai", "lb", "lh", "lw", "lbu", "lhu", "sb", "sh", "sw", "beq", "bne", "blt", "bge", "bltu", "bgeu", "lui", "auipc", "jal", "j", "jalr","ecall","jr"]
+opcodes = ["add", "sub", "sll", "slt", "sltu", "xor", "srl", "sra", "or", "and", "li", "addi", "slti", "sltiu", "xori", "ori", "andi", "slli", "srli", "srai", "lb", "lh", "lw", "lbu", "lhu", "la","sb", "sh", "sw", "beq", "bne", "blt", "bge", "bltu", "bgeu", "lui", "auipc", "jal", "j", "jalr","ecall","jr"]
 #write a function to give the total no. of non opcodes till the given index in the program
 function handle_non_opcodes(core::Core1,index2::Int, index::Int)
     count=0
@@ -21,7 +21,7 @@ end
 
 
 
-function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, initial_address::Int)
+function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, initial_address::Int,variable_address::Dict{String, Int})
     core.pc =  memory_address = initial_address
     while(core.pc-initial_address+1 <= length(core.program))
         core.program[core.pc] = replace_registers(core.program[core.pc])
@@ -32,7 +32,7 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
         I_type_instrucion = "0010011"
         S_type_instrucion = "0100011"
         SB_type_instrucion = "1100011"
-        U_type_instrucion = "0110111"
+        U_type_instrucion = "1100001"
         J_type_instrucion = "1101111"
         Load_instrucion = "0000011"
         JALR_instrucion = "1100111"
@@ -353,7 +353,18 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
             binary_string = string(bin_temp[1]) * bin_temp[3:8] * int_to_binary_5bits(rs2) * int_to_binary_5bits(rs1) * "111" * bin_temp[9:12] * string(bin_temp[2]) * SB_type_instrucion
             store_word(binary_string, memory, memory_address, 1)
 
-
+        elseif opcode == "la"
+            rd = parse(Int, parts[2][2:end])
+            label = parts[3]
+            if haskey(variable_address, label)
+                temp=variable_address[label]
+                binary_string = int_to_binary_bits_modified(temp,20) * int_to_binary_5bits(rd) * U_type_instrucion
+            else
+                binary_string = "00000000000000000000" *  int_to_binary_5bits(rd) * U_type_instrucion
+                println("Label $label not found in the dictionary.")
+            end
+            store_word(binary_string, memory, memory_address, 1)
+        
         elseif opcode == "jal"
             rd = parse(Int, parts[2][2:end])
             imm = parts[3]
@@ -376,7 +387,7 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
             imm = parts[2]
             temp = findfirst(x -> x == imm, core.program)
             if core.pc < temp
-                temp2=handle_non_opcodes(core, 1, temp-1)
+                temp2=handle_non_opcodes(core, core.pc, temp-1)
                 final_temp=temp-temp2
                 offset = (final_temp - core.pc) * 4
             else
@@ -399,7 +410,7 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
 
         elseif opcode== "jr"
             rs1 = parse(Int, parts[2][2:end])
-            binary_string = "000000000000" * int_to_binary_5bits(rs1) * "000" * "00000" * JALR_type_instrucion
+            binary_string = "000000000000" * int_to_binary_5bits(rs1) * "000" * "00000" * JALR_instrucion
             store_word(binary_string, memory, memory_address, 1)
 
         elseif opcode== "ecall"
@@ -407,7 +418,7 @@ function encode_text_and_store_in_memory(core::Core1, memory::Array{Int,2}, init
             store_word(binary_string, memory, memory_address, 1)
         else 
             # println("$opcode")
-            memory_address -= 1
+            # memory_address -= 1
         end
         memory_address += 1
         

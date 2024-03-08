@@ -19,8 +19,8 @@ function main()
     text_program_first, data_program_first = parse_assembly_code(file_path1)
     variable_name_first, data_seg_chunk_first = parse_data_section(join(data_program_first, "\n"))
     sim.cores[1].program = text_program_first 
-    # initial_address_first=encode_text_and_store_in_memory(sim.cores[1], sim.memory, initial_address_first)
     variable_address_first, data_initial_address_first=store_data_in_memory(sim.cores[1], sim.memory, data_seg_chunk_first, variable_name_first, data_initial_address)
+    # initial_address_first=encode_text_and_store_in_memory(sim.cores[1], sim.memory, initial_address_first,variable_address_first)
     # if initial_address < (size(sim.memory, 1) ÷ 4)
     #     initial_address = size(sim.memory, 1) ÷ 4 + 1
     # end
