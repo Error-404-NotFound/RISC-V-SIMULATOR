@@ -43,6 +43,12 @@ function WB_stage(processor::Processor, core::Core1, memory::Array{Int,2}, varia
             core.registers[rd] = core.MEM_temp_register
         end
         core.instruction_count += 1
+        if opcode == "jr"
+            core.instruction_count -= 1
+        elseif opcode == "la"
+            core.instruction_count += 1
+            # processor.clock += 2
+        end
         core.write_back_last_instruction = true
         core.write_back_previous_last_instruction = true
     end
@@ -66,7 +72,8 @@ function MEM_stage(processor::Processor, core::Core1, memory::Array{Int,2}, vari
         elseif instruction_type == "S_type_instructions"
             row, col = get_row_col_from_address(address)
             rs2 = parse(Int, parts[2][2:end]) + 1
-            binary_string = int_to_binary_bits_modified(core.registers[rs2], 32)
+            # println(core.registers[rs2])
+            binary_string = int_to_binary_32bits(core.registers[rs2])
             store_word(binary_string, memory, row, col)
         elseif opcode == "jal" || opcode == "la"
             core.MEM_temp_register = address 
@@ -98,7 +105,6 @@ function EX_stage(processor::Processor, core::Core1, memory::Array{Int,2}, varia
         println("Execution at clock cycle: ", processor.clock)
         instruction_type = core.temp_register_instruction_type
         core.EX_temp_register = execute_stage(instruction, instruction_type, core, memory, variable_address)
-        println(core.EX_temp_register)
         core.write_back_last_instruction = false
     end
     core.registers[1] = 0
@@ -281,10 +287,21 @@ function IF_stage(processor::Processor, core::Core1, memory::Array{Int,2}, varia
     if core.pc <= length(core.program)
         println("Instruction Fetch at clock cycle: ", processor.clock)
         instruction = core.program[core.pc]
-        println(instruction)
+        parts, opcode = get_parts_and_opcode_from_instruction(instruction)
+        if opcode in opcodes
+            core.instruction_after_IF = instruction
+            core.pc += 1
+        else
+            core.pc += 1
+            core.stall_at_IF = true
+            instruction = core.program[core.pc]
+            core.instruction_after_IF = instruction
+            core.pc += 1
+        end
         core.write_back_last_instruction = false
-        core.pc += 1
-        core.instruction_after_IF = instruction
+        # core.pc += 1
+        # core.instruction_after_IF = instruction
+        # println(core.instruction_after_IF)
     else
         core.instruction_after_IF = "uninitialised"
     end

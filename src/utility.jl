@@ -43,6 +43,8 @@ opcode_dictionary = Dict(
     "UJ_type_instructions" => ["jal", "la", "j"],
 )
 
+opcodes = ["add", "sub", "sll", "slt", "sltu", "xor", "srl", "sra", "or", "and", "mul", "addi", "slti", "sltiu", "xori", "ori", "andi", "slli", "srli", "srai", "muli", "jalr", "jr", "li", "mv", "sb", "sh", "sw", "lb", "lh", "lw", "lbu", "lhu", "beq", "bne", "blt", "ble", "bge", "bltu", "bgeu", "lui", "auipc", "jal", "la", "j"]
+
 function remove_commas(input_string::AbstractString)::AbstractString
     return replace(input_string, "," => " ")
 end
@@ -202,7 +204,7 @@ function store_word(binary_string::AbstractString, memory::Array{Int,2}, row::In
     elseif col == 2
         memory[row+1, col-1] = parse(UInt8, binary_string[1:8], base=2)
         memory[row, col] = parse(UInt8, binary_string[25:32], base=2)
-        memory[row, col+1] = parse(UInt8, binary_string[17:25], base=2)
+        memory[row, col+1] = parse(UInt8, binary_string[17:24], base=2)
         memory[row, col+2] = parse(UInt8, binary_string[9:16], base=2)
     elseif col == 3
         memory[row+1, col-2] = parse(UInt8, binary_string[9:16], base=2)

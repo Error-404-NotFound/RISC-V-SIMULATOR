@@ -91,6 +91,10 @@ function execute_I(core::Core1, memory::Array{Int,2}, variable_address::Dict{Str
         return core.immediate_temp_register
     elseif opcode == "mv"
         return core.registers[core.rs1_temp_register]
+    elseif opcode == "jr"
+        core.pc = core.registers[core.rd_temp_register]
+        # core.stall_at_EX = true
+        return core.pc
     end
     
 end
@@ -133,8 +137,15 @@ function execute_UJ(core::Core1, memory::Array{Int,2}, variable_address::Dict{St
     # opcode = parts[1]
     parts, opcode = get_parts_and_opcode_from_instruction(instruction)
     if opcode == "jal"
-        temp_pc = core.pc + 1
-        # core.pc = findfirst(x -> x == core.label_temp_register, core.program)
+        temp_pc = core.pc
+        core.pc = findfirst(x -> x == core.label_temp_register, core.program) + 1
+        core.stall_at_EX = true
         return temp_pc
+    elseif opcode == "la"
+        if haskey(variable_address, core.label_temp_register)
+            return variable_address[core.label_temp_register]
+        else
+            return -1
+        end
     end
 end
