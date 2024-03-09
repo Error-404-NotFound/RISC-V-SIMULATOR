@@ -5,8 +5,9 @@ include("parser.jl")
 include("utility.jl")
 include("encoding.jl")
 include("data_memory.jl")
-include("stages_without_data_forwarding.jl")
+# include("stages_without_data_forwarding.jl")
 # include("stages_with_data_forwarding.jl")
+include("stages_with_df_jaimin.jl")
 
 file_path1 = "./test1.asm"
 file_path2 = "./test2.asm"
