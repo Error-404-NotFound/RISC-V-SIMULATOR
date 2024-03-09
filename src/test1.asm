@@ -3,6 +3,9 @@
 
 .text
     li a1 4
-    sw a1 0(a0)
-    lw a3 0(a0)
-    add a3 a3 a3
+    li a2 4
+    jal x0 label
+    li a6 200
+
+label:
+    li a7 100

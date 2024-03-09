@@ -141,6 +141,11 @@ function execute_UJ(core::Core1, memory::Array{Int,2}, variable_address::Dict{St
         core.pc = findfirst(x -> x == core.label_temp_register, core.program) + 1
         core.stall_at_EX = true
         return temp_pc
+    elseif opcode == "j"
+        temp_pc = core.pc
+        core.pc = findfirst(x -> x == core.label_temp_register, core.program) + 1
+        core.stall_at_EX = true
+        return temp_pc
     elseif opcode == "la"
         if haskey(variable_address, core.label_temp_register)
             return variable_address[core.label_temp_register]
