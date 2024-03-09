@@ -50,6 +50,7 @@ mutable struct Core1
 
         # EX stage registers
         this.EX_temp_register = 0
+        this.EX_temp_register_previous_instruction = 0
         this.instruction_after_EX = "uninitialised"
 
         # MEM stage registers
@@ -69,6 +70,13 @@ mutable struct Core1
         this.temp_register_string = "uninitialised"
         this.temp_register_int = 0
         this.temp_register_bool = false
+
+        # Data forwarding registers
+        this.data_forwarding_rs1 = 0
+        this.data_forwarding_rs2 = 0
+        this.data_dependency = false
+        this.rs1_dependency = false
+        this.rs2_dependency = false
         
         return this
     end
@@ -115,6 +123,7 @@ mutable struct Core1
 
     # EX stage registers
     EX_temp_register::Int
+    EX_temp_register_previous_instruction::Int
     instruction_after_EX::String
 
     # MEM stage registers
@@ -134,6 +143,13 @@ mutable struct Core1
     temp_register_string::String
     temp_register_int::Int
     temp_register_bool::Bool
+
+    # Data forwarding registers
+    data_forwarding_rs1::Int
+    data_forwarding_rs2::Int
+    data_dependency::Bool
+    rs1_dependency::Bool
+    rs2_dependency::Bool
 end
 
 function core_Init(id::Int)

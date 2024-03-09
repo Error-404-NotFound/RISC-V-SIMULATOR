@@ -2,7 +2,7 @@ include("processor.jl")
 include("core.jl")
 include("execute_instructions.jl")
 include("utility.jl")
-include("execution_stage.jl")
+include("execution_stage_with_DF.jl")
 
 function run(processor::Processor, variable_address::Dict{String, Int},index::Int) 
     while !processor.cores[index].write_back_last_instruction
@@ -103,28 +103,12 @@ function EX_stage(processor::Processor, core::Core1, memory::Array{Int,2}, varia
     if instruction != "uninitialised"
         println("Execution at clock cycle: ", processor.clock)
         instruction_type = core.temp_register_instruction_type
-        
-        println("rs1: ",core.rs1_temp_register)
-        println("rs2: ",core.rs2_temp_register)
-        println("pc: ",core.pc)
-        # Check for data forwarding
-        rs1_value = core.registers[core.rs1_temp_register]
-        rs2_value = core.registers[core.rs2_temp_register]
-
-        
-        if core.rs1_temp_register == core.rd_temp_register_previous_instruction
-            core.registers[core.rs1_temp_register] = core.MEM_temp_register
-            rs1_value = core.MEM_temp_register
-            println("rs1: ",rs1_value)
-            println("rs2: ",rs2_value)
-        end
-        
-        if core.rs2_temp_register == core.rd_temp_register
-            rs2_value = core.EX_temp_register
-        end
-        
-        # Call execute_stage with corrected arguments
-        core.EX_temp_register = execute_stage(instruction, instruction_type, core, memory, variable_address)
+        temp_ex = execute_stage_with_DF(instruction, instruction_type, core, memory, variable_address)
+        core.EX_temp_register_previous_instruction = core.EX_temp_register
+        core.EX_temp_register = temp_ex
+        # println(core.EX_temp_register_previous_instruction)
+        # println(core.EX_temp_register)
+        # println(temp_ex)
         core.write_back_last_instruction = false
     end
     core.registers[1] = 0
@@ -153,21 +137,23 @@ function ID_RF_stage(processor::Processor, core::Core1, memory::Array{Int,2}, va
                 core.rs1_temp_register = parse(Int, parts[3][2:end]) + 1
                 core.rs2_temp_register = parse(Int, parts[4][2:end]) + 1
                 # println(core.rs1_temp_register, " ", core.rd_temp_register, " ", core.rd_temp_register_previous_instruction, " ", core.write_back_previous_last_instruction)
-                if core.rs2_temp_register == core.rd_temp_register || core.rs1_temp_register == core.rd_temp_register
-                    core.stall_in_next_clock_cycle = true
-                elseif core.rs1_temp_register == core.rd_temp_register_previous_instruction || core.rs2_temp_register == core.rd_temp_register_previous_instruction
-                    if !core.write_back_previous_last_instruction
-                        core.stall_at_EX = true
-                        core.stall_in_next_clock_cycle = true
-                    end
+                if core.rs2_temp_register == core.rd_temp_register || core.rs2_temp_register == core.rd_temp_register_previous_instruction
+                    core.rs2_dependency = true
+                    core.data_dependency = true
+                elseif core.rs1_temp_register == core.rd_temp_register || core.rs1_temp_register == core.rd_temp_register_previous_instruction
+                    core.rs1_dependency = true
+                    core.data_dependency = true
+                else
+                    core.rs1_dependency = false
+                    core.rs2_dependency = false
                 end
 
             elseif instruction_type == "I_type_instructions"
                 if opcode == "li"
-                    core.rs1_temp_register = 0 + 1
+                    core.rs1_temp_register = -1
                     rd = parse(Int, parts[2][2:end]) + 1
                     core.immediate_temp_register = parse(Int, parts[3])
-                    core.rs2_temp_register = 0 + 1
+                    core.rs2_temp_register = -1
                 elseif opcode == "mv"
                     rd = parse(Int, parts[2][2:end]) + 1
                     core.rs1_temp_register = parse(Int, parts[3][2:end]) + 1
@@ -181,13 +167,12 @@ function ID_RF_stage(processor::Processor, core::Core1, memory::Array{Int,2}, va
                     core.rs1_temp_register = parse(Int, parts[3][2:end]) + 1
                     core.immediate_temp_register = parse(Int, parts[4])
                 end
-                if core.rs1_temp_register == core.rd_temp_register
-                    core.stall_in_next_clock_cycle = true
-                elseif core.rs1_temp_register == core.rd_temp_register_previous_instruction
-                    if !core.write_back_previous_last_instruction
-                        core.stall_at_EX = true
-                        core.stall_in_next_clock_cycle = true
-                    end 
+                if core.rs1_temp_register == core.rd_temp_register || core.rs1_temp_register == core.rd_temp_register_previous_instruction
+                    core.rs1_dependency = true
+                    core.data_dependency = true
+                else
+                    core.rs1_dependency = false
+                    core.rs2_dependency = false
                 end
 
             elseif instruction_type == "L_type_instructions"

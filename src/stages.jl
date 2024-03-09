@@ -2,7 +2,7 @@ include("processor.jl")
 include("core.jl")
 include("execute_instructions.jl")
 include("utility.jl")
-include("execution_stage_without_DF.jl")
+include("execution_stage.jl")
 
 function run(processor::Processor, variable_address::Dict{String, Int},index::Int) 
     while !processor.cores[index].write_back_last_instruction
@@ -105,7 +105,7 @@ function EX_stage(processor::Processor, core::Core1, memory::Array{Int,2}, varia
     if instruction != "uninitialised"
         println("Execution at clock cycle: ", processor.clock)
         instruction_type = core.temp_register_instruction_type
-        core.EX_temp_register = execute_stage_without_DF(instruction, instruction_type, core, memory, variable_address)
+        core.EX_temp_register = execute_stage(instruction, instruction_type, core, memory, variable_address)
         core.write_back_last_instruction = false
     end
     core.registers[1] = 0

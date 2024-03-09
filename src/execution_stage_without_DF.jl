@@ -1,7 +1,7 @@
 include("core.jl")
 include("utility.jl")
 
-function execute_stage(instruction::String, instruction_type::String, core::Core1, memory::Array{Int,2}, variable_address::Dict{String, Int})
+function execute_stage_without_DF(instruction::String, instruction_type::String, core::Core1, memory::Array{Int,2}, variable_address::Dict{String, Int})
     # println(instruction, " ", instruction_type)
     # parts = split(instruction, " ")
     # parts = remove_empty_strings(parts)
