@@ -11,9 +11,9 @@ function execute_stage_with_DF(instruction::String, instruction_type::String, co
     # println(instruction)
 
     if instruction_type == "R_type_instructions"
-        execute_R(core, memory, variable_address)
+        core.EX_temp_register = execute_R(core, memory, variable_address)
     elseif instruction_type == "I_type_instructions"
-        execute_I(core, memory, variable_address)
+        core.EX_temp_register = execute_I(core, memory, variable_address)
     elseif instruction_type == "L_type_instructions"
         core.EX_temp_register = execute_Load(core, memory, variable_address)
     elseif instruction_type == "S_type_instructions"
@@ -35,21 +35,7 @@ function execute_R(core::Core1, memory::Array{Int,2}, variable_address::Dict{Str
     # opcode = parts[1]
     parts, opcode = get_parts_and_opcode_from_instruction(instruction)
     if opcode == "add"
-        # println(core.EX_temp_register)
-        # println(core.EX_temp_register_previous_instruction)
-        if core.data_dependency
-            if core.rs1_dependency
-                core.EX_temp_register = core.registers[core.rs2_temp_register] + core.data_forwarding_rs1
-            elseif core.rs2_dependency
-                core.EX_temp_register = core.registers[core.rs1_temp_register] + core.data_forwarding_rs2
-            elseif core.rs1_dependency && core.rs2_dependency
-                core.EX_temp_register = core.data_forwarding_rs1 + core.data_forwarding_rs2
-            end
-        end
-        return core.EX_temp_register = core.registers[core.rs1_temp_register] + core.registers[core.rs2_temp_register]
-
-        # return core.registers[core.rs1_temp_register] + core.registers[core.rs2_temp_register]
-        # return core.registers[core.rs1_temp_register] + core.registers[core.rs2_temp_register]
+        return core.registers[core.rs1_temp_register] + core.registers[core.rs2_temp_register]
     elseif opcode == "sub"
         return core.registers[core.rs1_temp_register] - core.registers[core.rs2_temp_register]
     elseif opcode == "sll"
@@ -102,7 +88,6 @@ function execute_I(core::Core1, memory::Array{Int,2}, variable_address::Dict{Str
     elseif opcode == "muli"
         return core.registers[core.rs1_temp_register] * core.immediate_temp_register
     elseif opcode == "li"
-        
         return core.immediate_temp_register
     elseif opcode == "mv"
         return core.registers[core.rs1_temp_register]
@@ -143,6 +128,7 @@ function execute_S(core::Core1, memory::Array{Int,2}, variable_address::Dict{Str
         return core.registers[core.rs1_temp_register] + core.immediate_temp_register
     elseif opcode == "sw"
         return core.registers[core.rs1_temp_register] + core.immediate_temp_register
+    
     end
 end
 
