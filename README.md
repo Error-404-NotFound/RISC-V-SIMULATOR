@@ -59,6 +59,7 @@ This project focuses on implementing a simulator for the RISC-V ISA, allowing us
 * Pipelining: Pipelining of the stages for both: with and without Data Forwarding
 * Banch Prediction: A Static Branch Predictor of 1-bit has been implemented for the prediction of branches.
 * User Input: The user can choose from the 3 modes, wiz., Unpipelined Implementation, Pipelined with data forwarding, Pipelined without data forwarding.
+* Latency of instructions: Instructions such as "mul" will have a latency of 3 in EX stage, which is handled.
 * (Note): The ecall statements as well as stall count for Data Forwarding case is inaccurate, so please note it.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -145,6 +146,7 @@ You will be able to see the output of the simulation.
 Some of the examples are shown below.
 (Note: All these files are available in Assembly_Programs)
 
+### Phase-1
 1. Output-1:
     - Program-1 is Bubble Sort.
     - Program-2 is Selection Sort.
@@ -178,6 +180,27 @@ _For more examples, please refer to the [Assembly_Programs](https://github.com/E
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
+### Phase-2
+
+1. Output-1:
+    - Unpipelining case for Bubble Sort and Valentine code (same as implemented in Phase-1).
+
+[![Output-6][output_screenshot_6]](https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/unpipelined.png)
+
+2. Output-2:
+    - Pipelining with data non-forwarding case for Bubble Sort and Valentine code.
+
+[![Output-7][output_screenshot_7]](https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/Pipelining_wo_df.png)
+
+3. Output-3:
+    - Pipelining with data forwarding case for Bubble Sort and Valentine code.
+
+[![Output-8][output_screenshot_8]](https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/Pipelinig_w_df.png)
+
+4. Output-4:
+    - User input to choose the type of implementation of execution of program.
+  
+[![Output-9][output_screenshot_9]](https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/UserInput.png)
 
 <!-- ROADMAP -->
 ## Features Implemented
@@ -255,3 +278,7 @@ Distributed under the MIT License. See `LICENSE.md` for more information.
 [output_screenshot_3]: https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/o2.png
 [output_screenshot_4]: https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/1.png
 [output_screenshot_5]: https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/2.png
+[output_screenshot_6]: https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/unpipelined.png
+[output_screenshot_7]: https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/Pipelining_wo_df.png
+[output_screenshot_8]: https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/Pipelinig_w_df.png
+[output_screenshot_9]: https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/UserInput.png
