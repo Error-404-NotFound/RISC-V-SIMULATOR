@@ -17,6 +17,7 @@ function execute_stage_without_DF(instruction::String, instruction_type::String,
     elseif instruction_type == "L_type_instructions"
         core.EX_temp_register = execute_Load(core, memory, variable_address)
     elseif instruction_type == "S_type_instructions"
+        # println("???????????????????????????????????????")
         core.EX_temp_register = execute_S(core, memory, variable_address)
     elseif instruction_type == "SB_type_instructions"
         core.EX_temp_register = execute_SB(core, memory, variable_address)
@@ -118,7 +119,9 @@ function execute_Load(core::Core1, memory::Array{Int,2}, variable_address::Dict{
 end
 
 function execute_S(core::Core1, memory::Array{Int,2}, variable_address::Dict{String, Int})
+    # println("???????????????????????????????????????")
     instruction = core.instruction_after_ID_RF
+    # println(instruction)
     # parts = split(instruction, " ")
     # opcode = parts[1]
     parts, opcode = get_parts_and_opcode_from_instruction(instruction)
@@ -127,6 +130,11 @@ function execute_S(core::Core1, memory::Array{Int,2}, variable_address::Dict{Str
     elseif opcode == "sh"
         return core.registers[core.rs1_temp_register] + core.immediate_temp_register
     elseif opcode == "sw"
+        # println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+        # println(core.registers[core.rs1_temp_register])
+        # println(core.immediate_temp_register)
+        # println(core.rs1_temp_register)
+        # println(core.registers[core.rs1_temp_register] + core.immediate_temp_register)
         return core.registers[core.rs1_temp_register] + core.immediate_temp_register
     end
 end
@@ -161,67 +169,90 @@ function execute_SB(core::Core1, memory::Array{Int,2}, variable_address::Dict{St
     # opcode = parts[1]
     parts, opcode = get_parts_and_opcode_from_instruction(instruction)
     if opcode == "beq"
+        core.temp_register_string = core.instruction_after_IF
         core.instruction_after_IF = "uninitialised"
         if core.registers[core.rs1_temp_register] == core.registers[core.rs2_temp_register]
             core.pc = findfirst(x -> x == core.label_temp_register, core.program) + 1
             core.stall_at_EX = true
         else
+            println("hello")
             core.pc = core.pc
+            core.instruction_after_IF = core.temp_register_string
+            # println(core.instruction_after_IF)
         end
+        return core.pc
 
     elseif opcode == "bne"
+        temp_instruction = core.instruction_after_IF
         core.instruction_after_IF = "uninitialised"
         if core.registers[core.rs1_temp_register] != core.registers[core.rs2_temp_register]
             core.pc = findfirst(x -> x == core.label_temp_register, core.program) + 1
             core.stall_at_EX = true
         else
-            println(core.pc)
+            # println(core.pc)
             core.pc = core.pc
+            core.instruction_after_IF = temp_instruction
         end
+        return core.pc
 
     elseif opcode == "blt"
+        temp_instruction = core.instruction_after_IF
         core.instruction_after_IF = "uninitialised"
         if core.registers[core.rs1_temp_register] < core.registers[core.rs2_temp_register]
             core.pc = findfirst(x -> x == core.label_temp_register, core.program) + 1
             core.stall_at_EX = true
         else
             core.pc = core.pc
+            core.instruction_after_IF = temp_instruction
         end
+        return core.pc
 
     elseif opcode == "ble"
+        temp_instruction = core.instruction_after_IF
         core.instruction_after_IF = "uninitialised"
         if core.registers[core.rs1_temp_register] <= core.registers[core.rs2_temp_register]
             core.pc = findfirst(x -> x == core.label_temp_register, core.program) + 1
             core.stall_at_EX = true
         else
             core.pc = core.pc
+            core.instruction_after_IF = temp_instruction
         end
+        return core.pc
 
     elseif opcode == "bge"
+        temp_instruction = core.instruction_after_IF
         core.instruction_after_IF = "uninitialised"
         if core.registers[core.rs1_temp_register] >= core.registers[core.rs2_temp_register]
             core.pc = findfirst(x -> x == core.label_temp_register, core.program) + 1
             core.stall_at_EX = true
         else
             core.pc = core.pc
+            core.instruction_after_IF = temp_instruction
         end
+        return core.pc
 
     elseif opcode == "bltu"
+        temp_instruction = core.instruction_after_IF
         core.instruction_after_IF = "uninitialised"
         if core.registers[core.rs1_temp_register] < core.registers[core.rs2_temp_register]
             core.pc = findfirst(x -> x == core.label_temp_register, core.program) + 1
             core.stall_at_EX = true
         else
             core.pc = core.pc
+            core.instruction_after_IF = temp_instruction
         end
+        return core.pc
 
     elseif opcode == "bgeu"
+        temp_instruction = core.instruction_after_IF
         core.instruction_after_IF = "uninitialised"
         if core.registers[core.rs1_temp_register] >= core.registers[core.rs2_temp_register]
             core.pc = findfirst(x -> x == core.label_temp_register, core.program) + 1
             core.stall_at_EX = true
         else
             core.pc = core.pc
+            core.instruction_after_IF = temp_instruction
         end
+        return core.pc
     end
 end

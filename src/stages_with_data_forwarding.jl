@@ -2,7 +2,7 @@ include("processor.jl")
 include("core.jl")
 include("execute_instructions.jl")
 include("utility.jl")
-include("execution_stage_with_DF.jl")
+include("exe_new.jl")
 
 function run(processor::Processor, variable_address::Dict{String, Int},index::Int) 
     while !processor.cores[index].write_back_last_instruction

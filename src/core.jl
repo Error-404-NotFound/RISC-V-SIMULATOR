@@ -78,6 +78,11 @@ mutable struct Core1
         this.rs1_dependency = false
         this.rs2_dependency = false
         
+        # register to keep track inside pipeline
+        this.inside_MEM = false
+        this.inside_EX = false
+        this.inside_ID_RF = false
+        
         return this
     end
 
@@ -150,6 +155,12 @@ mutable struct Core1
     data_dependency::Bool
     rs1_dependency::Bool
     rs2_dependency::Bool
+
+    # register to keep track inside pipeline
+    inside_MEM::Bool
+    inside_EX::Bool
+    inside_ID_RF::Bool
+
 end
 
 function core_Init(id::Int)

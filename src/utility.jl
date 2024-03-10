@@ -196,6 +196,7 @@ function store_word(binary_string::AbstractString, memory::Array{Int,2}, row::In
         println("Error: Binary string length is not 32 bits.")
         return
     end
+    # println(row, col)
     if col == 1
         memory[row, col] = parse(UInt8, binary_string[25:32], base=2)
         memory[row, col+1] = parse(UInt8, binary_string[17:24], base=2)
