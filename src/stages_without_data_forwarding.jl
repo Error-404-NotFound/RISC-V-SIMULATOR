@@ -1,6 +1,5 @@
 include("processor.jl")
 include("core.jl")
-include("execute_instructions.jl")
 include("utility.jl")
 include("execution_stage_without_DF.jl")
 

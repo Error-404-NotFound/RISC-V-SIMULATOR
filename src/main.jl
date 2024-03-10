@@ -5,8 +5,8 @@ include("parser.jl")
 include("utility.jl")
 include("encoding.jl")
 include("data_memory.jl")
+include("DF.jl")
 include("stages_without_data_forwarding.jl")
-# include("stages_with_df.jl")
 # include("stages_with_data_forwarding.jl")
 
 file_path1 = "./test1.asm"
@@ -15,7 +15,7 @@ file_path2 = "./test2.asm"
 
 function main()
     sim = processor_Init()
-
+    a = 200
     initial_address_first = 1
     data_initial_address = size(sim.memory, 1) ÷ 2 + 1
     text_program_first, data_program_first = parse_assembly_code(file_path1)
@@ -57,9 +57,9 @@ function main()
     println("2. For PIPELINED execution without data forwarding")
     println("3. For PIPELINED execution with data forwarding")
     user_input = readline()
-    user_number = parse(Int, user_input)
+    # user_number = parse(Int, user_input)
 
-    if user_number == 1
+    if user_input == "1"
         sim.cores[1].pc=1
         sim.cores[2].pc=1
         println()
@@ -83,8 +83,9 @@ function main()
         println("Output of the program-2: ")
         run(sim,variable_address_second, 2)
         println()
+        return
         
-    elseif user_number == 2
+    elseif user_input == "2"
         sim.cores[1].pc=1
         sim.cores[2].pc=1
         
@@ -124,8 +125,9 @@ function main()
         println("Clock per instruction (CPI): $(sim.clock / sim.cores[2].instruction_count)")
         println("Stalls per instruction (SPI): $(sim.cores[2].stall_count / sim.cores[2].instruction_count)")
         println()
+        return
 
-    elseif user_input == 3
+    elseif user_input == "3"
         sim.cores[1].pc=1
         sim.cores[2].pc=1
         
@@ -147,10 +149,10 @@ function main()
         println("Output of the program-1: ")
         run_piped_w_df(sim,variable_address_first, 1)
         println()
-        println("Total number of clocks: $(sim.clock)")
+        println("Total number of clocks: $(sim.clock-a)")
         println("Total number of instructions executed: $(sim.cores[1].instruction_count)")
         println("Total number of stalls: $(sim.cores[1].stall_count)")
-        println("Instructions per clock (IPC): $(sim.cores[1].instruction_count / sim.clock)")
+        println("Instructions per clock (IPC): $(sim.cores[1].instruction_count / (sim.clock-a))")
         println("Clock per instruction (CPI): $(sim.clock / sim.cores[1].instruction_count)")
         println("Stalls per instruction (SPI): $(sim.cores[1].stall_count / sim.cores[1].instruction_count)")
         println()
