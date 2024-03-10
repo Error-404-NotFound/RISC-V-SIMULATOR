@@ -34,16 +34,17 @@ alias = Dict(
 )
 
 opcode_dictionary = Dict(
-    "R_type_instructions" => ["add", "sub", "sll", "slt", "sltu", "xor", "srl", "sra", "or", "and", "mul"],
+    "R_type_instructions" => ["add", "sub", "sll", "slt", "sltu", "xor", "srl", "sra", "or", "and", "mul", "ecall"],
     "I_type_instructions" => ["addi", "slti", "sltiu", "xori", "ori", "andi", "slli", "srli", "srai", "muli", "jalr", "jr", "li", "mv"],
     "S_type_instructions" => ["sb", "sh", "sw"],
     "L_type_instructions" => ["lb", "lh", "lw", "lbu", "lhu"],
     "SB_type_instructions" => ["beq", "bne", "blt", "ble", "bge", "bltu", "bgeu"],
     "U_type_instructions" => ["lui", "auipc"],
     "UJ_type_instructions" => ["jal", "la", "j"],
+    # "ECALL" => ["ecall"],
 )
 
-opcodes = ["add", "sub", "sll", "slt", "sltu", "xor", "srl", "sra", "or", "and", "mul", "addi", "slti", "sltiu", "xori", "ori", "andi", "slli", "srli", "srai", "muli", "jalr", "jr", "li", "mv", "sb", "sh", "sw", "lb", "lh", "lw", "lbu", "lhu", "beq", "bne", "blt", "ble", "bge", "bltu", "bgeu", "lui", "auipc", "jal", "la", "j"]
+opcodes = ["add", "sub", "sll", "slt", "sltu", "xor", "srl", "sra", "or", "and", "mul", "addi", "slti", "sltiu", "xori", "ori", "andi", "slli", "srli", "srai", "muli", "jalr", "jr", "li", "mv", "sb", "sh", "sw", "lb", "lh", "lw", "lbu", "lhu", "beq", "bne", "blt", "ble", "bge", "bltu", "bgeu", "lui", "auipc", "jal", "la", "j", "ecall",]
 
 function remove_commas(input_string::AbstractString)::AbstractString
     return replace(input_string, "," => " ")

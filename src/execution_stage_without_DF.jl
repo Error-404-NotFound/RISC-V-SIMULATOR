@@ -11,7 +11,11 @@ function execute_stage_without_DF(instruction::String, instruction_type::String,
     # println(instruction)
 
     if instruction_type == "R_type_instructions"
-        core.EX_temp_register = execute_R(core, memory, variable_address)
+        if opcode == "ecall"
+            core.EX_temp_register = execute_ECALL(core, memory, variable_address)
+        else
+            core.EX_temp_register = execute_R(core, memory, variable_address)
+        end
     elseif instruction_type == "I_type_instructions"
         core.EX_temp_register = execute_I(core, memory, variable_address)
     elseif instruction_type == "L_type_instructions"
@@ -25,6 +29,8 @@ function execute_stage_without_DF(instruction::String, instruction_type::String,
         core.EX_temp_register = execute_U(core, memory, variable_address)
     elseif instruction_type == "UJ_type_instructions"
         core.EX_temp_register = execute_UJ(core, memory, variable_address)
+    # elseif instruction_type == "ECALL"
+    #     core.EX_temp_register = execute_ECALL(core, memory, variable_address)
     end
 
 
@@ -175,7 +181,7 @@ function execute_SB(core::Core1, memory::Array{Int,2}, variable_address::Dict{St
             core.pc = findfirst(x -> x == core.label_temp_register, core.program) + 1
             core.stall_at_EX = true
         else
-            println("hello")
+            # println("hello")
             core.pc = core.pc
             core.instruction_after_IF = core.temp_register_string
             # println(core.instruction_after_IF)
@@ -255,4 +261,82 @@ function execute_SB(core::Core1, memory::Array{Int,2}, variable_address::Dict{St
         end
         return core.pc
     end
+end
+
+function execute_ECALL(core::Core1, memory::Array{Int,2}, variable_address::Dict{String, Int})
+    
+    instruction = core.instruction_after_ID_RF
+    # parts = split(instruction, " ")
+    # opcode = parts[1]
+    parts, opcode = get_parts_and_opcode_from_instruction(instruction)
+    if opcode == "ecall"
+        # println("&&&&&&&&&&&&&&&&&&&&&&")
+        if core.registers[18] == 1
+            print(core.registers[11])
+        elseif core.registers[18] == 10
+            println("\nProgram exited with code: 0")
+            core.pc = length(core.program) + 1
+            # println("Program terminated")
+            # println("Total number of clocks: $(core.clock)")
+            # println("Total number of instructions executed: $(core.instruction_count)")
+            # println("Total number of stalls: $(core.stall_count)")
+            # println("Total number of branches: $(core.branch_count)")
+            # println("Instructions per clock (IPC): $(core.instruction_count / core.clock)")
+            # println("Clock per instruction (CPI): $(core.clock / core.instruction_count)")
+            # println("Stalls per instruction (SPI): $(core.stall_count / core.instruction_count)")
+            # println("Branch prediction accuracy: $(core.branch_prediction_accuracy)")
+            # println()
+            # println("Registers:")
+            # println("Core Registers: $(core.registers)")
+            # println()
+            # println("Pipeline registers:")
+            # println("IF_temp_register: $(core.IF_temp_register)")
+            # println("ID_RF_temp_register: $(core.ID_RF_temp_register)")
+            # println("EX_temp_register: $(core.EX_temp_register)")
+            # println("MEM_temp_register: $(core.MEM_temp_register)")
+            # println("WB_temp_register: $(core.WB_temp_register)")
+            # println()
+            # println("Stall tracking registers:")
+            # println("stall_count: $(core.stall_count)")
+            # println("stall_in_present_clock_cycle: $(core.stall_in_present_clock_cycle)")
+            # println("stall_at_IF: $(core.stall_at_IF)")
+            # println("stall_at_ID_RF: $(core.stall_at_ID_RF)")
+            # println("stall_at_EX: $(core.stall_at_EX)")
+            # println("stall_at_MEM: $(core.stall_at_MEM)")
+            # println("stall_at_WB: $(core.stall_at_WB)")
+            # println("stall_in_next_clock_cycle: $(core.stall_in_next_clock_cycle)")
+            # println("stall_at_jump_instruction: $(core.stall_at_jump_instruction)")
+            # println()
+            # println("Instruction tracking registers:")
+        elseif core.registers[18] == 11
+            print(Char(core.registers[11]))
+        elseif core.registers[18] == 4
+            temp_col = (core.registers[11] ) % 4
+            if temp_col == 0
+                temp_col = 4
+            end
+            temp_row = (core.registers[11] - temp_col) ÷ 4 + 1
+            counter = 0
+            while memory[temp_row, temp_col] != 0
+                #handle new line
+                if Char(memory[temp_row, temp_col]) == '\\'
+                    counter=1
+                elseif counter ==1 && Char(memory[temp_row, temp_col]) == 'n'
+                    println()
+                    counter=2
+                else
+                    print(Char(memory[temp_row, temp_col]))
+                    counter=2
+                end
+                temp_col += 1
+                if temp_col > 4
+                    temp_col = 1
+                    temp_row += 1
+                end
+            end
+        else
+            println("Invalid ecall instruction for $(core.registers[18]) code.")
+        end
+    end
+    return 0
 end
