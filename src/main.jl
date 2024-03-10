@@ -91,10 +91,6 @@ function main()
         println("Core $i Registers: $(sim.cores[i].registers)")
     end
     println()
-
-    println(".data segment for core 1:(513-662)")
-    show_memory_range(sim, 513, 662)
-    println()
 end
 
 main()

@@ -69,7 +69,6 @@ function MEM_stage(processor::Processor, core::Core1, memory::Array{Int,2}, vari
     memory = processor.memory
     core.instruction_after_MEM = instruction = core.instruction_after_EX
     if instruction != "uninitialised"
-        core.inside_MEM = true
         println("Memory Access at clock cycle: ", processor.clock)
         core.MEM_temp_register = address = core.EX_temp_register
         # println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
@@ -116,7 +115,6 @@ function EX_stage(processor::Processor, core::Core1, memory::Array{Int,2}, varia
     core.instruction_after_EX = instruction = core.instruction_after_ID_RF
     
     if instruction != "uninitialised"
-        core.inside_EX = true
         println("Execution at clock cycle: ", processor.clock)
         println("------------at exe----------------")
         println("Executed the ins")
@@ -125,7 +123,12 @@ function EX_stage(processor::Processor, core::Core1, memory::Array{Int,2}, varia
         println("end")
         println("-------------end exe---------------")
         instruction_type = core.temp_register_instruction_type
+        parts, opcode = get_parts_and_opcode_from_instruction(instruction)
         core.EX_temp_register = execute_stage_without_DF(instruction, instruction_type, core, memory, variable_address)
+        if opcode == "mul"
+            core.stall_at_EX = true
+            processor.clock += 3
+        end
         core.write_back_last_instruction = false
     end
     core.registers[1] = 0
@@ -141,7 +144,6 @@ function ID_RF_stage(processor::Processor, core::Core1, memory::Array{Int,2}, va
     core.instruction_after_ID_RF = instruction = core.instruction_after_IF
 
     if instruction != "uninitialised"
-        core.inside_ID_RF = true
         println("Instruction Decoded at clock cycle: ", processor.clock)
         # println(instruction)
         instruction = replace_registers(instruction)
