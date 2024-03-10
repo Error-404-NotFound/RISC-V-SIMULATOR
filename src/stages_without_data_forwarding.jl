@@ -4,7 +4,7 @@ include("execute_instructions.jl")
 include("utility.jl")
 include("execution_stage_without_DF.jl")
 
-function run(processor::Processor, variable_address::Dict{String, Int},index::Int) 
+function run_piped_wo_df(processor::Processor, variable_address::Dict{String, Int},index::Int) 
     while !processor.cores[index].write_back_last_instruction
         processor.clock += 1
         if processor.cores[index].stall_in_present_clock_cycle

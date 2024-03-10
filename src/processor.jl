@@ -40,11 +40,11 @@ end
 #     end
 # end
 
-# function run(processor::Processor, variable_address::Dict{String, Int},index::Int) 
-#     while processor.cores[index].pc <= length(processor.cores[index].program)
-#         execute(processor.cores[index], processor.memory, variable_address)
-#     end 
-# end
+function run(processor::Processor, variable_address::Dict{String, Int},index::Int) 
+    while processor.cores[index].pc <= length(processor.cores[index].program)
+        execute(processor.cores[index], processor.memory, variable_address)
+    end 
+end
 
 function show_memory_range(processor::Processor, start_row::Int, end_row::Int)
     println("Hex Table Processor Memory:")
