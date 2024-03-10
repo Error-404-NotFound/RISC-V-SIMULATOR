@@ -47,11 +47,19 @@ This project focuses on implementing a simulator for the RISC-V ISA, allowing us
 
 ### Features
 
+#### Phase-1
+
 * Instruction Encoding and Decoding: Decode RISC-V assembly instructions to understand their semantics and execute them accordingly.(Currently it is in operational phase for few instructions only)
 * Program Execution Control: Control the execution flow of RISC-V programs, including branching, jumping, and handling interrupts.
-* Register File: Emulate the register file specified in the RISC-V architecture to store and manipulate data during program execution.
+* Register File: Simulate the register file specified in the RISC-V architecture to store and manipulate data during program execution.
 * Memory Management: Manage memory access operations, including loading and storing data from/to memory.
 
+#### Phase-2
+* Distribution of stages: The program workfow has been divided into the subsequent stages, i.e., IF,ID/RF, EX, MEM, WB
+* Pipelining: Pipelining of the stages for both: with and without Data Forwarding
+* Banch Prediction: A Static Branch Predictor of 1-bit has been implemented for the prediction of branches.
+* User Input: The user can choose from the 3 modes, wiz., Unpipelined Implementation, Pipelined with data forwarding, Pipelined without data forwarding.
+* (Note): The ecall statements as well as stall count for Data Forwarding case is inaccurate, so please note it.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -174,6 +182,8 @@ _For more examples, please refer to the [Assembly_Programs](https://github.com/E
 <!-- ROADMAP -->
 ## Features Implemented
 
+### Phase-1
+
 - [x] Developed using Julia language.
 - [x] Supports atleast 4kB of Memory.
 - [x] Very similar to RISC V Ripes Simulator.
@@ -190,6 +200,10 @@ For eg: li a0 1 or li x10 1
 - [x] Other .asm files added for reference.
 - [ ] Encoding And Decoding of Instructions.
 - [ ] GUI interface.
+    ### Phase-2
+- [x] Distribution into stages, i.e., IF,ID/RF, EX, MEM,WB
+- [x] Pipelining of the Stages with and without Data Dorwarding
+- [x] Application of Static 1-bit Branch Predictor 
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
