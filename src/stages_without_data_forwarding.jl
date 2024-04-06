@@ -3,7 +3,7 @@ include("core.jl")
 include("utility.jl")
 include("execution_stage_without_DF.jl")
 
-function run_piped_wo_df(processor::Processor, variable_address::Dict{String, Int},index::Int) 
+function run_piped_wo_df(processor::Processor, variable_address::Dict{String, Int},index::Int, initial_address::Int64) 
     while !processor.cores[index].write_back_last_instruction
         processor.clock += 1
         if processor.cores[index].stall_in_present_clock_cycle
@@ -15,7 +15,8 @@ function run_piped_wo_df(processor::Processor, variable_address::Dict{String, In
         MEM_stage(processor, processor.cores[index], processor.memory, variable_address)
         EX_stage(processor, processor.cores[index], processor.memory, variable_address)
         ID_RF_stage(processor, processor.cores[index], processor.memory, variable_address)
-        IF_stage(processor, processor.cores[index], processor.memory, variable_address)
+        IF_stage(processor, processor.cores[index], processor.memory, variable_address, initial_address)
+        processor.cores[index].registers[1] = 0
     end
 end
 
@@ -347,7 +348,7 @@ end
 
 # Function for the Instruction Fetch stage
 
-function IF_stage(processor::Processor, core::Core1, memory::Array{Int,2}, variable_address::Dict{String, Int})
+function IF_stage(processor::Processor, core::Core1, memory::Array{Int,2}, variable_address::Dict{String, Int}, initial_address::Int64)
 
     # if core.inside_EX || core.inside_MEM || core.inside_ID_RF
     #     core.write_back_last_instruction = false
@@ -406,6 +407,9 @@ function IF_stage(processor::Processor, core::Core1, memory::Array{Int,2}, varia
         
     if core.pc <= length(core.program)
         # println("Instruction Fetch at clock cycle: ", processor.clock)
+        address = (core.pc + initial_address - 2) * 4 + 1
+        println(address)
+        println(get_instruction_from_address(processor, address, core.pc))
         instruction = core.program[core.pc]
         # println(instruction)
         parts, opcode = get_parts_and_opcode_from_instruction(instruction)
@@ -437,4 +441,14 @@ function IF_stage(processor::Processor, core::Core1, memory::Array{Int,2}, varia
         core.stall_in_next_clock_cycle = false
     end
     core.registers[1] = 0
+end
+
+function get_instruction_from_address(processor::Processor, address::Int,pc::Int)::AbstractString
+    core_no=1
+    if(address<= 1024)
+        core_no=1
+    else
+        core_no=2
+    end
+    return processor.cores[core_no].program[pc]
 end

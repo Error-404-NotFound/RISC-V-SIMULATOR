@@ -108,6 +108,9 @@ function uint_to_hex_(x::UInt)
 end
 
 function binary_to_int(binary_str::AbstractString)::Int
+    if binary_str == ""
+        return 0
+    end
     return parse(Int, binary_str, base=2)
 end
 
@@ -191,6 +194,16 @@ function get_row_col_from_address(address::Int)
     temp_row = (address - temp_col) ÷ 4 + 1
     return temp_row, temp_col
 end
+
+function get_address_from_row_col(row::Int, col::Int)
+    return (row-1)*4 + col
+end
+
+function get_byte_from_memory(memory::Array{Int,2}, address::Int)
+    row, col = get_row_col_from_address(address)
+    return memory[row, col]  
+end
+
 
 function store_word(binary_string::AbstractString, memory::Array{Int,2}, row::Int, col::Int)
     if length(binary_string) != 32
