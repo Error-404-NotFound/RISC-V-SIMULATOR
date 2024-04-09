@@ -1,3 +1,14 @@
+# 10-04-2024
+
+# 09-04-2024
+The two replacement poilicies:  LRU and LFU are working properly along with their respective miss and hit rates being calculated. Started Implementation of adding data into cache.
+
+# 06-04-2024
+Cache simulation working with adding of new blocks along with the proper identifiaction of sets and tag bits(Only for intructions).
+
+# 03-04-2024
+Started Implementation of Phase-3 with selection of replacement policies and some modififactions.
+
 # 10-03-2024
 Data non forwarding pipeline working succesfully, and latency also for non forwarding(mul instruction) working succesfully. Data Forwarding is inaccurate and is logically incomplete.
 
