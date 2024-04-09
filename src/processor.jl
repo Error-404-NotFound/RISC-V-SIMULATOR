@@ -104,7 +104,7 @@ function address_present_in_cache(cache::Cache, address::Int64)
     cache.index_bits = address[end-cache.offset_bits_length-cache.index_bits_length+1:end-cache.offset_bits_length]
     cache.tag_bits = address[1:end-cache.offset_bits_length-cache.index_bits_length]
     set_number = binary_to_int(cache.index_bits)
-    tag = binary_to_int(cache.tag_bits)
+    # tag = binary_to_int(cache.tag_bits)
     index = findfirst([block.block[1] == cache.tag_bits for block in cache.memory[set_number+1].cache_set])
     if index !== nothing
         old_recent_access = cache.memory[set_number+1].cache_set[index].recent_access
@@ -114,34 +114,159 @@ function address_present_in_cache(cache::Cache, address::Int64)
                 cache.memory[set_number+1].cache_set[i].recent_access += 1
             end
         end
-        println("Block present addresss = ",cache.tag_bits," ",cache.index_bits," ",cache.offset_bits)
+        cache.memory[set_number+1].cache_set[index].frequency += 0
+        # println("Block present addresss = ",cache.tag_bits," ",cache.index_bits," ",cache.offset_bits)
         return cache.memory[set_number+1].cache_set[index].block
     else
-        println("Block not present addresss = ",cache.tag_bits," ",cache.index_bits," ",cache.offset_bits)
+        # println("Block not present addresss = ",cache.tag_bits," ",cache.index_bits," ",cache.offset_bits)
         return nothing
     end
 end
 
 
-function retrieve_block_from_MM(cache::Cache, address::Int64, memory::Array{Int,2})
+function retrieve_block_from_MM(cache::Cache, memory::Array{Int,2}, address::Int64)
     block = CacheBlock_Init(cache.block_size)
     address = int_to_binary_32bits(address)
     zeros = repeat("0", cache.offset_bits_length)
     block_lower_bound = binary_to_int(address[1:end-cache.offset_bits_length]*zeros)
     block_upper_bound = block_lower_bound + cache.block_size - 1
-    println("address = ",address," block_lower_bound = ",block_lower_bound," block_upper_bound = ",block_upper_bound)
+    # println("address = ",address," block_lower_bound = ",block_lower_bound," block_upper_bound = ",block_upper_bound)
     block.block[1] = cache.tag_bits
     for byte_address in block_lower_bound:block_upper_bound
         # block.block[byte_address-block_lower_bound+2] = int_to_hex(memory[byte_address ÷ 4 + 1, byte_address % 4 + 1])
         # int_to_hex(memory[byte_address ÷ 4 + 1, byte_address % 4 + 1])
-        block.block[(byte_address%cache.block_size)+2] = int_to_binary_8bits(get_byte_from_memory(memory, byte_address))
+        block.block[(byte_address%cache.block_size)+2] = int_to_binary_8bits(get_byte_from_memory(memory, byte_address+1))
     end
     return block
 end
 
 
 function set_block_in_cache(cache::Cache, address::Int64, memory::Array{Int,2})
-    block = retrieve_block_from_MM(cache, address, memory)
+    block = retrieve_block_from_MM(cache, memory, address)
     set_number = binary_to_int(cache.index_bits)
+    LRU_cache_replacement_policy(cache, block, set_number)
+    # LFU_cache_replacement_policy(cache, block, set_number)
     return block
+end
+
+
+function LRU_cache_replacement_policy(cache::Cache, block::CacheBlock, set_number::Int64)
+    # println("*******************LRU Cache Replacement Policy*******************")
+    # println("New Block = ",block)
+    new_block = deepcopy(block)
+    block_set = cache.memory[set_number+1].cache_set
+    index = nothing
+    for (block_index, block) in enumerate(block_set)
+        if !block.isValid
+            index = block_index
+            new_block.isValid = true
+            cache.memory[set_number+1].cache_set[index] = deepcopy(new_block)
+            break
+        end
+    end
+
+    if index === nothing
+        recent_access_value = [block.recent_access for block in block_set]
+        max_recent_access_value = argmax(recent_access_value)
+        new_block.isValid = true
+        cache.memory[set_number+1].cache_set[max_recent_access_value] = deepcopy(new_block)
+    end
+
+    for block in block_set
+        if block.isValid
+            block.recent_access += 1
+            # println("^^^^^^^^^^^^^^^^^^^^^^^")
+            # println(block.block[1])
+        end 
+    end
+
+    # println("\nset number = ",set_number)
+    # for i in 1:cache.associativity
+    #     println("Block = ",cache.memory[set_number+1].cache_set[i])
+    # end
+    # address = int_to_binary_32bits(address)
+    # cache.offset_bits = address[end-cache.offset_bits_length+1:end]
+    # cache.index_bits = address[end-cache.offset_bits_length-cache.index_bits_length+1:end-cache.offset_bits_length]
+    # cache.tag_bits = address[1:end-cache.offset_bits_length-cache.index_bits_length]
+    # set_number = binary_to_int(cache.index_bits)
+    # tag = binary_to_int(cache.tag_bits)
+    # index = findfirst([block.block[1] == "" for block in cache.memory[set_number+1].cache_set])
+    # if index !== nothing
+    #     cache.memory[set_number+1].cache_set[index].block = set_block_in_cache(cache, address, memory).block
+    #     cache.memory[set_number+1].cache_set[index].tag = cache.tag_bits
+    #     cache.memory[set_number+1].cache_set[index].isValid = true
+    #     cache.memory[set_number+1].cache_set[index].isDirty = false
+    #     cache.memory[set_number+1].cache_set[index].recent_access = 0
+    #     for i in 1:cache.associativity
+    #         if i != index && cache.memory[set_number+1].cache_set[i].isValid
+    #             cache.memory[set_number+1].cache_set[i].recent_access += 1
+    #         end
+    #     end
+    # else
+    #     index = findfirst([block.recent_access == cache.associativity-1 for block in cache.memory[set_number+1].cache_set])
+    #     if index !== nothing
+    #         if cache.memory[set_number+1].cache_set[index].isDirty
+    #             # write_back_to_MM(cache.memory[set_number+1].cache_set[index].block, cache.memory[set_number+1].cache_set[index].tag, cache.index_bits, cache.offset_bits, memory)
+    #         end
+    #         cache.memory[set_number+1].cache_set[index].block = set_block_in_cache(cache, address, memory).block
+    #         cache.memory[set_number+1].cache_set[index].tag = cache.tag_bits
+    #         cache.memory[set_number+1].cache_set[index].isValid = true
+    #         cache.memory[set_number+1].cache_set[index].isDirty = false
+    #         cache.memory[set_number+1].cache_set[index].recent_access = 0
+    #         for i in 1:cache.associativity
+    #             if i != index && cache.memory[set_number+1].cache_set[i].isValid
+    #                 cache.memory[set_number+1].cache_set[i].recent_access += 1
+    #             end
+    #         end
+    #     end    
+    # end
+    # println("*******************Cache Replacement Policy*******************")
+end
+
+function LFU_cache_replacement_policy(cache::Cache, block::CacheBlock, set_number::Int64)
+    # println("*******************LFU Cache Replacement Policy*******************")
+
+    # println("New Block = ",block)
+    new_block = deepcopy(block)
+    block_set = cache.memory[set_number+1].cache_set
+    index = nothing
+    for (block_index, block) in enumerate(block_set) 
+        if !block.isValid
+            index = block_index
+            new_block.isValid = true
+            new_block.isAccessed = true
+            cache.memory[set_number+1].cache_set[index] = deepcopy(new_block)
+            break
+        end
+    end
+
+    if index === nothing
+        frequency_value = [block.frequency for block in block_set]
+        min_frequency_value = argmin(frequency_value)
+        new_block.isValid = true
+        new_block.isAccessed = true
+        cache.memory[set_number+1].cache_set[min_frequency_value] = deepcopy(new_block)
+    end
+
+    for block in block_set
+        if block.isValid && block.isAccessed
+            block.frequency += 1
+            block.isAccessed = false
+        end
+    end
+
+    # println("\nset number = ",set_number)
+    # for i in 1:cache.associativity
+    #     println("Block = ",cache.memory[set_number+1].cache_set[i])
+    # end
+
+    # if set_number == 0
+    #     set_number = 1
+    #     for i in 1:cache.associativity 
+    #         println("Block = ",cache.memory[set_number+1].cache_set[i])
+    #     end
+    # end
+
+
+    # println("*******************Cache Replacement Policy*******************")
 end

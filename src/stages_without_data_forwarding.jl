@@ -408,8 +408,19 @@ function IF_stage(processor::Processor, core::Core1, memory::Array{Int,2}, varia
     if core.pc <= length(core.program)
         # println("Instruction Fetch at clock cycle: ", processor.clock)
         address = (core.pc + initial_address - 2) * 4 + 1
-        println(address)
-        println(get_instruction_from_address(processor, address, core.pc))
+        # println(address)
+        # println(get_instruction_from_address(processor, address, core.pc))
+        # println("++++++++++++++++++++++++++++++++++++++++++++++++")
+        # println(get_instruction_from_address(processor, address, core.pc))
+        block_memory = address_present_in_cache(processor.cache, address)
+        processor.access += 1
+        if block_memory !== nothing
+            processor.hits += 1
+            
+        else
+            set_block_in_cache(processor.cache, address, memory)
+            processor.misses += 1
+        end
         instruction = core.program[core.pc]
         # println(instruction)
         parts, opcode = get_parts_and_opcode_from_instruction(instruction)

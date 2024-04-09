@@ -1,17 +1,20 @@
 mutable struct CacheBlock
     block_size::Int64
-    tag::String
     isValid::Bool
     isDirty::Bool
+    isAccessed::Bool
     block::Array{String, 1}
     recent_access::Int64
+    frequency::Int64
     function CacheBlock(block_size::Int64)
         this = new()
-        this.tag = ""
+        this.block_size = block_size
         this.isValid = false
         this.isDirty = false
+        this.isAccessed = false
         this.block = fill("", block_size+1)
         this.recent_access = 0
+        this.frequency = 0
         return this
     end
 end
@@ -50,8 +53,8 @@ mutable struct Cache
     tag_bits_length::Int64
     function Cache()
         this = new()
-        this.cache_size = 16
-        this.block_size = 4
+        this.cache_size = 64
+        this.block_size = 8
         this.associativity = 4
         this.number_of_blocks = this.cache_size / this.block_size
         this.number_of_sets = this.number_of_blocks / this.associativity

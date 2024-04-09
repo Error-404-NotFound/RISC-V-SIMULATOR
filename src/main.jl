@@ -161,6 +161,16 @@ function main()
     println("Hit Rate: $(sim.hits / sim.access)")
     println("Misses: $(sim.misses)")
     println("Miss Rate: $(sim.misses / sim.access)")
+    println()
+
+    # println()
+    # println("Cache Memory:")
+    # for i in sim.cache.number_of_sets
+    #     for j in sim.cache.associativity
+    #         println("Set $i Block $j: $(sim.cache.memory[i].cache_set[j].block)")
+    #     end
+    #     # println("Set $i: $(sim.cache.memory[i].cache_set)") 
+    # end
 
     println("Registers:")
     for i in 1:length(sim.cores)

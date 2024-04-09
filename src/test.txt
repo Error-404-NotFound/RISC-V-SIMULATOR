@@ -1,0 +1,36 @@
+Enter the choice for the execution of core: 
+1. For UNPIPELINED execution
+2. For PIPELINED execution without data forwarding
+3. For PIPELINED execution with data forwarding
+Output of the program-1: 
+Unsorted array is: 3, 4, 1, 2, 5, 23, 34, 1, 213, 123, 234, 435, 456, 234234, 12, 
+Sorted array is: 1, 1, 2, 3, 4, 5, 12, 23, 34, 123, 213, 234, 435, 456, 234234, 
+Program exited with code: 0
+
+Total number of clocks: 1999
+Total number of instructions executed: 1082
+Total number of stalls: 436
+Instructions per clock (IPC): 0.5412706353176588
+Clock per instruction (CPI): 1.8475046210720887
+Stalls per instruction (SPI): 0.4029574861367837
+
+Output of the program-2: 
+
+Total number of clocks: 8
+Total number of instructions executed: 4
+Total number of stalls: 0
+Instructions per clock (IPC): 0.5
+Clock per instruction (CPI): 2.0
+Stalls per instruction (SPI): 0.0
+
+Cache Information:
+Cache access count: 1151
+Hits: 1047
+Hit Rate: 0.9096437880104257
+Misses: 104
+Miss Rate: 0.09035621198957429
+
+Registers:
+Core 1 Registers: [0, 15, 0, 0, 0, 2113, 0, 0, 0, 0, 2113, 15, 0, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 5, 12, 22]
+Core 2 Registers: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
