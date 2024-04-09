@@ -62,6 +62,13 @@ This project focuses on implementing a simulator for the RISC-V ISA, allowing us
 * Latency of instructions: Instructions such as "mul" will have a latency of 3 in EX stage, which is handled.
 * (Note): The ecall statements as well as stall count for Data Forwarding case is inaccurate, so please note it.
 
+#### Phase-3
+* Simulation of a Cache: A simple cache with predefined size, number of blocks and associativity has been implemented.
+* Implementation of Replacement Policies: Replacement Policies such as LRU(Least Recently Used) and LFU(Least Frequently Used) have been implemented.
+* Calculation of Misses and Hits: The corresponding Misses and Hits by the cache corresonding to the policies have been calculated.
+* Incorporation of Instructions and Data: The cache is designed to handle both instructions as well as the data corresponding to all memory accesses  in the program.
+  
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
@@ -202,6 +209,9 @@ _For more examples, please refer to the [Assembly_Programs](https://github.com/E
   
 [![Output-9][output_screenshot_9]](https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/UserInput.png)
 
+### Phase-3
+
+
 <!-- ROADMAP -->
 ## Features Implemented
 
@@ -223,12 +233,14 @@ For eg: li a0 1 or li x10 1
 - [x] Other .asm files added for reference.
 - [ ] Encoding And Decoding of Instructions.
 - [ ] GUI interface.
-    ### Phase-2
+### Phase-2
 - [x] Distribution into stages, i.e., IF,ID/RF, EX, MEM,WB
 - [x] Pipelining of the Stages with and without Data Dorwarding
 - [x] Application of Static 1-bit Branch Predictor 
-
-
+### Phase-3
+- [x] Supports a Cache with 64 Bytes memeory 
+- [x] implementation of various replacement policies(LRU and LFU)
+- [x] Supports both Instructions and Data in cache
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
