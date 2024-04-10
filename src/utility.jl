@@ -187,16 +187,16 @@ function get_row_col_from_address(address::Int)
     if address == 0
         return 1, 1
     end
-    temp_col = address % 4
+    temp_col = (address % 4) + 1
     if temp_col == 0
         temp_col = 4
     end
-    temp_row = (address - temp_col) ÷ 4 + 1
+    temp_row = (address - temp_col + 1) ÷ 4 + 1
     return temp_row, temp_col
 end
 
 function get_address_from_row_col(row::Int, col::Int)
-    return (row-1)*4 + col
+    return (row-1)*4 + col - 1
 end
 
 function get_byte_from_memory(memory::Array{Int,2}, address::Int)
@@ -267,6 +267,12 @@ function load_word(memory::Array{Int,2}, row::Int, col::Int)
     #     println("Error: Binary string length is not 32 bits.")
     #     return
     # end
+    if col==1 && row!=1
+        col=4
+        row=row-1
+    else
+        col=col-1
+    end
     if col == 1
         temp_value = memory[row, col] + memory[row, col+1]*256 + memory[row, col+2]*65536 + memory[row, col+3]*16777216
     elseif col == 2
@@ -274,7 +280,7 @@ function load_word(memory::Array{Int,2}, row::Int, col::Int)
     elseif col == 3
         temp_value = memory[row, col] + memory[row, col+1]*256 + memory[row+1, col-2]*65536 + memory[row+1, col-1]*16777216
     elseif col == 4
-        temp_value = memory[row, col] + memory[row+1, col-3]*256 + memory[row+1, col-2]*65536 + memory[row+1, col-1]*16777216
+        temp_value = memory[row, col] + memory[row, col-3]*256 + memory[row, col-2]*65536 + memory[row, col-1]*16777216
     end
     if temp_value > 2147483647
         temp_value -= 4294967296

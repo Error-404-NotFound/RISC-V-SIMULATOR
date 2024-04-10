@@ -53,9 +53,9 @@ mutable struct Cache
     tag_bits_length::Int64
     function Cache()
         this = new()
-        this.cache_size = 128
-        this.block_size = 16
-        this.associativity = 1
+        this.cache_size = 64
+        this.block_size = 8
+        this.associativity = 4
         this.number_of_blocks = this.cache_size / this.block_size
         this.number_of_sets = this.number_of_blocks / this.associativity
         this.memory = [CacheSet_Init(this.associativity, this.block_size) for _ in 1:this.number_of_sets]

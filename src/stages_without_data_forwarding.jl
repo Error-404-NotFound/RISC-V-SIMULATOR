@@ -82,26 +82,17 @@ function MEM_stage(processor::Processor, core::Core1, memory::Array{Int,2}, vari
             # row, col = get_row_col_from_address(address)
             # core.MEM_temp_register = load_word(memory, row, col)
             if opcode == "lb"
-                println(address)
                 byte_allocated_to_cache_block_memory = address_present_in_cache(processor.cache, address)
                 println(byte_allocated_to_cache_block_memory)
                 processor.access += 1
                 if byte_allocated_to_cache_block_memory !== nothing
                     processor.hits += 1
-                    println(processor.cache.offset_bits)
                     core.MEM_temp_register = binary_to_int(byte_allocated_to_cache_block_memory[binary_to_int(processor.cache.offset_bits)+1])
-                    println(core.MEM_temp_register)
                 else
                     processor.misses += 1
-                    # println(address)
                     block_set_in_cache = set_block_in_cache(processor.cache, address, memory)
-                    core.MEM_temp_register = binary_to_int(block_set_in_cache[(address % processor.cache.number_of_blocks) + 1])
-                    println(address % processor.cache.number_of_blocks +1)
-                    # println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
                     # println(block_set_in_cache)
-                    println(core.MEM_temp_register)
-                    # byte_allocated_to_cache_block_memory = address_present_in_cache(processor.cache, address)
-                    # core.MEM_temp_register = load_byte(byte_allocated_to_cache_block_memory, address)
+                    core.MEM_temp_register = binary_to_int(block_set_in_cache[(address % processor.cache.block_size) + 1])
                 end
 
             elseif opcode == "lbu"
@@ -109,20 +100,45 @@ function MEM_stage(processor::Processor, core::Core1, memory::Array{Int,2}, vari
                 processor.access += 1
                 if byte_allocated_to_cache_block_memory !== nothing
                     processor.hits += 1
-                    core.MEM_temp_register = binary_to_int(byte_allocated_to_cache_block_memory)
+                    core.MEM_temp_register = binary_to_int(byte_allocated_to_cache_block_memory[binary_to_int(processor.cache.offset_bits)+1])
                 else
                     processor.misses += 1
                     block_set_in_cache = set_block_in_cache(processor.cache, address, memory)
-                    core.MEM_temp_register = binary_to_int(block_set_in_cache[(address % processor.cache.number_of_blocks) + 1])
+                    core.MEM_temp_register = binary_to_int(block_set_in_cache[(address % processor.cache.block_size) + 1])
                 end
+
+
             elseif opcode == "lh"
                 
             elseif opcode == "lhu"
                 
             elseif opcode == "lw"
+                address_in_cache = address % processor.cache.block_size
+                cache_block_size = processor.cache.block_size
+                block_allocated_to_cache_block_memory_1 = address_present_in_cache(processor.cache, address)
+                block_allocated_to_cache_block_memory_2 = address_present_in_cache(processor.cache, address+1)
+                block_allocated_to_cache_block_memory_3 = address_present_in_cache(processor.cache, address+2)
+                block_allocated_to_cache_block_memory_4 = address_present_in_cache(processor.cache, address+3)
+                processor.access += 1
 
+                if block_allocated_to_cache_block_memory_1 !== nothing && block_allocated_to_cache_block_memory_4 !== nothing
+                    processor.hits += 1
+                    core.MEM_temp_register = binary_to_int(block_allocated_to_cache_block_memory_1[binary_to_int(processor.cache.offset_bits)+1]) + binary_to_int(block_allocated_to_cache_block_memory_1[binary_to_int(processor.cache.offset_bits)+2]) * 256 + binary_to_int(block_allocated_to_cache_block_memory_1[binary_to_int(processor.cache.offset_bits)+3]) * 65536 + binary_to_int(block_allocated_to_cache_block_memory_1[binary_to_int(processor.cache.offset_bits)+4]) * 16777216
+                    # core.MEM_temp_register = binary_to_int(block_allocated_to_cache_block_memory_1)
+                else
+                    processor.misses += 1
+                    if block_allocated_to_cache_block_memory_1 === nothing
+                        if address_in_cache <= processor.cache.block_size - 4
+                            block_set_in_cache_1 = set_block_in_cache(processor.cache, address, memory)
+                            core.MEM_temp_register = binary_to_int(block_set_in_cache_1[address_in_cache + 1]) + binary_to_int(block_set_in_cache_1[address_in_cache + 2]) * 256 + binary_to_int(block_set_in_cache_1[address_in_cache + 3]) * 65536 + binary_to_int(block_set_in_cache_1[address_in_cache + 4]) * 16777216
+                        elseif address_in_cache <= processor.cache.block_size - 3
+                            
+                        end
+                    end
+                end
             else
                 # println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+                println(address)
                 row, col = get_row_col_from_address(address)
                 core.MEM_temp_register = load_word(memory, row, col)
             end
@@ -378,7 +394,62 @@ function ID_RF_stage(processor::Processor, core::Core1, memory::Array{Int,2}, va
                     end
                 end
             end
-                
+
+            if opcode == "blt"
+                if core.registers[core.rs1_temp_register] < core.registers[core.rs2_temp_register]
+                    temp_dest = findfirst(x -> x == core.label_temp_register, core.program)
+                    if temp_dest-1 < core.pc
+                        core.stall_at_IF = true
+                        # core.stall_in_next_clock_cycle = true
+                        if core.stall_at_EX && core.stall_in_next_clock_cycle
+                            core.stall_at_EX = false
+                            core.stall_in_next_clock_cycle = false
+                        end
+                    end
+                end
+            end
+
+            if opcode == "bge"
+                if core.registers[core.rs1_temp_register] >= core.registers[core.rs2_temp_register]
+                    temp_dest = findfirst(x -> x == core.label_temp_register, core.program)
+                    if temp_dest-1 < core.pc
+                        core.stall_at_IF = true
+                        # core.stall_in_next_clock_cycle = true
+                        if core.stall_at_EX && core.stall_in_next_clock_cycle
+                            core.stall_at_EX = false
+                            core.stall_in_next_clock_cycle = false
+                        end
+                    end
+                end
+            end
+
+            if opcode == "bltu"
+                if core.registers[core.rs1_temp_register] < core.registers[core.rs2_temp_register]
+                    temp_dest = findfirst(x -> x == core.label_temp_register, core.program)
+                    if temp_dest-1 < core.pc
+                        core.stall_at_IF = true
+                        # core.stall_in_next_clock_cycle = true
+                        if core.stall_at_EX && core.stall_in_next_clock_cycle
+                            core.stall_at_EX = false
+                            core.stall_in_next_clock_cycle = false
+                        end
+                    end
+                end
+            end
+
+            if opcode == "bgeu"
+                if core.registers[core.rs1_temp_register] >= core.registers[core.rs2_temp_register]
+                    temp_dest = findfirst(x -> x == core.label_temp_register, core.program)
+                    if temp_dest-1 < core.pc
+                        core.stall_at_IF = true
+                        # core.stall_in_next_clock_cycle = true
+                        if core.stall_at_EX && core.stall_in_next_clock_cycle
+                            core.stall_at_EX = false
+                            core.stall_in_next_clock_cycle = false
+                        end
+                    end
+                end
+            end 
 
         end
 

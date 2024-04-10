@@ -105,8 +105,6 @@ function address_present_in_cache(cache::Cache, address::Int64)
     cache.tag_bits = address[1:end-cache.offset_bits_length-cache.index_bits_length]
     set_number = binary_to_int(cache.index_bits)
     # tag = binary_to_int(cache.tag_bits)
-    index_and_offset= cache.index_bits * cache.offset_bits
-    final_temp =binary_to_int(index_and_offset)
     index = findfirst([block.block[1] == cache.tag_bits for block in cache.memory[set_number+1].cache_set])
     if index !== nothing
         old_recent_access = cache.memory[set_number+1].cache_set[index].recent_access
@@ -128,52 +126,17 @@ end
 
 function retrieve_block_from_MM(cache::Cache, memory::Array{Int,2}, address::Int64)
     block = CacheBlock_Init(cache.block_size)
-    address_bin = int_to_binary_32bits(address)
-    # println(address_bin)
-    # zeros = repeat("0", cache.offset_bits_length)
-    # block_lower_bound = binary_to_int(address_bin[1:end-cache.offset_bits_length]*zeros)
-    # block_upper_bound = block_lower_bound + cache.block_size -1
-
-    block_upper_bound = 0
-    temp_var = 2^(cache.offset_bits_length + cache.index_bits_length)
-    for _ in 1:address
-        if block_upper_bound >= address
-            break
-        end
-        block_upper_bound += temp_var 
-    end
-    block_lower_bound = block_upper_bound - temp_var
-    block_upper_bound-=1
+    address = int_to_binary_32bits(address)
+    zeros = repeat("0", cache.offset_bits_length)
+    block_lower_bound = binary_to_int(address[1:end-cache.offset_bits_length]*zeros)
+    block_upper_bound = block_lower_bound + cache.block_size - 1
     println("address = ",address," block_lower_bound = ",block_lower_bound," block_upper_bound = ",block_upper_bound)
     block.block[1] = cache.tag_bits
-    if address >= block_lower_bound && address < block_lower_bound+(temp_var>>1)
-        for byte_address in block_lower_bound:block_lower_bound+(temp_var>>1)-1
-            # if byte_address%cache.block_size == 0
-            #     block.block[cache.block_size+1] = int_to_binary_8bits(get_byte_from_memory(memory, byte_address))
-            #     continue
-            # end
-            println(get_byte_from_memory(memory, byte_address))
-            block.block[(byte_address % cache.block_size)+2] = int_to_binary_8bits(get_byte_from_memory(memory, byte_address))
-        end
-    else
-        for byte_address in block_lower_bound+(temp_var>>1):block_upper_bound
-            # if byte_address%cache.block_size == 0
-            #     block.block[cache.block_size+1] = int_to_binary_8bits(get_byte_from_memory(memory, byte_address))
-            #     continue
-            # end
-            println(get_byte_from_memory(memory, byte_address))
-            block.block[(byte_address % cache.block_size)+2] = int_to_binary_8bits(get_byte_from_memory(memory, byte_address))
-        end
+    for byte_address in block_lower_bound:block_upper_bound
+        # block.block[byte_address-block_lower_bound+2] = int_to_hex(memory[byte_address ÷ 4 + 1, byte_address % 4 + 1])
+        # int_to_hex(memory[byte_address ÷ 4 + 1, byte_address % 4 + 1])
+        block.block[(byte_address%cache.block_size)+2] = int_to_binary_8bits(get_byte_from_memory(memory, byte_address+1))
     end
-    # for byte_address in block_lower_bound:block_upper_bound
-    #     # if byte_address%cache.block_size == 0
-    #     #     block.block[cache.block_size+1] = int_to_binary_8bits(get_byte_from_memory(memory, byte_address))
-    #     #     continue
-    #     # end
-    #     println(get_byte_from_memory(memory, byte_address))
-    #     block.block[(byte_address % cache.block_size)+2] = int_to_binary_8bits(get_byte_from_memory(memory, byte_address))
-    # end
-    println(block)
     return block
 end
 
@@ -306,8 +269,4 @@ function LFU_cache_replacement_policy(cache::Cache, block::CacheBlock, set_numbe
 
 
     # println("*******************Cache Replacement Policy*******************")
-end
-
-function write_through_cache()
-    
 end
