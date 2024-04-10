@@ -122,6 +122,7 @@ function MEM_stage(processor::Processor, core::Core1, memory::Array{Int,2}, vari
             elseif opcode == "lw"
 
             else
+                # println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
                 row, col = get_row_col_from_address(address)
                 core.MEM_temp_register = load_word(memory, row, col)
             end
