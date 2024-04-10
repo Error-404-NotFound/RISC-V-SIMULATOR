@@ -82,23 +82,48 @@ function MEM_stage(processor::Processor, core::Core1, memory::Array{Int,2}, vari
             # row, col = get_row_col_from_address(address)
             # core.MEM_temp_register = load_word(memory, row, col)
             if opcode == "lb"
+                println(address)
+                byte_allocated_to_cache_block_memory = address_present_in_cache(processor.cache, address)
+                println(byte_allocated_to_cache_block_memory)
+                processor.access += 1
+                if byte_allocated_to_cache_block_memory !== nothing
+                    processor.hits += 1
+                    println(processor.cache.offset_bits)
+                    core.MEM_temp_register = binary_to_int(byte_allocated_to_cache_block_memory[binary_to_int(processor.cache.offset_bits)+1])
+                    println(core.MEM_temp_register)
+                else
+                    processor.misses += 1
+                    # println(address)
+                    block_set_in_cache = set_block_in_cache(processor.cache, address, memory)
+                    core.MEM_temp_register = binary_to_int(block_set_in_cache[(address % processor.cache.number_of_blocks) + 1])
+                    println(address % processor.cache.number_of_blocks +1)
+                    # println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
+                    # println(block_set_in_cache)
+                    println(core.MEM_temp_register)
+                    # byte_allocated_to_cache_block_memory = address_present_in_cache(processor.cache, address)
+                    # core.MEM_temp_register = load_byte(byte_allocated_to_cache_block_memory, address)
+                end
+
+            elseif opcode == "lbu"
                 byte_allocated_to_cache_block_memory = address_present_in_cache(processor.cache, address)
                 processor.access += 1
                 if byte_allocated_to_cache_block_memory !== nothing
                     processor.hits += 1
                     core.MEM_temp_register = binary_to_int(byte_allocated_to_cache_block_memory)
-                    println(core.MEM_temp_register)
                 else
                     processor.misses += 1
-                    println(address)
                     block_set_in_cache = set_block_in_cache(processor.cache, address, memory)
                     core.MEM_temp_register = binary_to_int(block_set_in_cache[(address % processor.cache.number_of_blocks) + 1])
-                    # println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
-                    # println(block_set_in_cache)
-                    # println(core.MEM_temp_register)
-                    # byte_allocated_to_cache_block_memory = address_present_in_cache(processor.cache, address)
-                    # core.MEM_temp_register = load_byte(byte_allocated_to_cache_block_memory, address)
                 end
+            elseif opcode == "lh"
+                
+            elseif opcode == "lhu"
+                
+            elseif opcode == "lw"
+
+            else
+                row, col = get_row_col_from_address(address)
+                core.MEM_temp_register = load_word(memory, row, col)
             end
         elseif instruction_type == "S_type_instructions"
             row, col = get_row_col_from_address(address)

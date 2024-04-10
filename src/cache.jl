@@ -62,7 +62,7 @@ mutable struct Cache
         this.offset_bits = ""
         this.index_bits = ""
         this.tag_bits = ""
-        this.offset_bits_length = Int64(ceil(log2(this.block_size)))
+        this.offset_bits_length = Int64(ceil(log2(this.number_of_blocks)))
         this.index_bits_length = Int64(ceil(log2(this.number_of_sets)))
         this.tag_bits_length = 32 - this.offset_bits_length - this.index_bits_length
         return this

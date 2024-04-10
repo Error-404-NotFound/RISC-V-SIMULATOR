@@ -116,7 +116,7 @@ function address_present_in_cache(cache::Cache, address::Int64)
         end
         cache.memory[set_number+1].cache_set[index].frequency += 0
         # println("Block present addresss = ",cache.tag_bits," ",cache.index_bits," ",cache.offset_bits)
-        return cache.memory[set_number+1].cache_set[index].block[binary_to_int(cache.offset_bits)+2]
+        return cache.memory[set_number+1].cache_set[index].block
     else
         # println("Block not present addresss = ",cache.tag_bits," ",cache.index_bits," ",cache.offset_bits)
         return nothing

@@ -3,4 +3,6 @@
 
 .text
     li a0 2049
-    lb a1 0(a0)
+    li a1 2053
+    lb a2 0(a0)
+    lb a3 0(a1)
