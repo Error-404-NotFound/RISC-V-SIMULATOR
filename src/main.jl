@@ -54,7 +54,7 @@ function main()
     println("Enter the choice for the execution of core: ")
     println("1. For UNPIPELINED execution")
     println("2. For PIPELINED execution without data forwarding")
-    println("3. For PIPELINED execution with data forwarding")
+    # println("3. For PIPELINED execution with data forwarding")
     user_input = readline()
     # user_number = parse(Int, user_input)
 
@@ -97,21 +97,6 @@ function main()
     # elseif user_input == "3"
     #     sim.cores[1].pc=1
     #     sim.cores[2].pc=1
-        
-    #     println("Sections of Memory:")
-    #     println()
-    #     println(".text segment for core 1:(1-150)")
-    #     show_memory_range(sim, 1, 150)
-    #     println()
-    #     println(".text segment for core 2:(257-407)")
-    #     show_memory_range(sim, 257, 457)
-        # println()
-        # println(".data segment for core 1:(513-662)")
-        # show_memory_range(sim, 513, 662)
-        # println()
-        # println(".data segment for core 2:(769-918)")
-        # show_memory_range(sim, 769, 918)
-        # println()
 
     #     println("Output of the program-1: ")
     #     run_piped_w_df(sim,variable_address_first, 1)
@@ -135,8 +120,8 @@ function main()
     #     println("Stalls per instruction (SPI): $(sim.cores[2].stall_count / sim.cores[2].instruction_count)")
     #     println()
 
-    # else
-    #     println("Invalid choice")
+    else
+        println("Invalid choice")
 
     end
 
@@ -157,9 +142,9 @@ function main()
 
     println("Cache Information:")
     println("Cache access count: $(sim.access)")
-    println("Hits: $(sim.hits)")
+    println("Hits: $(sim.hits + sim.hits_2)")
     println("Hit Rate: $(sim.hits / sim.access)")
-    println("Misses: $(sim.misses)")
+    println("Misses: $(sim.misses + sim.misses_2)")
     println("Miss Rate: $(sim.misses / sim.access)")
     println()
 
