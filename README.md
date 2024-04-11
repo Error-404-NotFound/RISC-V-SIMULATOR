@@ -240,7 +240,9 @@ For eg: li a0 1 or li x10 1
 ### Phase-3
 - [x] Supports a Cache with 64 Bytes memeory 
 - [x] implementation of various replacement policies(LRU and LFU)
-- [x] Supports both Instructions and Data in cache
+- [x] Supports both Instructions in cache
+- [x] Latencies for retrieving a block from the memory to cache has been implemented.
+- [ ] Supports Data in cache.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
