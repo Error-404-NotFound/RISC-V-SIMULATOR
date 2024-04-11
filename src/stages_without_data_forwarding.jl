@@ -144,13 +144,26 @@ function MEM_stage(processor::Processor, core::Core1, memory::Array{Int,2}, vari
             end
         elseif instruction_type == "S_type_instructions"
             row, col = get_row_col_from_address(address)
-            # println(row, " ", col)
             rs2 = parse(Int, parts[2][2:end]) + 1
-            # println(rs2)
-            # println(core.registers[rs2])
             binary_string = int_to_binary_32bits(core.registers[rs2])
-            # println(binary_string)
-            store_word(binary_string, memory, row, col)
+            if opcode == "sb"
+                println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+                println(address)
+                byte_allocated_to_cache_block_memory = address_present_in_cache(processor.cache, address)
+                processor.access += 1
+                if byte_allocated_to_cache_block_memory !== nothing
+                    processor.hits += 1
+                    write_through_cache(processor.cache, memory, address, binary_string)
+                # else
+                #     processor.misses += 1
+                #     block_set_in_cache(processor.cache, address, memory)
+                    println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+                end
+            end
+            # println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+            # println(address)
+            # println(row," ",col)
+            store_word_diff(binary_string, memory, row, col)
         elseif opcode == "jal" || opcode == "la"
             core.MEM_temp_register = address 
         end

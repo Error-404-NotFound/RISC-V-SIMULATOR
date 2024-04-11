@@ -308,6 +308,30 @@ function LFU_cache_replacement_policy(cache::Cache, block::CacheBlock, set_numbe
     # println("*******************Cache Replacement Policy*******************")
 end
 
-function write_through_cache()
-    
+function write_through_cache(cache::Cache, memory::Array{Int,2}, address::Int64, binary_string::AbstractString)
+    block = CacheBlock_Init(cache.block_size)
+    set_number = binary_to_int(cache.index_bits)
+    index = findfirst([block.block[1] == cache.tag_bits for block in cache.memory[set_number+1].cache_set])
+    if index !== nothing
+        first_part = binary_string[25:32]
+        second_part =  binary_string[17:24]
+        thrid_part = binary_string[9:16]
+        fourth_part = binary_string[1:8]
+            
+        block.block[(address % cache.block_size)] = first_part
+        block.block[((address+1) % cache.block_size)] = second_part
+        block.block[((address+2) % cache.block_size)] = thrid_part
+        block.block[((address+3) % cache.block_size)] = fourth_part
+
+        cache.memory[set_number+1].cache_set[index].isDirty = false
+        cache.memory[set_number+1].cache_set[index].recent_access = 0
+        for i in 1:cache.associativity
+            if i != index && cache.memory[set_number+1].cache_set[i].isValid
+                cache.memory[set_number+1].cache_set[i].recent_access += 1
+            end
+        end
+    end
+    #print block
+    #println("Block written to cache")
+    println(block)
 end

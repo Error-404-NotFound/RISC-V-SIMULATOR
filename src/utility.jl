@@ -206,11 +206,56 @@ end
 
 
 function store_word(binary_string::AbstractString, memory::Array{Int,2}, row::Int, col::Int)
+
     if length(binary_string) != 32
         println("Error: Binary string length is not 32 bits.")
         return
     end
     # println(row, col)
+
+    # if col==1 && row!=1
+    #     col=4
+    #     row=row-1
+    # else
+    #     col=col-1
+    # end
+    if col == 1
+        memory[row, col] = parse(UInt8, binary_string[25:32], base=2)
+        memory[row, col+1] = parse(UInt8, binary_string[17:24], base=2)
+        memory[row, col+2] = parse(UInt8, binary_string[9:16], base=2)
+        memory[row, col+3] = parse(UInt8, binary_string[1:8], base=2)
+    elseif col == 2
+        memory[row+1, col-1] = parse(UInt8, binary_string[1:8], base=2)
+        memory[row, col] = parse(UInt8, binary_string[25:32], base=2)
+        memory[row, col+1] = parse(UInt8, binary_string[17:24], base=2)
+        memory[row, col+2] = parse(UInt8, binary_string[9:16], base=2)
+    elseif col == 3
+        memory[row+1, col-2] = parse(UInt8, binary_string[9:16], base=2)
+        memory[row+1, col-1] = parse(UInt8, binary_string[1:8], base=2)
+        memory[row, col] = parse(UInt8, binary_string[25:32], base=2)
+        memory[row, col+1] = parse(UInt8, binary_string[17:24], base=2)
+    elseif col == 4
+        memory[row+1, col-3] = parse(UInt8, binary_string[17:24], base=2)
+        memory[row+1, col-2] = parse(UInt8, binary_string[9:16], base=2)
+        memory[row+1, col-1] = parse(UInt8, binary_string[1:8], base=2)
+        memory[row, col] = parse(UInt8, binary_string[25:32], base=2)
+    end
+end
+
+function store_word_diff(binary_string::AbstractString, memory::Array{Int,2}, row::Int, col::Int)
+
+    if length(binary_string) != 32
+        println("Error: Binary string length is not 32 bits.")
+        return
+    end
+    # println(row, col)
+
+    if col==1 && row!=1
+        col=4
+        row=row-1
+    else
+        col=col-1
+    end
     if col == 1
         memory[row, col] = parse(UInt8, binary_string[25:32], base=2)
         memory[row, col+1] = parse(UInt8, binary_string[17:24], base=2)
