@@ -1,4 +1,5 @@
 # 10-04-2024
+Tried for data incorporation in the cache but could not able to do so. So decided to continue with instruction in cache only. Latency for retrieving a miss block has also been handeled ie 100 clock cycles for miss in case if it retrieves from MM and 1 clock cycle for retrieving through cache.
 
 # 09-04-2024
 The two replacement poilicies:  LRU and LFU are working properly along with their respective miss and hit rates being calculated. Started Implementation of adding data into cache.
