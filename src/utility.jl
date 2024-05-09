@@ -184,19 +184,19 @@ function binary_to_int_modified(binary::AbstractString)::Int
 end
 
 function get_row_col_from_address(address::Int)
-    if address == 0
-        return 1, 1
-    end
-    temp_col = address % 4
-    if temp_col == 0
-        temp_col = 4
-    end
-    temp_row = (address - temp_col) ÷ 4 + 1
+    # if address == 0
+    #     return 1, 1
+    # end
+    temp_col = address % 4 + 1
+    # if temp_col == 0
+    #     temp_col = 4
+    # end
+    temp_row = (address - temp_col + 1) ÷ 4 + 1
     return temp_row, temp_col
 end
 
 function get_address_from_row_col(row::Int, col::Int)
-    return (row-1)*4 + col
+    return (row - 1) * 4 + col - 1
 end
 
 function get_byte_from_memory(memory::Array{Int,2}, address::Int)

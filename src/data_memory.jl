@@ -9,7 +9,7 @@ function store_data_in_memory(core::Core1, memory::Array{Int64,2}, data_seg_chun
     for i in 1:length(data_seg_chunk)
         if data_seg_chunk[i] == ".string"
             variable_value = data_seg_chunk[i-1]
-            temp_address = (temp_row-1) * 4 + temp_col
+            temp_address = (temp_row-1) * 4 + temp_col - 1
             #store in dictionary
             push!(variable_address, variable_value => temp_address)
 
@@ -36,7 +36,7 @@ function store_data_in_memory(core::Core1, memory::Array{Int64,2}, data_seg_chun
 
         if data_seg_chunk[i] == ".word"
             #store in dictionary
-            push!(variable_address, data_seg_chunk[i-1] => (temp_row-1) * 4 + temp_col)
+            push!(variable_address, data_seg_chunk[i-1] => (temp_row-1) * 4 + temp_col - 1)
             i += 1
             # store the word in memory untill the end of the word
             while i <= length(data_seg_chunk) 

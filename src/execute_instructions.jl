@@ -152,12 +152,14 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
         rd = parse(Int, parts[2][2:end]) + 1
         offset = parse(Int, parts[3])
         rs1 = parse(Int, parts[4][2:end]) + 1
-        temp_col = (core.registers[rs1] + offset) % 4
-        if temp_col == 0
-            temp_col = 4
-        end
-        temp_row = (core.registers[rs1] - temp_col + offset) ÷ 4 + 1
+        # temp_col = (core.registers[rs1] + offset) % 4
+        # if temp_col == 0
+        #     temp_col = 4
+        # end
+        # temp_row = (core.registers[rs1] - temp_col + offset) ÷ 4 + 1
         # binary_string = int_to_binary_32bits(core.registers[rs1])
+        address = core.registers[rs1] + offset
+        temp_row,temp_col = get_row_col_from_address(address)
         core.registers[rd] = load_one_byte(memory, temp_row, temp_col)
 
     # lh rd offset(rs1)
@@ -166,12 +168,14 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
         rd = parse(Int, parts[2][2:end]) + 1
         offset = parse(Int, parts[3])
         rs1 = parse(Int, parts[4][2:end]) + 1
-        temp_col = (core.registers[rs1] + offset) % 4
-        if temp_col == 0
-            temp_col = 4
-        end
-        temp_row = (core.registers[rs1] - temp_col + offset) ÷ 4 + 1
+        # temp_col = (core.registers[rs1] + offset) % 4
+        # if temp_col == 0
+        #     temp_col = 4
+        # end
+        # temp_row = (core.registers[rs1] - temp_col + offset) ÷ 4 + 1
         # binary_string = int_to_binary_32bits(core.registers[rs1])
+        address = core.registers[rs1] + offset
+        temp_row,temp_col = get_row_col_from_address(address)
         core.registers[rd] = load_half_word(memory, temp_row, temp_col)
 
     # lw rd offset(rs1)
@@ -180,11 +184,13 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
         rd = parse(Int, parts[2][2:end]) + 1
         offset = parse(Int, parts[3])
         rs1 = parse(Int, parts[4][2:end]) + 1
-        temp_col = (core.registers[rs1] + offset) % 4
-        if temp_col == 0
-            temp_col = 4
-        end
-        temp_row = (core.registers[rs1] - temp_col + offset) ÷ 4 + 1
+        address = core.registers[rs1] + offset
+        temp_row,temp_col = get_row_col_from_address(address)
+        # temp_col = (core.registers[rs1] + offset) % 4 + 1
+        # # if temp_col == 0
+        # #     temp_col = 4
+        # # end
+        # temp_row = (core.registers[rs1] - temp_col + offset + 1) ÷ 4 + 1
         # binary_string = int_to_binary_32bits(core.registers[rs1])
         core.registers[rd] = load_word(memory, temp_row, temp_col)
         
@@ -194,12 +200,14 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
         rd = parse(Int, parts[2][2:end]) + 1
         offset = parse(Int, parts[3])
         rs1 = parse(Int, parts[4][2:end]) + 1
-        temp_col = (core.registers[rs1] + offset) % 4
-        if temp_col == 0
-            temp_col = 4
-        end
-        temp_row = (core.registers[rs1] - temp_col + offset) ÷ 4 + 1
+        # temp_col = (core.registers[rs1] + offset) % 4
+        # if temp_col == 0
+        #     temp_col = 4
+        # end
+        # temp_row = (core.registers[rs1] - temp_col + offset) ÷ 4 + 1
         # binary_string = int_to_binary_32bits(core.registers[rs1])
+        address = core.registers[rs1] + offset
+        temp_row,temp_col = get_row_col_from_address(address)
         core.registers[rd] = load_one_byte(memory, temp_row, temp_col)
 
     # lhu rd offset(rs1)
@@ -208,12 +216,14 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
         rd = parse(Int, parts[2][2:end]) + 1
         offset = parse(Int, parts[3])
         rs1 = parse(Int, parts[4][2:end]) + 1
-        temp_col = (core.registers[rs1] + offset) % 4
-        if temp_col == 0
-            temp_col = 4
-        end
-        temp_row = (core.registers[rs1] - temp_col + offset) ÷ 4 + 1
+        # temp_col = (core.registers[rs1] + offset) % 4
+        # if temp_col == 0
+        #     temp_col = 4
+        # end
+        # temp_row = (core.registers[rs1] - temp_col + offset) ÷ 4 + 1
         # binary_string = int_to_binary_32bits(core.registers[rs1])
+        address = core.registers[rs1] + offset
+        temp_row,temp_col = get_row_col_from_address(address)
         core.registers[rd] = load_half_word(memory, temp_row, temp_col)
 
     # la rd label
@@ -223,11 +233,11 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
         #find the label in the variable_address dictionary
         if haskey(variable_address, label)
             value = variable_address[label]
-            temp_col = value % 4
-            if temp_col == 0
-                temp_col = 4
-            end
-            temp_row=(value-temp_col)÷4 + 1 
+            # temp_col = value % 4
+            # if temp_col == 0
+            #     temp_col = 4
+            # end
+            # temp_row=(value-temp_col)÷4 + 1 
             core.registers[rd] = value
         else
             println("Label $label not found in the dictionary.")
@@ -239,11 +249,13 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
         rs2 = parse(Int, parts[2][2:end]) + 1
         offset = parse(Int, parts[3])
         rs1 = parse(Int, parts[4][2:end]) + 1
-        temp_col = (core.registers[rs1] + offset) % 4
-        if temp_col == 0
-            temp_col = 4
-        end
-        temp_row = (core.registers[rs1] - temp_col + offset) ÷ 4 + 1
+        # temp_col = (core.registers[rs1] + offset) % 4
+        # if temp_col == 0
+        #     temp_col = 4
+        # end
+        # temp_row = (core.registers[rs1] - temp_col + offset) ÷ 4 + 1
+        address = core.registers[rs1] + offset
+        temp_row,temp_col = get_row_col_from_address(address)
         binary_string = int_to_binary_bits_modified(core.registers[rs2],32)
         store_one_byte(binary_string, memory, temp_row, temp_col)
 
@@ -253,11 +265,13 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
         rs2 = parse(Int, parts[2][2:end]) + 1
         offset = parse(Int, parts[3])
         rs1 = parse(Int, parts[4][2:end]) + 1
-        temp_col = (core.registers[rs1] + offset) % 4
-        if temp_col == 0
-            temp_col = 4
-        end
-        temp_row = (core.registers[rs1] - temp_col + offset) ÷ 4 + 1
+        # temp_col = (core.registers[rs1] + offset) % 4
+        # if temp_col == 0
+        #     temp_col = 4
+        # end
+        # temp_row = (core.registers[rs1] - temp_col + offset) ÷ 4 + 1
+        address = core.registers[rs1] + offset
+        temp_row,temp_col = get_row_col_from_address(address)
         binary_string = int_to_binary_bits_modified(core.registers[rs2],32)
         store_half_word(binary_string, memory, temp_row, temp_col)
 
@@ -267,11 +281,13 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
         rs2 = parse(Int, parts[2][2:end]) + 1
         offset = parse(Int, parts[3])
         rs1 = parse(Int, parts[4][2:end]) + 1
-        temp_col = (core.registers[rs1] + offset) % 4
-        if temp_col == 0
-            temp_col = 4
-        end
-        temp_row = (core.registers[rs1] - temp_col + offset) ÷ 4 + 1
+        # temp_col = (core.registers[rs1] + offset) % 4
+        # if temp_col == 0
+        #     temp_col = 4
+        # end
+        # temp_row = (core.registers[rs1] - temp_col + offset) ÷ 4 + 1
+        address = core.registers[rs1] + offset
+        temp_row,temp_col = get_row_col_from_address(address)
         binary_string = int_to_binary_bits_modified(core.registers[rs2],32)
         store_word(binary_string, memory, temp_row, temp_col)
 
