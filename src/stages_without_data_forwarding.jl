@@ -79,8 +79,65 @@ function MEM_stage(processor::Processor, core::Core1, memory::Array{Int,2}, vari
         instruction_type = nothing
         foreach(kv -> opcode in kv[2] && (instruction_type = kv[1]; return), opcode_dictionary)
         if instruction_type == "L_type_instructions"
-            row, col = get_row_col_from_address(address)
-            core.MEM_temp_register = load_word(memory, row, col)
+            if opcode == "lb"
+                # println(address)
+                byte_allocated_to_cache_block_memory = address_present_in_cache(processor.cache, address)
+                # println(byte_allocated_to_cache_block_memory)
+                processor.access += 1
+                if byte_allocated_to_cache_block_memory !== nothing
+                    processor.hits += 1
+                    # println(byte_allocated_to_cache_block_memory)
+                    core.MEM_temp_register = binary_to_int(byte_allocated_to_cache_block_memory)
+                else
+                    processor.misses += 1
+                    block_in_cache = set_block_in_cache(processor.cache, address, memory)
+                    # println(block_in_cache)
+                    # println(block_in_cache[1])
+                    # println(address % processor.cache.block_size)   
+                    core.MEM_temp_register = binary_to_int(block_in_cache[(address % processor.cache.block_size) + 2])
+                end
+
+            elseif opcode == "lbu"
+                byte_allocated_to_cache_block_memory = address_present_in_cache(processor.cache, address)
+                processor.access += 1
+                if byte_allocated_to_cache_block_memory !== nothing
+                    processor.hits += 1
+                    # println()
+                    core.MEM_temp_register = binary_to_int(byte_allocated_to_cache_block_memory[binary_to_int(processor.cache.offset_bits)+2])
+                else
+                    processor.misses += 1
+                    block_in_cache = set_block_in_cache(processor.cache, address, memory)
+                    core.MEM_temp_register = binary_to_int(block_in_cache[(address % processor.cache.block_size) + 2])
+                end
+                
+            elseif opcode == "lh"
+
+            elseif opcode == "lw"
+                address_var = address
+                address_in_cache = address % processor.cache.block_size + 2
+                byte_allocated_to_cache_block_memory_1 = address_present_in_cache(processor.cache, address_var)
+                byte_allocated_to_cache_block_memory_2 = address_present_in_cache(processor.cache, address_var + 1)
+                byte_allocated_to_cache_block_memory_3 = address_present_in_cache(processor.cache, address_var + 2)
+                byte_allocated_to_cache_block_memory_4 = address_present_in_cache(processor.cache, address_var + 3)
+                processor.access += 1
+
+                if byte_allocated_to_cache_block_memory_1 !== nothing && byte_allocated_to_cache_block_memory_2 !== nothing && byte_allocated_to_cache_block_memory_3 !== nothing && byte_allocated_to_cache_block_memory_4 !== nothing
+                    processor.hits += 1
+                    
+                    core.MEM_temp_register = binary_to_int(byte_allocated_to_cache_block_memory_1[binary_to_int(processor.cache.offset_bits)+2]) + binary_to_int(byte_allocated_to_cache_block_memory_2[binary_to_int(processor.cache.offset_bits)+2]) * 256 + binary_to_int(byte_allocated_to_cache_block_memory_3[binary_to_int(processor.cache.offset_bits)+2]) * 256 * 256 + binary_to_int(byte_allocated_to_cache_block_memory_4[binary_to_int(processor.cache.offset_bits)+2]) * 256 * 256 * 256
+                else
+                    # processor.misses += 1
+                    # block_in_cache_1 = set_block_in_cache(processor.cache, address_var, memory)
+                    # block_in_cache_2 = set_block_in_cache(processor.cache, address_var + 1, memory)
+                    # block_in_cache_3 = set_block_in_cache(processor.cache, address_var + 2, memory)
+                    # block_in_cache_4 = set_block_in_cache(processor.cache, address_var + 3, memory)
+                    # core.MEM_temp_register = binary_to_int(block_in_cache_1[(address_var % processor.cache.block_size) + 2]) + binary_to_int(block_in_cache_2[(address_var % processor.cache.block_size) + 2]) * 256 + binary_to_int(block_in_cache_3[(address_var % processor.cache.block_size) + 2]) * 256 * 256 + binary_to_int(block_in_cache_4[(address_var % processor.cache.block_size) + 2]) * 256 * 256 * 256
+                end
+
+            else
+                row, col = get_row_col_from_address(address)
+                core.MEM_temp_register = load_word(memory, row, col)
+            end
         elseif instruction_type == "S_type_instructions"
             row, col = get_row_col_from_address(address)
             # println(row, " ", col)
@@ -376,6 +433,7 @@ function IF_stage(processor::Processor, core::Core1, memory::Array{Int,2}, varia
             core.stall_in_present_clock_cycle = true
             core.stall_in_next_clock_cycle = false
         end
+        ##############################
         core.write_back_last_instruction = false
         # println("--------------stall at IF----------------")
         return
@@ -385,6 +443,7 @@ function IF_stage(processor::Processor, core::Core1, memory::Array{Int,2}, varia
         if core.write_back_previous_last_instruction
             core.stall_at_EX = false
             core.stall_in_present_clock_cycle = false
+            ##############################
             core.write_back_last_instruction = false
             # println("--------------stall at EX----------------")
             return
@@ -399,6 +458,8 @@ function IF_stage(processor::Processor, core::Core1, memory::Array{Int,2}, varia
         else
             core.stall_in_present_clock_cycle = true
         end
+        ##############################
+        processor.clock += 1
         core.stall_in_present_clock_cycle = false
         core.write_back_last_instruction = false
         # println("------------------------------")
@@ -407,12 +468,13 @@ function IF_stage(processor::Processor, core::Core1, memory::Array{Int,2}, varia
         
     if core.pc <= length(core.program)
         # println("Instruction Fetch at clock cycle: ", processor.clock)
-        address = (core.pc + initial_address - 2) * 4 + 1
+        address = (core.pc + initial_address - 2) * 4
         # println(address)
         # println(get_instruction_from_address(processor, address, core.pc))
         # println("++++++++++++++++++++++++++++++++++++++++++++++++")
         # println(get_instruction_from_address(processor, address, core.pc))
         block_memory = address_present_in_cache(processor.cache, address)
+        # println("Block Memory: ", block_memory)
         processor.access += 1
         if block_memory !== nothing
             if initial_address == 1
@@ -426,10 +488,10 @@ function IF_stage(processor::Processor, core::Core1, memory::Array{Int,2}, varia
             set_block_in_cache(processor.cache, address, memory)
             if initial_address == 1
                 processor.misses += 1
-                processor.clock += 100
+                # processor.clock += 100
             else
                 processor.misses_2 += 1
-                processor.clock += 100
+                # processor.clock += 100
             end
             # processor.misses += 1
         end

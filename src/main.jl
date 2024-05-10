@@ -27,19 +27,19 @@ function main()
     end
 
 
-    if data_initial_address_first > 3 * (size(sim.memory, 1) ÷ 4)
-        println("Data segment for 1 is too large")
-    end
-    initial_address_second = (size(sim.memory, 1) ÷ 4) + 1
-    data_initial_address_second = 3 * (size(sim.memory, 1) ÷ 4) + 1
-    text_program_second, data_program_second = parse_assembly_code(file_path2)
-    variable_name_second, data_seg_chunk_second = parse_data_section(join(data_program_second, "\n"))
-    sim.cores[2].program = text_program_second
-    variable_address_second, data_initial_address_second=store_data_in_memory(sim.cores[2], sim.memory, data_seg_chunk_second, variable_name_second, data_initial_address_second)
-    initial_address_second=encode_text_and_store_in_memory(sim.cores[2], sim.memory, initial_address_second,variable_address_second)
-    if data_initial_address_second > size(sim.memory, 1)
-        println("Data segment for 2 is too large")
-    end
+    # if data_initial_address_first > 3 * (size(sim.memory, 1) ÷ 4)
+    #     println("Data segment for 1 is too large")
+    # end
+    # initial_address_second = (size(sim.memory, 1) ÷ 4) + 1
+    # data_initial_address_second = 3 * (size(sim.memory, 1) ÷ 4) + 1
+    # text_program_second, data_program_second = parse_assembly_code(file_path2)
+    # variable_name_second, data_seg_chunk_second = parse_data_section(join(data_program_second, "\n"))
+    # sim.cores[2].program = text_program_second
+    # variable_address_second, data_initial_address_second=store_data_in_memory(sim.cores[2], sim.memory, data_seg_chunk_second, variable_name_second, data_initial_address_second)
+    # initial_address_second=encode_text_and_store_in_memory(sim.cores[2], sim.memory, initial_address_second,variable_address_second)
+    # if data_initial_address_second > size(sim.memory, 1)
+    #     println("Data segment for 2 is too large")
+    # end
 
     # show_memory(sim)
     sim.cores[1].pc=1
@@ -65,9 +65,9 @@ function main()
         println("Output of the program-1: ")
         run(sim,variable_address_first, 1)
         println()
-        println("Output of the program-2: ")
-        run(sim,variable_address_second, 2)
-        println()
+        # println("Output of the program-2: ")
+        # run(sim,variable_address_second, 2)
+        # println()
         
     elseif user_input == "2"
         sim.cores[1].pc=1
@@ -82,17 +82,17 @@ function main()
         println("Clock per instruction (CPI): $(sim.clock / sim.cores[1].instruction_count)")
         println("Stalls per instruction (SPI): $(sim.cores[1].stall_count / sim.cores[1].instruction_count)")
         println()
-        sim.clock=0
-        println("Output of the program-2: ")
-        run_piped_wo_df(sim,variable_address_second, 2, 257)
-        println()
-        println("Total number of clocks: $(sim.clock)")
-        println("Total number of instructions executed: $(sim.cores[2].instruction_count)")
-        println("Total number of stalls: $(sim.cores[2].stall_count)")
-        println("Instructions per clock (IPC): $(sim.cores[2].instruction_count / sim.clock)")
-        println("Clock per instruction (CPI): $(sim.clock / sim.cores[2].instruction_count)")
-        println("Stalls per instruction (SPI): $(sim.cores[2].stall_count / sim.cores[2].instruction_count)")
-        println()
+        # sim.clock=0
+        # println("Output of the program-2: ")
+        # run_piped_wo_df(sim,variable_address_second, 2, 257)
+        # println()
+        # println("Total number of clocks: $(sim.clock)")
+        # println("Total number of instructions executed: $(sim.cores[2].instruction_count)")
+        # println("Total number of stalls: $(sim.cores[2].stall_count)")
+        # println("Instructions per clock (IPC): $(sim.cores[2].instruction_count / sim.clock)")
+        # println("Clock per instruction (CPI): $(sim.clock / sim.cores[2].instruction_count)")
+        # println("Stalls per instruction (SPI): $(sim.cores[2].stall_count / sim.cores[2].instruction_count)")
+        # println()
         
     # elseif user_input == "3"
     #     sim.cores[1].pc=1
@@ -125,20 +125,20 @@ function main()
 
     end
 
-    println("Sections of Memory:")
-    println()
-    println(".text segment for core 1:(1-150)")
-    show_memory_range(sim, 1, 150)
-    println()
-    println(".text segment for core 2:(257-407)")
-    show_memory_range(sim, 257, 457)
-    println()
-    println(".data segment for core 1:(513-662)")
-    show_memory_range(sim, 513, 662)
-    println()
-    println(".data segment for core 2:(769-918)")
-    show_memory_range(sim, 769, 918)
-    println()
+    # println("Sections of Memory:")
+    # println()
+    # println(".text segment for core 1:(1-150)")
+    # show_memory_range(sim, 1, 150)
+    # println()
+    # println(".text segment for core 2:(257-407)")
+    # show_memory_range(sim, 257, 457)
+    # println()
+    # println(".data segment for core 1:(513-662)")
+    # show_memory_range(sim, 513, 662)
+    # println()
+    # println(".data segment for core 2:(769-918)")
+    # show_memory_range(sim, 769, 918)
+    # println()
 
     println("Cache Information:")
     println("Cache access count: $(sim.access)")
