@@ -141,6 +141,7 @@ function retrieve_block_from_MM(cache::Cache, memory::Array{Int,2}, address::Int
         # int_to_hex(memory[byte_address ÷ 4 + 1, byte_address % 4 + 1])
         block.block[(byte_address%cache.block_size)+2] = int_to_binary_8bits(get_byte_from_memory(memory, byte_address))
     end
+    # println("Block retrieved from MM = ",block.block)
     return block
 end
 

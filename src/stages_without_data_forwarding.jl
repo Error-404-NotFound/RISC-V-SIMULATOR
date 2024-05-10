@@ -114,18 +114,62 @@ function MEM_stage(processor::Processor, core::Core1, memory::Array{Int,2}, vari
 
             elseif opcode == "lw"
                 address_var = address
+                # println(address_var)
                 address_in_cache = address % processor.cache.block_size + 2
                 byte_allocated_to_cache_block_memory_1 = address_present_in_cache(processor.cache, address_var)
                 byte_allocated_to_cache_block_memory_2 = address_present_in_cache(processor.cache, address_var + 1)
                 byte_allocated_to_cache_block_memory_3 = address_present_in_cache(processor.cache, address_var + 2)
                 byte_allocated_to_cache_block_memory_4 = address_present_in_cache(processor.cache, address_var + 3)
+                # println(byte_allocated_to_cache_block_memory_1)
+                # println(byte_allocated_to_cache_block_memory_2)
+                # println(byte_allocated_to_cache_block_memory_3)
+                # println(byte_allocated_to_cache_block_memory_4)
                 processor.access += 1
 
                 if byte_allocated_to_cache_block_memory_1 !== nothing && byte_allocated_to_cache_block_memory_2 !== nothing && byte_allocated_to_cache_block_memory_3 !== nothing && byte_allocated_to_cache_block_memory_4 !== nothing
                     processor.hits += 1
-                    
-                    core.MEM_temp_register = binary_to_int(byte_allocated_to_cache_block_memory_1[binary_to_int(processor.cache.offset_bits)+2]) + binary_to_int(byte_allocated_to_cache_block_memory_2[binary_to_int(processor.cache.offset_bits)+2]) * 256 + binary_to_int(byte_allocated_to_cache_block_memory_3[binary_to_int(processor.cache.offset_bits)+2]) * 256 * 256 + binary_to_int(byte_allocated_to_cache_block_memory_4[binary_to_int(processor.cache.offset_bits)+2]) * 256 * 256 * 256
+                    # println(byte_allocated_to_cache_block_memory_1)
+                    # println(byte_allocated_to_cache_block_memory_2)
+                    # println(byte_allocated_to_cache_block_memory_3)
+                    # println(byte_allocated_to_cache_block_memory_4)
+                    core.MEM_temp_register = binary_to_int(byte_allocated_to_cache_block_memory_4*byte_allocated_to_cache_block_memory_3*byte_allocated_to_cache_block_memory_2*byte_allocated_to_cache_block_memory_1)
+                    # core.MEM_temp_register = binary_to_int(byte_allocated_to_cache_block_memory_1[binary_to_int(processor.cache.offset_bits)+2]) + binary_to_int(byte_allocated_to_cache_block_memory_2[binary_to_int(processor.cache.offset_bits)+2]) * 256 + binary_to_int(byte_allocated_to_cache_block_memory_3[binary_to_int(processor.cache.offset_bits)+2]) * 256 * 256 + binary_to_int(byte_allocated_to_cache_block_memory_4[binary_to_int(processor.cache.offset_bits)+2]) * 256 * 256 * 256
                 else
+                    processor.misses += 1
+
+                    if byte_allocated_to_cache_block_memory_1 === nothing
+                        if address_var % processor.cache.block_size <= processor.cache.block_size - 4
+                            block_in_cache_1 = set_block_in_cache(processor.cache, address_var, memory)
+                            # println("%%%%%%%%%%%%%%%%%%%%%%%%%%")
+                            # println(block_in_cache_1)
+                            # println(block_in_cache_1[address_in_cache])
+                            core.MEM_temp_register = binary_to_int(block_in_cache_1[address_in_cache+3]*block_in_cache_1[address_in_cache+2]*block_in_cache_1[address_in_cache+1]*block_in_cache_1[address_in_cache])
+                        elseif address_var % processor.cache.block_size == processor.cache.block_size - 3
+                            block_in_cache_1 = set_block_in_cache(processor.cache, address_var, memory)
+                            block_in_cache_2 = set_block_in_cache(processor.cache, address_var + 3, memory)
+                            # println(block_in_cache_1)
+                            # println(block_in_cache_2)
+                            core.MEM_temp_register = binary_to_int(block_in_cache_2[2]*block_in_cache_1[address_in_cache+2]*block_in_cache_1[address_in_cache+1]*block_in_cache_1[address_in_cache])
+                        elseif address_var % processor.cache.block_size == processor.cache.block_size - 2
+                            block_in_cache_1 = set_block_in_cache(processor.cache, address_var, memory)
+                            block_in_cache_2 = set_block_in_cache(processor.cache, address_var + 2, memory)
+                            core.MEM_temp_register = binary_to_int(block_in_cache_2[3]*block_in_cache_2[2]*block_in_cache_1[address_in_cache+1]*block_in_cache_1[address_in_cache])
+                        elseif address_var % processor.cache.block_size == processor.cache.block_size - 1
+                            block_in_cache_1 = set_block_in_cache(processor.cache, address_var, memory)
+                            block_in_cache_2 = set_block_in_cache(processor.cache, address_var + 1, memory)
+                            core.MEM_temp_register = binary_to_int(block_in_cache_2[4]*block_in_cache_2[3]*block_in_cache_2[2]*block_in_cache_1[address_in_cache])
+                        end
+                    
+                    elseif byte_allocated_to_cache_block_memory_2 === nothing
+                        block_in_cache = set_block_in_cache(processor.cache, address_var+1,memory)
+                        core.MEM_temp_register = binary_to_int(block_in_cache[4]*block_in_cache[3]*block_in_cache[2]*byte_allocated_to_cache_block_memory_1)
+                    elseif byte_allocated_to_cache_block_memory_3 === nothing
+                        block_in_cache = set_block_in_cache(processor.cache, address_var+2,memory)
+                        core.MEM_temp_register = binary_to_int(block_in_cache[3]*block_in_cache[2]*byte_allocated_to_cache_block_memory_2*byte_allocated_to_cache_block_memory_1)
+                    elseif byte_allocated_to_cache_block_memory_4 === nothing
+                        block_in_cache = set_block_in_cache(processor.cache, address_var+3,memory)
+                        core.MEM_temp_register = binary_to_int(block_in_cache[2]*byte_allocated_to_cache_block_memory_3*byte_allocated_to_cache_block_memory_2*byte_allocated_to_cache_block_memory_1)
+                    end
                     # processor.misses += 1
                     # block_in_cache_1 = set_block_in_cache(processor.cache, address_var, memory)
                     # block_in_cache_2 = set_block_in_cache(processor.cache, address_var + 1, memory)
