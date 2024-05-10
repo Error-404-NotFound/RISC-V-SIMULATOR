@@ -17,6 +17,7 @@ Team 5: Johri Aniket Manish (CS22B028) and Viramgama Jaimin Piyush (CS22B051)
     <li>
       <a href="#about-the-project">About The Project</a>
       <ul>
+        <li><a href="#features">Features</a></li>
         <li><a href="#built-with">Built With</a></li>
       </ul>
     </li>
