@@ -228,7 +228,7 @@ _For more examples, please refer to the [Assembly_Programs](https://github.com/E
 [![Output-11][output_screenshot_11]](https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/Pipelining_having_sameL1_cache_for_both_cores.png)
 
 3. Output-3:
-    - Pipelining with different l1 caches for each core.
+    - Pipelining with different L1 caches for each core.
 
 [![Output-12][output_screenshot_12]](https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/Pipelining_with_cache_diff_L1_cache_for_both_cores.png)
 
