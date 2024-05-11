@@ -7,7 +7,7 @@ include("encoding.jl")
 include("data_memory.jl")
 # include("DF.jl")
 include("stages_without_data_forwarding.jl")
-# include("stages_with_data_forwarding.jl")
+include("stages_with_data_forwarding.jl")
 
 file_path1 = "./test1.asm"
 file_path2 = "./test2.asm"
@@ -27,19 +27,19 @@ function main()
     end
 
 
-    # if data_initial_address_first > 3 * (size(sim.memory, 1) ÷ 4)
-    #     println("Data segment for 1 is too large")
-    # end
-    # initial_address_second = (size(sim.memory, 1) ÷ 4) + 1
-    # data_initial_address_second = 3 * (size(sim.memory, 1) ÷ 4) + 1
-    # text_program_second, data_program_second = parse_assembly_code(file_path2)
-    # variable_name_second, data_seg_chunk_second = parse_data_section(join(data_program_second, "\n"))
-    # sim.cores[2].program = text_program_second
-    # variable_address_second, data_initial_address_second=store_data_in_memory(sim.cores[2], sim.memory, data_seg_chunk_second, variable_name_second, data_initial_address_second)
-    # initial_address_second=encode_text_and_store_in_memory(sim.cores[2], sim.memory, initial_address_second,variable_address_second)
-    # if data_initial_address_second > size(sim.memory, 1)
-    #     println("Data segment for 2 is too large")
-    # end
+    if data_initial_address_first > 3 * (size(sim.memory, 1) ÷ 4)
+        println("Data segment for 1 is too large")
+    end
+    initial_address_second = (size(sim.memory, 1) ÷ 4) + 1
+    data_initial_address_second = 3 * (size(sim.memory, 1) ÷ 4) + 1
+    text_program_second, data_program_second = parse_assembly_code(file_path2)
+    variable_name_second, data_seg_chunk_second = parse_data_section(join(data_program_second, "\n"))
+    sim.cores[2].program = text_program_second
+    variable_address_second, data_initial_address_second=store_data_in_memory(sim.cores[2], sim.memory, data_seg_chunk_second, variable_name_second, data_initial_address_second)
+    initial_address_second=encode_text_and_store_in_memory(sim.cores[2], sim.memory, initial_address_second,variable_address_second)
+    if data_initial_address_second > size(sim.memory, 1)
+        println("Data segment for 2 is too large")
+    end
 
     # show_memory(sim)
     sim.cores[1].pc=1
@@ -54,7 +54,7 @@ function main()
     println("Enter the choice for the execution of core: ")
     println("1. For UNPIPELINED execution")
     println("2. For PIPELINED execution without data forwarding")
-    # println("3. For PIPELINED execution with data forwarding")
+    println("3. For PIPELINED execution with data forwarding")
     user_input = readline()
     # user_number = parse(Int, user_input)
 
@@ -65,15 +65,27 @@ function main()
         println("Output of the program-1: ")
         run(sim,variable_address_first, 1)
         println()
-        # println("Output of the program-2: ")
-        # run(sim,variable_address_second, 2)
-        # println()
+        println("Output of the program-2: ")
+        run(sim,variable_address_second, 2)
+        println()
         
     elseif user_input == "2"
+        cache_switch=0
+        println("Enter the choice for the execution of cache: ")
+        println("1. For cache enabled")
+        println("2. For cache disabled")
+        cache_input = readline()
+        if cache_input == "1"
+            cache_switch=1
+        elseif cache_input == "2"
+            cache_switch=2
+        else
+            println("Invalid choice")
+        end
         sim.cores[1].pc=1
         sim.cores[2].pc=1
         println("Output of the program-1: ")
-        run_piped_wo_df(sim,variable_address_first, 1, 1)
+        run_piped_wo_df(sim,variable_address_first, 1, 1, cache_switch)
         println()
         println("Total number of clocks: $(sim.clock)")
         println("Total number of instructions executed: $(sim.cores[1].instruction_count)")
@@ -82,43 +94,43 @@ function main()
         println("Clock per instruction (CPI): $(sim.clock / sim.cores[1].instruction_count)")
         println("Stalls per instruction (SPI): $(sim.cores[1].stall_count / sim.cores[1].instruction_count)")
         println()
-        # sim.clock=0
-        # println("Output of the program-2: ")
-        # run_piped_wo_df(sim,variable_address_second, 2, 257)
-        # println()
-        # println("Total number of clocks: $(sim.clock)")
-        # println("Total number of instructions executed: $(sim.cores[2].instruction_count)")
-        # println("Total number of stalls: $(sim.cores[2].stall_count)")
-        # println("Instructions per clock (IPC): $(sim.cores[2].instruction_count / sim.clock)")
-        # println("Clock per instruction (CPI): $(sim.clock / sim.cores[2].instruction_count)")
-        # println("Stalls per instruction (SPI): $(sim.cores[2].stall_count / sim.cores[2].instruction_count)")
-        # println()
+        sim.clock=0
+        println("Output of the program-2: ")
+        run_piped_wo_df(sim,variable_address_second, 2, 257, cache_switch)
+        println()
+        println("Total number of clocks: $(sim.clock)")
+        println("Total number of instructions executed: $(sim.cores[2].instruction_count)")
+        println("Total number of stalls: $(sim.cores[2].stall_count)")
+        println("Instructions per clock (IPC): $(sim.cores[2].instruction_count / sim.clock)")
+        println("Clock per instruction (CPI): $(sim.clock / sim.cores[2].instruction_count)")
+        println("Stalls per instruction (SPI): $(sim.cores[2].stall_count / sim.cores[2].instruction_count)")
+        println()
         
-    # elseif user_input == "3"
-    #     sim.cores[1].pc=1
-    #     sim.cores[2].pc=1
+    elseif user_input == "3"
+        sim.cores[1].pc=1
+        sim.cores[2].pc=1
 
-    #     println("Output of the program-1: ")
-    #     run_piped_w_df(sim,variable_address_first, 1)
-    #     println()
-    #     println("Total number of clocks: $(sim.clock)")
-    #     println("Total number of instructions executed: $(sim.cores[1].instruction_count)")
-    #     println("Total number of stalls: $(sim.cores[1].stall_count)")
-    #     println("Instructions per clock (IPC): $(sim.cores[1].instruction_count / (sim.clock-a))")
-    #     println("Clock per instruction (CPI): $(sim.clock / sim.cores[1].instruction_count)")
-    #     println("Stalls per instruction (SPI): $(sim.cores[1].stall_count / sim.cores[1].instruction_count)")
-    #     println()
-    #     sim.clock=0
-    #     println("Output of the program-2: ")
-    #     run_piped_w_df(sim,variable_address_second, 2)
-    #     println()
-    #     println("Total number of clocks: $(sim.clock)")
-    #     println("Total number of instructions executed: $(sim.cores[2].instruction_count)")
-    #     println("Total number of stalls: $(sim.cores[2].stall_count)")
-    #     println("Instructions per clock (IPC): $(sim.cores[2].instruction_count / sim.clock)")
-    #     println("Clock per instruction (CPI): $(sim.clock / sim.cores[2].instruction_count)")
-    #     println("Stalls per instruction (SPI): $(sim.cores[2].stall_count / sim.cores[2].instruction_count)")
-    #     println()
+        println("Output of the program-1: ")
+        run_piped_w_df(sim,variable_address_first, 1)
+        println()
+        println("Total number of clocks: $(sim.clock)")
+        println("Total number of instructions executed: $(sim.cores[1].instruction_count)")
+        println("Total number of stalls: $(sim.cores[1].stall_count)")
+        println("Instructions per clock (IPC): $(sim.cores[1].instruction_count / (sim.clock))")
+        println("Clock per instruction (CPI): $(sim.clock / sim.cores[1].instruction_count)")
+        println("Stalls per instruction (SPI): $(sim.cores[1].stall_count / sim.cores[1].instruction_count)")
+        println()
+        sim.clock=0
+        println("Output of the program-2: ")
+        run_piped_w_df(sim,variable_address_second, 2)
+        println()
+        println("Total number of clocks: $(sim.clock)")
+        println("Total number of instructions executed: $(sim.cores[2].instruction_count)")
+        println("Total number of stalls: $(sim.cores[2].stall_count)")
+        println("Instructions per clock (IPC): $(sim.cores[2].instruction_count / sim.clock)")
+        println("Clock per instruction (CPI): $(sim.clock / sim.cores[2].instruction_count)")
+        println("Stalls per instruction (SPI): $(sim.cores[2].stall_count / sim.cores[2].instruction_count)")
+        println()
 
     else
         println("Invalid choice")

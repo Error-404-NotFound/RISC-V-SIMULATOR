@@ -1,10 +1,10 @@
 include("processor.jl")
 include("core.jl")
-include("execute_instructions.jl")
+# include("execute_instructions.jl")
 include("utility.jl")
 include("execution_stage_with_DF.jl")
 
-function run(processor::Processor, variable_address::Dict{String, Int},index::Int) 
+function run_piped_w_df(processor::Processor, variable_address::Dict{String, Int},index::Int) 
     while !processor.cores[index].write_back_last_instruction
         processor.clock += 1
         if processor.cores[index].stall_in_present_clock_cycle
@@ -12,11 +12,11 @@ function run(processor::Processor, variable_address::Dict{String, Int},index::In
             # processor.cores[index].stall_in_present_clock_cycle = false
             processor.cores[index].stall_count += 1
         end
-        WB_stage(processor, processor.cores[index], processor.memory, variable_address)
-        MEM_stage(processor, processor.cores[index], processor.memory, variable_address)
-        EX_stage(processor, processor.cores[index], processor.memory, variable_address)
-        ID_RF_stage(processor, processor.cores[index], processor.memory, variable_address)
-        IF_stage(processor, processor.cores[index], processor.memory, variable_address)
+        WB_stage_df(processor, processor.cores[index], processor.memory, variable_address)
+        MEM_stage_df(processor, processor.cores[index], processor.memory, variable_address)
+        EX_stage_df(processor, processor.cores[index], processor.memory, variable_address)
+        ID_RF_stage_df(processor, processor.cores[index], processor.memory, variable_address)
+        IF_stage_df(processor, processor.cores[index], processor.memory, variable_address)
     end
 end
 
@@ -25,7 +25,7 @@ end
 
 # Function for the Write Back stage
 
-function WB_stage(processor::Processor, core::Core1, memory::Array{Int,2}, variable_address::Dict{String, Int})
+function WB_stage_df(processor::Processor, core::Core1, memory::Array{Int,2}, variable_address::Dict{String, Int})
     core.instruction_after_WB = instruction = core.instruction_after_MEM
     if instruction != "uninitialised"
         # println("Write Back at clock cycle: ", processor.clock)
@@ -67,7 +67,7 @@ end
 
 # Function for the Memory Access stage
 
-function MEM_stage(processor::Processor, core::Core1, memory::Array{Int,2}, variable_address::Dict{String, Int})
+function MEM_stage_df(processor::Processor, core::Core1, memory::Array{Int,2}, variable_address::Dict{String, Int})
     memory = processor.memory
     core.instruction_after_MEM = instruction = core.instruction_after_EX
     if instruction != "uninitialised"
@@ -107,8 +107,8 @@ function MEM_stage(processor::Processor, core::Core1, memory::Array{Int,2}, vari
 end
 
 # Function for the Execution stage
-
-function EX_stage(processor::Processor, core::Core1, memory::Array{Int,2}, variable_address::Dict{String, Int})
+# Function for the Execution stage with data forwarding
+function EX_stage_df(processor::Processor, core::Core1, memory::Array{Int,2}, variable_address::Dict{String, Int})
     if core.stall_in_present_clock_cycle || core.stall_at_EX
         core.instruction_after_EX = "uninitialised"
         return
@@ -117,23 +117,51 @@ function EX_stage(processor::Processor, core::Core1, memory::Array{Int,2}, varia
     core.instruction_after_EX = instruction = core.instruction_after_ID_RF
     
     if instruction != "uninitialised"
-        # println("Execution at clock cycle: ", processor.clock)
-        # println("------------at exe----------------")
-        # println("Executed the ins")
-        # println(instruction)
-        # println(instruction_type)
-        # println("end")
-        # println("-------------end exe---------------")
         instruction_type = core.temp_register_instruction_type
         parts, opcode = get_parts_and_opcode_from_instruction(instruction)
-        execute_stage_with_DF(instruction, instruction_type, core, memory, variable_address)
+        # println("Execution at clock cycle: ", processor.clock)
+        instruction_type = core.temp_register_instruction_type
+        
+
+        if (instruction_type == "R_type_instructions")
+            rs1_value = core.registers[core.rs1_temp_register]
+            rs2_value = core.registers[core.rs2_temp_register]
+        elseif (instruction_type == "I_type_instructions")
+            rs1_value = core.registers[core.rs1_temp_register]
+        elseif (instruction_type == "J_type_instructions")
+            rs1_value = core.registers[core.rs1_temp_register]
+        end
+            # rs2_value = core.immediate_temp_register
+        # Check for data forwarding
+
+        
+        if core.rs1_temp_register == core.rd_temp_register_previous_instruction
+            core.registers[core.rs1_temp_register] = core.MEM_temp_register
+            rs1_value = core.MEM_temp_register
+        
+        end
+        
+        if core.rs2_temp_register == core.rd_temp_register_previous_instruction
+            core.registers[core.rs2_temp_register] = core.MEM_temp_register
+            rs2_value = core.MEM_temp_register
+    
+        end
+        
+        if core.rs1_temp_register == core.rd_temp_register
+            core.registers[core.rs1_temp_register] = core.EX_temp_register
+            rs1_value = core.EX_temp_register
+            end
+        
+        if core.rs2_temp_register == core.rd_temp_register
+            core.registers[core.rs2_temp_register] = core.EX_temp_register
+            rs2_value = core.EX_temp_register
+        end
         if opcode == "mul"
             core.stall_at_EX = true
             processor.clock += 3
-        elseif opcode == "ecall"
-            # core.stall_at_EX = true
-            processor.clock += 2
         end
+        # Call execute_stage with corrected arguments
+        core.EX_temp_register = execute_stage_with_DF(instruction, instruction_type, core, memory, variable_address)
         core.write_back_last_instruction = false
     end
     core.registers[1] = 0
@@ -141,7 +169,7 @@ end
 
 # Function for the Instruction Decode and Register Fetch stage
 
-function ID_RF_stage(processor::Processor, core::Core1, memory::Array{Int,2}, variable_address::Dict{String, Int})
+function ID_RF_stage_df(processor::Processor, core::Core1, memory::Array{Int,2}, variable_address::Dict{String, Int})
     if core.stall_in_present_clock_cycle
         return
     end
@@ -348,7 +376,7 @@ end
 
 # Function for the Instruction Fetch stage
 
-function IF_stage(processor::Processor, core::Core1, memory::Array{Int,2}, variable_address::Dict{String, Int})
+function IF_stage_df(processor::Processor, core::Core1, memory::Array{Int,2}, variable_address::Dict{String, Int})
 
     # if core.inside_EX || core.inside_MEM || core.inside_ID_RF
     #     core.write_back_last_instruction = false
