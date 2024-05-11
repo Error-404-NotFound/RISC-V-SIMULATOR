@@ -68,6 +68,11 @@ This project focuses on implementing a simulator for the RISC-V ISA, allowing us
 * Implementation of Replacement Policies: Replacement Policies such as LRU(Least Recently Used) and LFU(Least Frequently Used) have been implemented.
 * Calculation of Misses and Hits: The corresponding Misses and Hits by the cache corresonding to the policies have been calculated.
 * Incorporation of Instructions and Data: The cache is designed to handle both instructions as well as the data corresponding to all memory accesses  in the program.
+
+#### Phase-4
+* Incorporation of Data in cache: Along with instructions data part is also being  stored in the cache.
+* Seggregation of caches for each core: L1 cache can be seperated for each core as per user requirement.
+* integration of vector Instructions: Vector addition as per SIMD protocol is being supported.
   
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -244,6 +249,11 @@ For eg: li a0 1 or li x10 1
 - [x] Supports both Instructions in cache
 - [x] Latencies for retrieving a block from the memory to cache has been implemented.
 - [ ] Supports Data in cache.
+### Phase-4
+- [x] Supports a Data in the cache
+- [x] Sepration of caches for each core
+- [x] Vector Instructions Support
+- [ ] GUI Implementation
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
