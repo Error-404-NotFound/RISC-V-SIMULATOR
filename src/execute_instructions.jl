@@ -404,11 +404,13 @@ function execute(core::Core1, memory::Array{Int,2}, variable_address::Dict{Strin
             print(core.registers[11])
 
         elseif core.registers[18] == 4
-            temp_col = (core.registers[11] ) % 4
-            if temp_col == 0
-                temp_col = 4
-            end
-            temp_row = (core.registers[11] - temp_col) ÷ 4 + 1
+            temp_address = core.registers[11]
+            temp_row, temp_col = get_row_col_from_address(temp_address)
+            # temp_col = (core.registers[11] ) % 4
+            # if temp_col == 0
+            #     temp_col = 4
+            # end
+            # temp_row = (core.registers[11] - temp_col) ÷ 4 + 1
             counter = 0
             while memory[temp_row, temp_col] != 0
                 #handle new line
