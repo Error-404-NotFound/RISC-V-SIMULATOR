@@ -232,6 +232,11 @@ _For more examples, please refer to the [Assembly_Programs](https://github.com/E
 
 [![Output-12][output_screenshot_12]](https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/Pipelining_with_cache_diff_L1_cache_for_both_cores.png)
 
+3. Output-4:
+    - Implementationf Vector instructions.
+
+[![Output-13][output_screenshot_13]](https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/SIMD_output_memory.png)
+
 <!-- ROADMAP -->
 ## Features Implemented
 
@@ -306,6 +311,7 @@ Distributed under the MIT License. See `LICENSE.md` for more information.
 * [Ripes Simulator](https://ripes.me/)
 * [RISC-V Manual](https://riscv.org/wp-content/uploads/2017/05/riscv-spec-v2.2.pdf)
 * [Univerity of California's RISC-V Instruction Format](https://inst.eecs.berkeley.edu/~cs61c/resources/su18_lec/Lecture7.pdf)
+* [Cache Reference](https://en.wikipedia.org/wiki/Cache_(computing))
 * [GitHub Pages](https://pages.github.com)
 
 
@@ -324,3 +330,4 @@ Distributed under the MIT License. See `LICENSE.md` for more information.
 [output_screenshot_10]: https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/Pipelining_with_cache_disabled.png
 [output_screenshot_11]: https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/Pipelining_having_sameL1_cache_for_both_cores.png
 [output_screenshot_12]: https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/Pipelining_with_cache_diff_L1_cache_for_both_cores.png
+[output_screenshot_13]: https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/SIMD_output_memory.png
