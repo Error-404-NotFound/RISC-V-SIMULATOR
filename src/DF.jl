@@ -1,7 +1,7 @@
 include("processor.jl")
 include("core.jl")
 include("utility.jl")
-include("execution_stage_without_DF.jl")
+include("execution_stage_with_DF.jl")
 
 function run_piped_w_df(processor::Processor, variable_address::Dict{String, Int},index::Int) 
     while !processor.cores[index].write_back_last_instruction
