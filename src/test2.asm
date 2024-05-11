@@ -1,5 +1,7 @@
 .data
+    string: .string "   **   **\n ***** *****\n***********\n *********\n  *******\n   *****\n    ***\n     *\n"
 
 .text
-    li a3 10
-    li a4 20
+    la a0 string
+    li a7 4
+    ecall

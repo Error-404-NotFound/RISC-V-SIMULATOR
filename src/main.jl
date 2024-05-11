@@ -71,12 +71,22 @@ function main()
         
     elseif user_input == "2"
         cache_switch=0
+        cache_merged=0
         println("Enter the choice for the execution of cache: ")
         println("1. For cache enabled")
         println("2. For cache disabled")
         cache_input = readline()
         if cache_input == "1"
             cache_switch=1
+            println("Enter the choice for the cache merging: ")
+            println("1. For cache merging enabled")
+            println("2. For cache merging disabled")
+            cache_merged = readline()
+            if cache_merged == "1"
+                cache_merged=1
+            else
+                cache_merged=2
+            end
         elseif cache_input == "2"
             cache_switch=2
         else
@@ -85,7 +95,7 @@ function main()
         sim.cores[1].pc=1
         sim.cores[2].pc=1
         println("Output of the program-1: ")
-        run_piped_wo_df(sim,variable_address_first, 1, 1, cache_switch)
+        run_piped_wo_df(sim,variable_address_first, 1, 1, cache_switch, cache_merged)
         println()
         println("Total number of clocks: $(sim.clock)")
         println("Total number of instructions executed: $(sim.cores[1].instruction_count)")
@@ -96,7 +106,7 @@ function main()
         println()
         sim.clock=0
         println("Output of the program-2: ")
-        run_piped_wo_df(sim,variable_address_second, 2, 257, cache_switch)
+        run_piped_wo_df(sim,variable_address_second, 2, size(sim.memory,1) ÷ 4 + 1, cache_switch, cache_merged)
         println()
         println("Total number of clocks: $(sim.clock)")
         println("Total number of instructions executed: $(sim.cores[2].instruction_count)")
@@ -105,6 +115,30 @@ function main()
         println("Clock per instruction (CPI): $(sim.clock / sim.cores[2].instruction_count)")
         println("Stalls per instruction (SPI): $(sim.cores[2].stall_count / sim.cores[2].instruction_count)")
         println()
+        if cache_switch==1 && cache_merged==1
+            println("Cache Information:")
+            println("Cache access count: $(sim.access)")
+            println("Hits: $(sim.hits + sim.hits_2)")
+            println("Hit Rate: $(sim.hits / sim.access)")
+            println("Misses: $(sim.misses + sim.misses_2)")
+            println("Miss Rate: $(sim.misses / sim.access)")
+            println()
+        elseif cache_switch==1 && cache_merged==2
+            println("Cache Information for Core 1:")
+            println("Cache access count: $(sim.access)")
+            println("Hits: $(sim.hits)")
+            println("Hit Rate: $(sim.hits / sim.access)")
+            println("Misses: $(sim.misses)")
+            println("Miss Rate: $(sim.misses / sim.access)")
+            println()
+            println("Cache Information for Core 2:")
+            println("Cache access count: $(sim.access_2)")
+            println("Hits: $(sim.hits_2)")
+            println("Hit Rate: $(sim.hits_2 / sim.access_2)")
+            println("Misses: $(sim.misses_2)")
+            println("Miss Rate: $(sim.misses_2 / sim.access_2)")
+            println()
+        end
         
     elseif user_input == "3"
         sim.cores[1].pc=1
@@ -152,13 +186,13 @@ function main()
     # show_memory_range(sim, 769, 918)
     # println()
 
-    println("Cache Information:")
-    println("Cache access count: $(sim.access)")
-    println("Hits: $(sim.hits + sim.hits_2)")
-    println("Hit Rate: $(sim.hits / sim.access)")
-    println("Misses: $(sim.misses + sim.misses_2)")
-    println("Miss Rate: $(sim.misses / sim.access)")
-    println()
+    # println("Cache Information:")
+    # println("Cache access count: $(sim.access)")
+    # println("Hits: $(sim.hits + sim.hits_2)")
+    # println("Hit Rate: $(sim.hits / sim.access)")
+    # println("Misses: $(sim.misses + sim.misses_2)")
+    # println("Miss Rate: $(sim.misses / sim.access)")
+    # println()
 
     # println()
     # println("Cache Memory:")

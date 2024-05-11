@@ -14,6 +14,7 @@ mutable struct Processor
     clock::Int
     cores::Array{Core1,1}
     cache::Cache
+    cache_c2::Cache
     main_memory_latency::Int64
     cache_latency::Int64
     hits::Int64
@@ -21,12 +22,14 @@ mutable struct Processor
     hits_2::Int64
     misses_2::Int64
     access::Int64
+    access_2::Int64
     function Processor()
         this = new()
         this.memory = zeros(Int, 1024, 4)
         this.clock = 0
         this.cores = [core_Init(1), core_Init(2)]
         this.cache = Cache()
+        this.cache_c2 = Cache()
         this.main_memory_latency = 100
         this.cache_latency = 1
         this.hits = 0
@@ -34,6 +37,7 @@ mutable struct Processor
         this.hits_2 = 0
         this.misses_2 = 0
         this.access = 0
+        this.access_2 = 0
         return this
     end
     # function Processor()
@@ -299,4 +303,30 @@ function write_through_cache_policy(cache::Cache, address::Int64, memory::Array{
     temp_row, temp_col = get_row_col_from_address(address)
     memory[temp_row, temp_col] = parse(UInt8, binary_data, base=2)
     # store_one_byte(binary_data, memory, temp_row, temp_col)
+end
+
+function MSI_protocol(cache::Cache, address::Int64, memory::Array{Int,2}, binary_data::AbstractString, state::AbstractString)
+    new_address = int_to_binary_32bits(address)
+    cache.offset_bits = new_address[end-cache.offset_bits_length+1:end]
+    cache.index_bits = new_address[end-cache.offset_bits_length-cache.index_bits_length+1:end-cache.offset_bits_length]
+    cache.tag_bits = new_address[1:end-cache.offset_bits_length-cache.index_bits_length]
+    set_number = binary_to_int(cache.index_bits)
+    # tag = binary_to_int(cache.tag_bits)
+    index = findfirst([block_iter.block[1] == cache.tag_bits for block_iter in cache.memory[set_number+1].cache_set])
+    if index !== nothing
+        old_recent_access = cache.memory[set_number+1].cache_set[index].recent_access
+        cache.memory[set_number+1].cache_set[index].recent_access = 0
+        for i in 1:cache.associativity
+            if cache.memory[set_number+1].cache_set[i].recent_access < old_recent_access && cache.memory[set_number+1].cache_set[i].isValid
+                cache.memory[set_number+1].cache_set[i].recent_access += 1
+            end
+        end
+        cache.memory[set_number+1].cache_set[index].frequency += 0
+        cache.memory[set_number+1].cache_set[index].block[binary_to_int(cache.offset_bits)+2] = binary_data
+        cache.memory[set_number+1].cache_set[index].state = state
+    end
+    temp_row, temp_col = get_row_col_from_address(address)
+    memory[temp_row, temp_col] = parse(UInt8, binary_data, base=2)
+    # store_one_byte(binary_data, memory, temp_row, temp_col)
+    
 end
