@@ -21,7 +21,6 @@ function execute_stage_without_DF(instruction::String, instruction_type::String,
     elseif instruction_type == "L_type_instructions"
         core.EX_temp_register = execute_Load(core, memory, variable_address)
     elseif instruction_type == "S_type_instructions"
-        # println("???????????????????????????????????????")
         core.EX_temp_register = execute_S(core, memory, variable_address)
     elseif instruction_type == "SB_type_instructions"
         core.EX_temp_register = execute_SB(core, memory, variable_address)
@@ -29,8 +28,6 @@ function execute_stage_without_DF(instruction::String, instruction_type::String,
         core.EX_temp_register = execute_U(core, memory, variable_address)
     elseif instruction_type == "UJ_type_instructions"
         core.EX_temp_register = execute_UJ(core, memory, variable_address)
-    # elseif instruction_type == "ECALL"
-    #     core.EX_temp_register = execute_ECALL(core, memory, variable_address)
     end
 
 
@@ -125,7 +122,6 @@ function execute_Load(core::Core1, memory::Array{Int,2}, variable_address::Dict{
 end
 
 function execute_S(core::Core1, memory::Array{Int,2}, variable_address::Dict{String, Int})
-    # println("???????????????????????????????????????")
     instruction = core.instruction_after_ID_RF
     # println(instruction)
     # parts = split(instruction, " ")
@@ -136,11 +132,6 @@ function execute_S(core::Core1, memory::Array{Int,2}, variable_address::Dict{Str
     elseif opcode == "sh"
         return core.registers[core.rs1_temp_register] + core.immediate_temp_register
     elseif opcode == "sw"
-        # println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
-        # println(core.registers[core.rs1_temp_register])
-        # println(core.immediate_temp_register)
-        # println(core.rs1_temp_register)
-        # println(core.registers[core.rs1_temp_register] + core.immediate_temp_register)
         return core.registers[core.rs1_temp_register] + core.immediate_temp_register
     end
 end
@@ -270,44 +261,11 @@ function execute_ECALL(core::Core1, memory::Array{Int,2}, variable_address::Dict
     # opcode = parts[1]
     parts, opcode = get_parts_and_opcode_from_instruction(instruction)
     if opcode == "ecall"
-        # println("&&&&&&&&&&&&&&&&&&&&&&")
         if core.registers[18] == 1
             print(core.registers[11])
         elseif core.registers[18] == 10
             println("\nProgram exited with code: 0")
             core.pc = length(core.program) + 1
-            # println("Program terminated")
-            # println("Total number of clocks: $(core.clock)")
-            # println("Total number of instructions executed: $(core.instruction_count)")
-            # println("Total number of stalls: $(core.stall_count)")
-            # println("Total number of branches: $(core.branch_count)")
-            # println("Instructions per clock (IPC): $(core.instruction_count / core.clock)")
-            # println("Clock per instruction (CPI): $(core.clock / core.instruction_count)")
-            # println("Stalls per instruction (SPI): $(core.stall_count / core.instruction_count)")
-            # println("Branch prediction accuracy: $(core.branch_prediction_accuracy)")
-            # println()
-            # println("Registers:")
-            # println("Core Registers: $(core.registers)")
-            # println()
-            # println("Pipeline registers:")
-            # println("IF_temp_register: $(core.IF_temp_register)")
-            # println("ID_RF_temp_register: $(core.ID_RF_temp_register)")
-            # println("EX_temp_register: $(core.EX_temp_register)")
-            # println("MEM_temp_register: $(core.MEM_temp_register)")
-            # println("WB_temp_register: $(core.WB_temp_register)")
-            # println()
-            # println("Stall tracking registers:")
-            # println("stall_count: $(core.stall_count)")
-            # println("stall_in_present_clock_cycle: $(core.stall_in_present_clock_cycle)")
-            # println("stall_at_IF: $(core.stall_at_IF)")
-            # println("stall_at_ID_RF: $(core.stall_at_ID_RF)")
-            # println("stall_at_EX: $(core.stall_at_EX)")
-            # println("stall_at_MEM: $(core.stall_at_MEM)")
-            # println("stall_at_WB: $(core.stall_at_WB)")
-            # println("stall_in_next_clock_cycle: $(core.stall_in_next_clock_cycle)")
-            # println("stall_at_jump_instruction: $(core.stall_at_jump_instruction)")
-            # println()
-            # println("Instruction tracking registers:")
         elseif core.registers[18] == 11
             print(Char(core.registers[11]))
         elseif core.registers[18] == 4
@@ -343,4 +301,42 @@ function execute_ECALL(core::Core1, memory::Array{Int,2}, variable_address::Dict
         end
     end
     return 0
+end
+
+function SIMD(instruction::String, core::Core1, memory::Array{Int,2}, variable_address::Dict{String,Int},counter::Int)
+    dest = core.dest
+    src1 = core.src1
+    src2 = core.src2
+    dest_temp=0
+    src1_temp=0
+    src2_temp=0
+    parts, opcode = get_parts_and_opcode_from_instruction(instruction)
+    if haskey(variable_address,dest)
+        dest_temp = variable_address[dest]
+    else
+        dest_temp = -1
+    end
+    if haskey(variable_address,src1)
+        src1_temp = variable_address[src1]
+    else
+        src1_temp = -1
+    end
+    if haskey(variable_address,src2)
+        src2_temp = variable_address[src2]
+    else
+        src2_temp = -1
+    end
+    if dest_temp != -1 && src1_temp != -1 && src2_temp != -1
+        while counter!=8
+            dest_row, dest_col = get_row_col_from_address(dest_temp+counter*4)
+            src1_row, src1_col = get_row_col_from_address(src1_temp+counter*4)
+            src2_row, src2_col = get_row_col_from_address(src2_temp+counter*4)
+            temp_var1 = load_word(memory, src1_row, src1_col)
+            temp_var2 = load_word(memory, src2_row, src2_col)
+            final_var = temp_var1 + temp_var2
+            final_str = int_to_binary_32bits(final_var)
+            store_word(final_str, memory, dest_row, dest_col)
+            counter+=1
+        end
+    end
 end

@@ -82,6 +82,11 @@ mutable struct Core1
         this.inside_MEM = false
         this.inside_EX = false
         this.inside_ID_RF = false
+
+        # register for SIMD
+        this.dest = "uninitialised"
+        this.src1 = "uninitialised"
+        this.src2 = "uninitialised"
         
         return this
     end
@@ -160,6 +165,11 @@ mutable struct Core1
     inside_MEM::Bool
     inside_EX::Bool
     inside_ID_RF::Bool
+
+    # register for SIMD
+    dest::String
+    src1::String
+    src2::String
 
 end
 

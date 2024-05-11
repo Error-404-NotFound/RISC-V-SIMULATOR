@@ -34,7 +34,7 @@ alias = Dict(
 )
 
 opcode_dictionary = Dict(
-    "R_type_instructions" => ["add", "sub", "sll", "slt", "sltu", "xor", "srl", "sra", "or", "and", "mul", "ecall"],
+    "R_type_instructions" => ["add", "sub", "sll", "slt", "sltu", "xor", "srl", "sra", "or", "and", "mul", "ecall","add_vec",],
     "I_type_instructions" => ["addi", "slti", "sltiu", "xori", "ori", "andi", "slli", "srli", "srai", "muli", "jalr", "jr", "li", "mv"],
     "S_type_instructions" => ["sb", "sh", "sw"],
     "L_type_instructions" => ["lb", "lh", "lw", "lbu", "lhu"],
@@ -44,7 +44,7 @@ opcode_dictionary = Dict(
     # "ECALL" => ["ecall"],
 )
 
-opcodes = ["add", "sub", "sll", "slt", "sltu", "xor", "srl", "sra", "or", "and", "mul", "addi", "slti", "sltiu", "xori", "ori", "andi", "slli", "srli", "srai", "muli", "jalr", "jr", "li", "mv", "sb", "sh", "sw", "lb", "lh", "lw", "lbu", "lhu", "beq", "bne", "blt", "ble", "bge", "bltu", "bgeu", "lui", "auipc", "jal", "la", "j", "ecall",]
+opcodes = ["add", "sub", "sll", "slt", "sltu", "xor", "srl", "sra", "or", "and", "mul", "addi", "slti", "sltiu", "xori", "ori", "andi", "slli", "srli", "srai", "muli", "jalr", "jr", "li", "mv", "sb", "sh", "sw", "lb", "lh", "lw", "lbu", "lhu", "beq", "bne", "blt", "ble", "bge", "bltu", "bgeu", "lui", "auipc", "jal", "la", "j", "ecall","add_vec"]
 
 function remove_commas(input_string::AbstractString)::AbstractString
     return replace(input_string, "," => " ")
@@ -206,10 +206,10 @@ end
 
 
 function store_word(binary_string::AbstractString, memory::Array{Int,2}, row::Int, col::Int)
-    if length(binary_string) != 32
-        println("Error: Binary string length is not 32 bits.")
-        return
-    end
+    # if length(binary_string) != 32
+    #     println("Error: Binary string length is not 32 bits.")
+    #     return
+    # end
     # println(row, col)
     if col == 1
         memory[row, col] = parse(UInt8, binary_string[25:32], base=2)
@@ -235,10 +235,10 @@ function store_word(binary_string::AbstractString, memory::Array{Int,2}, row::In
 end
 
 function store_half_word(binary_string::AbstractString, memory::Array{Int,2}, row::Int, col::Int)
-    if length(binary_string) != 32
-        println("Error: Binary string length is not 32 bits.")
-        return
-    end
+    # if length(binary_string) != 32
+    #     println("Error: Binary string length is not 32 bits.")
+    #     return
+    # end
     if col == 1
         memory[row, col] = parse(UInt8, binary_string[25:32], base=2)
         memory[row, col+1] = parse(UInt8, binary_string[17:24], base=2)
@@ -255,10 +255,10 @@ function store_half_word(binary_string::AbstractString, memory::Array{Int,2}, ro
 end
 
 function store_one_byte(binary_string::AbstractString, memory::Array{Int,2}, row::Int, col::Int)
-    if length(binary_string) != 32
-        println("Error: Binary string length is not 32 bits.")
-        return
-    end
+    # if length(binary_string) != 32
+    #     println("Error: Binary string length is not 32 bits.")
+    #     return
+    # end
     memory[row, col] = parse(UInt8, binary_string[25:32], base=2)
 end
 
@@ -312,138 +312,3 @@ function get_parts_and_opcode_from_instruction(instruction::String)
     return parts, parts[1]
 end
 
-# function branch_prediction_1Bit_NT(core::Core1, instruction::String, instruction_type::String, rd::Int)
-#     if instruction_type == "SB_type_instructions"
-#         parts, opcode = get_parts_and_opcode_from_instruction(instruction)
-#         # println(core.rs1_temp_register)
-#         # println(core.rs2_temp_register)
-#         # println(core.rd_temp_register)
-#         # println(core.rd_temp_register_previous_instruction)
-#         # println(rd)
-#         if core.rs1_temp_register == core.rd_temp_register || rd == core.rd_temp_register || core.rs2_temp_register == core.rd_temp_register
-#             core.stall_in_next_clock_cycle = true
-#             core.write_back_last_instruction = false
-#             core.stall_at_IF = false
-#             core.rd_temp_register_previous_instruction = core.rd_temp_register
-#             core.rd_temp_register = rd
-#             core.instruction_after_ID_RF = instruction
-#             core.temp_register_instruction_type = instruction_type
-#             return
-#         end
-
-#         if core.rs1_temp_register == core.rd_temp_register_previous_instruction || rd == core.rd_temp_register_previous_instruction || core.rs2_temp_register == core.rd_temp_register_previous_instruction
-#             if !core.write_back_previous_last_instruction
-#                 core.stall_at_IF = true
-#                 core.stall_at_EX = true
-#                 core.stall_in_next_clock_cycle = true
-#             end
-#             core.stall_at_IF = true
-#             return
-#         end
-
-#         if opcode == "beq"
-#             if core.registers[core.rs1_temp_register] == core.registers[core.rs2_temp_register]
-#                 temp_dest = findfirst(x -> x == core.label_temp_register, core.program)
-#                 if temp_dest-1 < core.pc
-#                     core.stall_at_IF = true
-#                     # core.stall_in_next_clock_cycle = true
-#                     if core.stall_at_EX && core.stall_in_next_clock_cycle
-#                         core.stall_at_EX = false
-#                         core.stall_in_next_clock_cycle = false
-#                     end
-#                 end
-#             end
-#         end
-
-#         if opcode == "bne"
-#             if core.registers[core.rs1_temp_register] != core.registers[core.rs2_temp_register]
-#                 temp_dest = findfirst(x -> x == core.label_temp_register, core.program)
-#                 if temp_dest-1 < core.pc
-#                     core.stall_at_IF = true
-#                     # core.stall_in_next_clock_cycle = true
-#                     if core.stall_at_EX && core.stall_in_next_clock_cycle
-#                         core.stall_at_EX = false
-#                         core.stall_in_next_clock_cycle = false
-#                     end
-#                 end
-#             end
-#         end
-
-#         if opcode == "blt"
-#             if core.registers[core.rs1_temp_register] < core.registers[core.rs2_temp_register]
-#                 temp_dest = findfirst(x -> x == core.label_temp_register, core.program)
-#                 if temp_dest-1 < core.pc
-#                     core.stall_at_IF = true
-#                     # core.stall_in_next_clock_cycle = true
-#                     if core.stall_at_EX && core.stall_in_next_clock_cycle
-#                         core.stall_at_EX = false
-#                         core.stall_in_next_clock_cycle = false
-#                     end
-#                 end
-#             end
-#         end
-
-#         if opcode == "ble"
-#             if core.registers[core.rs1_temp_register] <= core.registers[core.rs2_temp_register]
-#                 temp_dest = findfirst(x -> x == core.label_temp_register, core.program)
-#                 if temp_dest-1 < core.pc
-#                     core.stall_at_IF = true
-#                     # core.stall_in_next_clock_cycle = true
-#                     if core.stall_at_EX && core.stall_in_next_clock_cycle
-#                         core.stall_at_EX = false
-#                         core.stall_in_next_clock_cycle = false
-#                     end
-#                 end
-#             end
-#         end
-
-#         if opcode == "bge"
-#             if core.registers[core.rs1_temp_register] >= core.registers[core.rs2_temp_register]
-#                 temp_dest = findfirst(x -> x == core.label_temp_register, core.program)
-#                 if temp_dest-1 < core.pc
-#                     core.stall_at_IF = true
-#                     # core.stall_in_next_clock_cycle = true
-#                     if core.stall_at_EX && core.stall_in_next_clock_cycle
-#                         core.stall_at_EX = false
-#                         core.stall_in_next_clock_cycle = false
-#                     end
-#                 end
-#             end
-#         end
-
-#         if opcode == "bltu"
-#             if core.registers[core.rs1_temp_register] < core.registers[core.rs2_temp_register]
-#                 temp_dest = findfirst(x -> x == core.label_temp_register, core.program)
-#                 if temp_dest-1 < core.pc
-#                     core.stall_at_IF = true
-#                     # core.stall_in_next_clock_cycle = true
-#                     if core.stall_at_EX && core.stall_in_next_clock_cycle
-#                         core.stall_at_EX = false
-#                         core.stall_in_next_clock_cycle = false
-#                     end
-#                 end
-#             end
-#         end
-
-#         if opcode == "bgeu"
-#             if core.registers[core.rs1_temp_register] >= core.registers[core.rs2_temp_register]
-#                 temp_dest = findfirst(x -> x == core.label_temp_register, core.program)
-#                 if temp_dest-1 < core.pc
-#                     core.stall_at_IF = true
-#                     # core.stall_in_next_clock_cycle = true
-#                     if core.stall_at_EX && core.stall_in_next_clock_cycle
-#                         core.stall_at_EX = false
-#                         core.stall_in_next_clock_cycle = false
-#                     end
-#                 end
-#             end
-#         end
-#     end
-# end
-
-
-#   # Extract string content between double quotes
-#                 string_content = match(r"\"(.*)\"", part).captures[1]
-#                 # Convert each character to its ASCII value and store in memory
-#                 values = [Int(c) for c in string_content]
-#                 push!(chunks, values)

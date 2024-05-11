@@ -34,8 +34,9 @@ function WB_stage(processor::Processor, core::Core1, memory::Array{Int,2}, varia
         if opcode == "j"
             rd = 0
             core.write_back_last_instruction = false
-            # return
         elseif opcode == "ecall"
+            rd = 1
+        elseif opcode == "add_vec"
             rd = 1
         else
             rd = parse(Int, replace_registers(parts[2])[2:end]) + 1
@@ -73,8 +74,6 @@ function MEM_stage(processor::Processor, core::Core1, memory::Array{Int,2}, vari
     if instruction != "uninitialised"
         # println("Memory Access at clock cycle: ", processor.clock)
         core.MEM_temp_register = address = core.EX_temp_register
-        # println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
-        # println(address)
         parts, opcode = get_parts_and_opcode_from_instruction(instruction)
         instruction_type = nothing
         foreach(kv -> opcode in kv[2] && (instruction_type = kv[1]; return), opcode_dictionary)
@@ -548,15 +547,13 @@ function EX_stage(processor::Processor, core::Core1, memory::Array{Int,2}, varia
     
     if instruction != "uninitialised"
         # println("Execution at clock cycle: ", processor.clock)
-        # println("------------at exe----------------")
-        # println("Executed the ins")
-        # println(instruction)
-        # println(instruction_type)
-        # println("end")
-        # println("-------------end exe---------------")
         instruction_type = core.temp_register_instruction_type
         parts, opcode = get_parts_and_opcode_from_instruction(instruction)
-        core.EX_temp_register = execute_stage_without_DF(instruction, instruction_type, core, memory, variable_address)
+        if opcode == "add_vec"
+            SIMD(instruction, core, memory, variable_address,0)
+        else
+            core.EX_temp_register = execute_stage_without_DF(instruction, instruction_type, core, memory, variable_address)
+        end
         if opcode == "mul"
             core.stall_at_EX = true
             processor.clock += 3
@@ -588,9 +585,16 @@ function ID_RF_stage(processor::Processor, core::Core1, memory::Array{Int,2}, va
         if !isnothing(instruction_type)
 
             if instruction_type == "R_type_instructions"
-                rd = parse(Int, parts[2][2:end]) + 1
-                core.rs1_temp_register = parse(Int, parts[3][2:end]) + 1
-                core.rs2_temp_register = parse(Int, parts[4][2:end]) + 1
+                if opcode == "add_vec"
+                    rd = 0
+                    core.dest = parts[2]
+                    core.src1 = parts[3]
+                    core.src2 = parts[4]
+                else
+                    rd = parse(Int, parts[2][2:end]) + 1
+                    core.rs1_temp_register = parse(Int, parts[3][2:end]) + 1
+                    core.rs2_temp_register = parse(Int, parts[4][2:end]) + 1
+                end
                 # println(core.rs1_temp_register, " ", core.rd_temp_register, " ", core.rd_temp_register_previous_instruction, " ", core.write_back_previous_last_instruction)
                 if core.rs2_temp_register == core.rd_temp_register || core.rs1_temp_register == core.rd_temp_register
                     core.stall_in_next_clock_cycle = true
