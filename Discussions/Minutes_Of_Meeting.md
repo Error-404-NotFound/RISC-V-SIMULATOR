@@ -1,3 +1,15 @@
+# 11-05-2024
+Final Reviews and Final Commits and along with that, some Minor Bugs Resolved.
+
+# 10-05-2024
+The L1 cache is separated for each of the 2 cores. Also some more features like control flow of the simulation like implementating 2 separate L1 cache or single L1 cache are added. Along with that, starting the implementation of SIMD instruction. SIMD instructions are added in its initial phase and very basic implemetation is simulated.
+
+# 09-05-2024
+Successfully implemented the data in the cache along with the instructions. Started the initial phase of separation of L1 cache each for both the separate cores. 
+
+# 08-05-2024
+Found some bugs in the code and resolved them. Started incorporating the data in the cache along with the instructions.
+
 # 10-04-2024
 Tried for data incorporation in the cache but could not able to do so. So decided to continue with instruction in cache only. Latency for retrieving a miss block has also been handeled ie 100 clock cycles for miss in case if it retrieves from MM and 1 clock cycle for retrieving through cache.
 
