@@ -1,8 +1,8 @@
 .data
-arr: .word 1 2 -16 6 -25
-size: .word 5
-delimiter: .string ", "
-str: .string "Sorted Array is: "
+    arr: .word 1 2 16 6 25
+    size: .word 5
+    delimiter: .string ", "
+    str: .string "Sorted Array is: "
 
 .text 
     addi x29 x0 5

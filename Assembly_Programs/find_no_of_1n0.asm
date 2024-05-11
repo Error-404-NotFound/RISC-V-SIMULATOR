@@ -57,5 +57,5 @@ exit:
     li a7 1
     mv a0 tp
     ecall
-    li a7, 10
+    li a7 10
     ecall

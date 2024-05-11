@@ -13,4 +13,8 @@ loop:
     addi a0 a0 4
     addi a3 a3 1
     bne a3 a1 loop
-    li a7 100
+    li a7 1
+    mv a0 a2
+    ecall
+    li a7 10
+    ecall

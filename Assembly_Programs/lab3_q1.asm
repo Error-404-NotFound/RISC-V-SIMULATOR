@@ -1,7 +1,7 @@
 .data
-    array: .word 3 3 4 3
-    str1: .string "IIT Tirupati \n"
-    str2: .string "Value of i is: "
+    arr: .word 3 3 4 3
+    prom1: .string "IIT Tirupati \n"
+    prom2: .string "Value of i is: "
 
 
 .text
@@ -9,8 +9,8 @@
 main:
     addi x3 x0 3     #x3 is k
     addi x4 x0 0     #x4 is i
-    la x18 array      
-    lw x11 0(x18)     #array first element
+    la x18 arr     
+    lw x11 0(x18)     #arr first element
 
 loop:
     lw x12 0(x18)
@@ -21,10 +21,10 @@ loop:
 
 exit:
     li a7 4
-    la a0 str1
-
-    la a0 str2
-
+    la a0 prom1
+    ecall
+    la a0 prom2
+    ecall
     li a7 1
     add a0 x0 x4
-   
+    ecall

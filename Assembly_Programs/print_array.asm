@@ -1,13 +1,13 @@
 .data
-array: .word -3,0 ,4,5 7
-str: .string "The value is: "
+    arr: .word 3,0 ,4,5 7
+    promp: .string "The value is: "
 .text
-    la x1 array
+    la x1 arr
     li x3 5
     li x4 0
 
 
-    la x10 str
+    la x10 promp
     li x17 4
     ecall
 

@@ -9,7 +9,7 @@ main:
     addi x1 zero 10         # x1 = 10
     addi x2 zero 20         # x2 = 20
     jal x3 addition         # jal x3 addition
-    jal x4 sub              # jal x4 subtraction
+    jal x4 subt              # jal x4 subtraction
     jal x31 print           # jal x31 print
     
     li a7 10                # exit
@@ -19,7 +19,7 @@ addition:
     add x5 x1 x2            # x5 = x1 + x2
     jr x3                   # return
     
-sub:
+subt:
     sub x6 x1 x2            # x6 = x1 - x2
     jr x4                   # return
 
