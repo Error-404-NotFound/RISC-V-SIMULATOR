@@ -71,8 +71,8 @@ This project focuses on implementing a simulator for the RISC-V ISA, allowing us
 
 #### Phase-4
 * Incorporation of Data in cache: Along with instructions data part is also being  stored in the cache.
-* Seggregation of caches for each core: L1 cache can be seperated for each core as per user requirement.
-* integration of vector Instructions: Vector addition as per SIMD protocol is being supported.
+* Sepration of caches for each core: L1 cache can be seperated for each core as per user requirement.
+* Integration of vector Instructions: Vector addition as per SIMD protocol is being supported.
   
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -215,8 +215,22 @@ _For more examples, please refer to the [Assembly_Programs](https://github.com/E
   
 [![Output-9][output_screenshot_9]](https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/UserInput.png)
 
-### Phase-3
+### Phase-3 and Phase-4
 
+1. Output-1:
+    - Output when cache is disabled.
+
+[![Output-10][output_screenshot_10]](https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/Pipelining_with_cache_disabled.png)
+
+2. Output-2:
+    - Pipelining having same L1 cache for both the cores.
+
+[![Output-11][output_screenshot_11]](https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/Pipelining_having_sameL1_cache_for_both_cores.png)
+
+3. Output-3:
+    - Pipelining with different l1 caches for each core.
+
+[![Output-12][output_screenshot_12]](https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/Pipelining_with_cache_diff_L1_cache_for_both_cores.png)
 
 <!-- ROADMAP -->
 ## Features Implemented
@@ -307,3 +321,6 @@ Distributed under the MIT License. See `LICENSE.md` for more information.
 [output_screenshot_7]: https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/Pipelining_wo_df.png
 [output_screenshot_8]: https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/Pipelinig_w_df.png
 [output_screenshot_9]: https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/UserInput.png
+[output_screenshot_10]: https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/Pipelining_with_cache_disabled.png
+[output_screenshot_11]: https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/Pipelining_having_sameL1_cache_for_both_cores.png
+[output_screenshot_12]: https://github.com/Error-404-NotFound/RISC-V-SIMULATOR/blob/main/Assets/Pipelining_with_cache_diff_L1_cache_for_both_cores.png
