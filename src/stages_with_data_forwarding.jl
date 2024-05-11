@@ -135,24 +135,24 @@ function EX_stage_df(processor::Processor, core::Core1, memory::Array{Int,2}, va
         # Check for data forwarding
 
         
-        if core.rs1_temp_register == core.rd_temp_register_previous_instruction
+        if core.rs1_temp_register == core.rd_temp_register_previous_instruction && core.rs1_temp_register!=-1
             core.registers[core.rs1_temp_register] = core.MEM_temp_register
             rs1_value = core.MEM_temp_register
         
         end
         
-        if core.rs2_temp_register == core.rd_temp_register_previous_instruction
+        if core.rs2_temp_register == core.rd_temp_register_previous_instruction && core.rs2_temp_register!=-1
             core.registers[core.rs2_temp_register] = core.MEM_temp_register
             rs2_value = core.MEM_temp_register
     
         end
         
-        if core.rs1_temp_register == core.rd_temp_register
+        if core.rs1_temp_register == core.rd_temp_register && core.rs1_temp_register!=-1
             core.registers[core.rs1_temp_register] = core.EX_temp_register
             rs1_value = core.EX_temp_register
             end
         
-        if core.rs2_temp_register == core.rd_temp_register
+        if core.rs2_temp_register == core.rd_temp_register && core.rs2_temp_register!=-1
             core.registers[core.rs2_temp_register] = core.EX_temp_register
             rs2_value = core.EX_temp_register
         end
