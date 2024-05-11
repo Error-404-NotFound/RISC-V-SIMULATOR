@@ -65,7 +65,7 @@ Parser working, .data and .text sections handled correctly, load and store instr
 Initial simulation of the program working along with simple instructions such add working along with File Handling.
 
 # 18-02-2024
-Finalise the idea and started working on implemen
+Finalise the idea and started working on implementation.
 
 
 
